@@ -1,0 +1,31 @@
+# Build artefacts
+build/
+.dart_tool/
+.flutter-plugin-dependencies
+*.g.dart
+*.freezed.dart
+
+# Platform build output
+android/app/build/
+ios/Pods/
+ios/Flutter/Flutter.framework/
+web/build/
+
+# Secrets and env
+*.env
+**/secrets/
+**/*.keystore
+**/*.jks
+google-services.json
+GoogleService-Info.plist
+
+# IDE / OS
+.vscode/
+.idea/
+.DS_Store
+
+# Large binaries
+*.apk
+*.aab
+*.ipa
+*.zip
