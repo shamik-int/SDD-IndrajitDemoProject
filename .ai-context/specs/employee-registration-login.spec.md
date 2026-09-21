@@ -4,8 +4,8 @@
 employee-registration-login
 
 ## Status
-**Approved (v1.1)** — self-reviewed by the Author at v1.0 (see "Author
-Self-Review Notes" below), then independently reviewed at Gate 1 by
+**Changes in progress (v1.2)** — self-reviewed by the Author at v1.0 (see
+"Author Self-Review Notes" below), then independently reviewed at Gate 1 by
 **Shamik Bhattacharya** (see
 `.ai-context/reviews/employee-registration-login.gate1-review.md`): 3
 findings, 2 blocking (fixed, spec → v1.1), 1 non-blocking sequencing note
@@ -17,6 +17,11 @@ see the Gate 1 review file and `prompt_history.md` for the full exchange.
 This is the same category of authority gap already acknowledged in
 `employee-internal-transfer`'s Author-ratification history, applied
 consistently rather than selectively.
+
+**v1.2** adds the `managerName` field to OP01/AC2/AC4 to resolve Gate 1
+G1-07 on `employee-internal-transfer`'s behalf (see this spec's
+Cross-Feature Impact section). v1.2 has **not** been re-reviewed by Shamik —
+do not treat it as Gate-1-approved until he confirms it.
 
 ## Linked BRD
 `.ai-context/BRD.md#BRD-002`
@@ -60,6 +65,16 @@ not merely been planned. This spec being honest about the dependency isn't
 sufficient on its own to stop that sequencing mistake at Tasks stage;
 calling it out explicitly here is.
 
+**v1.2 addition (Gate 1 G1-07, manager identification):** this spec's OP01
+now also captures `managerName` (see Local Data Contract below), which
+`employee-internal-transfer` v1.5 depends on to display "who is the pending
+Manager approver" — a dependency in the same direction and of the same
+nature as the `employeeId` one above (this feature owns the field,
+`employee-internal-transfer` only reads it via the account, never writes or
+validates it). `employee-internal-transfer.AC7`'s manager-name display must
+not be marked done until this field actually exists in a shipped
+`EmployeeAccount`.
+
 ## Local Data Contract
 No network API — same pattern as `employee-internal-transfer`: local method
 calls against a repository, backed by Hive, returning the shared `Result<T>`
@@ -77,8 +92,15 @@ throughout — for uniqueness at registration (OP01) and for lookup at login
   currentDepartmentId: String,
   currentLocationId: String,
   currentRoleId: String,
+  managerName: String,
 }
 ```
+**v1.2 addition (Gate 1 G1-07):** `managerName` is a mandatory, free-text
+field — the employee's own statement of who their current manager is. It is
+not validated against any org-chart/HRIS source (none exists, ADR-0004) and
+is not itself an account (no login, no separate manager record) — it exists
+solely so `employee-internal-transfer` can display it (see that spec's
+"Manager Identification" section).
 **Success:** `Result.success(EmployeeAccount)` — account created, session set
 to this employee (auto-login).
 **Errors (`Result.error(message)`):**
@@ -117,16 +139,17 @@ that stays internal to the repository, never surfaced past the data layer.
    `employee-internal-transfer` screen.
 2. **employee-registration-login.AC2** — Given an employee has no account yet,
    when they choose to register, then they can enter Name, Email, Password,
-   and select their current Department, Location, and Role.
+   Manager Name, and select their current Department, Location, and Role.
 3. **employee-registration-login.AC3** — Given all mandatory registration
    fields are valid and the email isn't already registered, when the
    employee submits, then an account is created, the employee is
    automatically logged in, and control passes to
    `employee-internal-transfer`'s existing entry logic.
 4. **employee-registration-login.AC4** — Given a mandatory registration field
-   is missing, the email is malformed, or the password fails the complexity
-   rule, when the employee submits, then registration is blocked with a
-   field-level validation message and no account is created.
+   (including Manager Name) is missing, the email is malformed, or the
+   password fails the complexity rule, when the employee submits, then
+   registration is blocked with a field-level validation message and no
+   account is created.
 5. **employee-registration-login.AC5** — Given the email is already
    registered, when the employee attempts to register with it again, then
    registration is blocked with a message that the email is already in use,
@@ -153,6 +176,7 @@ that stays internal to the repository, never surfaced past the data layer.
 |---|---|---|---|
 | employee-registration-login.UT01 | AC3 | Register with all valid fields | `Result.success`, session set |
 | employee-registration-login.UT02 | AC4 | Register with name missing | `Result.error`, field-level message, no account created |
+| employee-registration-login.UT12 | AC4 | Register with `managerName` missing | `Result.error`, field-level message, no account created |
 | employee-registration-login.UT03 | AC4 | Register with malformed email | `Result.error`, "valid email address" |
 | employee-registration-login.UT04 | AC4 | Register with a 4-character password | `Result.error`, complexity message |
 | employee-registration-login.UT05 | AC5 | Register with an already-registered email | `Result.error`, "already exists", no second account created |

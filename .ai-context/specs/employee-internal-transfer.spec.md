@@ -4,16 +4,22 @@
 employee-internal-transfer
 
 ## Status
-**Approved (v1.4)** — self-reviewed against Gate 1 checklist (see
+**Changes in progress (v1.5)** — self-reviewed against Gate 1 checklist (see
 `.ai-context/reviews/employee-internal-transfer.gate1-review.md`) at v1.1,
 revised at v1.2 to correct an architecture assumption (no backend, ADR-0004
 supersedes ADR-0003), revised at v1.3 to make an implicit scoping call
-explicit (see "Scope Decision" below), and revised again at v1.4 purely for a
-reviewer reassignment (no ACs, contracts, or behavior changed at v1.3 or
-v1.4). Ratified by the Author (Indrajit Bhandari) in lieu of an independent
-Gate 1 sign-off at the time, by explicit instruction — departs from
-constitution.md's Review Authority ("reviewer ≠ author"), logged here rather
-than silently applied.
+explicit (see "Scope Decision" below), revised at v1.4 purely for a reviewer
+reassignment (no ACs, contracts, or behavior changed at v1.3 or v1.4), and
+revised at v1.5 to resolve the genuinely-open Gate 1 items from Shamik
+Bhattacharya's decision register (G1-07, G1-12, G1-17, G1-22, G1-24, G1-28) —
+new `FAILED` status, Decision History (OP05, AC17), `managerName` field
+(via `employee-registration-login`), and explicit out-of-scope statements
+for data ownership and inactive employees. v1.5 has **not** been re-reviewed
+by Shamik yet — do not treat these additions as Gate-1-approved until he
+confirms them. Ratified by the Author (Indrajit Bhandari) in lieu of an
+independent Gate 1 sign-off at the time, by explicit instruction — departs
+from constitution.md's Review Authority ("reviewer ≠ author"), logged here
+rather than silently applied.
 
 **Gate 1 reviewer reassigned 2026-09-17:** at the time of the v1.1–v1.3
 self-review/ratification above, Subhajit Mukherjee was the assigned Gate 1
@@ -94,6 +100,37 @@ retroactively justify splitting this one.
 ## Status Definitions
 - **Non-terminal** (an "active" request, per AC2/AC9/AC11): `PENDING_MANAGER_APPROVAL`, `PENDING_HR_VALIDATION`, `PENDING_DOWNSTREAM_UPDATES`.
 - **Terminal**: `COMPLETED`, `REJECTED_BY_MANAGER`, `REJECTED_BY_HR`. A terminal request never counts toward the single-in-flight-request rule (AC2) and never has a pending stakeholder.
+- **`FAILED`** (v1.5, terminal) — a per-request status meaning one or more
+  downstream stakeholders (Payroll/IT/Facilities) was simulated as `REJECTED`
+  during `PENDING_DOWNSTREAM_UPDATES` (see AC15/AC16, Gate 1 G1-12/G1-24).
+  Distinct from `REJECTED_BY_MANAGER`/`REJECTED_BY_HR`, which happen *before*
+  downstream fan-out — `FAILED` means the request was approved by both Manager
+  and HR but could not fully complete.
+
+## Manager Identification (v1.5, Gate 1 G1-07)
+BRD-001/this spec previously treated "the employee's current manager" as an
+approver with no defined source — the Simulate Decision control let a tester
+record a manager decision without the app ever knowing *who* that manager is.
+Resolved for v1: `employee-registration-login.OP01` (register) captures a
+`managerName: String` field alongside current department/location/role (see
+that spec's Cross-Feature Impact section, added at the same time as this
+change). This is a plain text field, not a lookup against an org-chart system
+— there is no HRIS integration (ADR-0004) to validate it against, so it is
+display-only: the status screen (AC7) shows this name as the pending
+approver, and the Simulate Decision control's "Manager" action is unchanged.
+No manager-identity verification is implied or performed, consistent with
+this project's local-access-gate posture (ADR-0005).
+
+## Decision History (v1.5, Gate 1 G1-17)
+Previously, `transfer_requests` records were overwritten in place on every
+state transition, with no record of what happened before the current state —
+there was no way to answer "who decided what, and when" after the fact.
+Resolved for v1: every successful state transition (AC8–AC13, AC15, AC16)
+appends one immutable entry to a new **Decision History** local record (see
+`plans/employee-internal-transfer.plan.md`'s Data Model for the storage
+shape) — it is never edited or deleted, only appended to. AC17 below defines
+the employee-visible behavior; the append itself is a repository-layer
+side-effect of `OP04`, not a separate operation the employee triggers.
 
 ## How Stakeholder Actions Are Recorded
 **Revised at v1.2 (ADR-0004).** This project has no backend, so there is no
@@ -138,6 +175,38 @@ Gate 1 should explicitly confirm or reject each, not wave them through:
    Simulate Decision control (AC14). This app cannot, on its own, guarantee a
    decision reflects a real stakeholder action — that limitation is inherent
    to this project's backend-less scope.
+9. **Partial downstream failure (v1.5, Gate 1 G1-12/G1-24)** — if any of
+   Payroll/IT/Facilities is simulated as `REJECTED` while
+   `PENDING_DOWNSTREAM_UPDATES`, the request moves to `FAILED` (terminal)
+   rather than being left stuck with no valid next state. There is no retry,
+   automatic compensation, or partial-undo of the other two stakeholders'
+   already-completed work — v1 surfaces the failure and stops there. Manual
+   resolution (e.g. a corrected Simulate Decision, or the employee submitting
+   a new request once this one is terminal) is the only recovery path;
+   building real retry/compensation logic against real Payroll/IT/Facilities
+   systems is out of scope until this project has real integrations
+   (ADR-0004).
+10. **Manager identification (v1.5, Gate 1 G1-07)** — the employee's manager
+    is a plain-text `managerName` captured at registration
+    (`employee-registration-login.OP01`), display-only, not verified against
+    any authoritative source. See "Manager Identification" above.
+11. **Field-level data ownership (v1.5, Gate 1 G1-22)** — for v1, the
+    employee-submitted fields (department/location/role/effective
+    date/reason) are owned and editable only by the submitting employee, via
+    this spec's own OP01. Stakeholder-reported fields (each stakeholder's
+    decision/status) are owned by the Simulate Decision control standing in
+    for that stakeholder (OP04) — no other actor writes them. There is no
+    real Payroll/IT/Facilities/HR system in this project to dispute or
+    reconcile ownership against (ADR-0004); this ownership statement exists
+    so a future real-backend project doesn't have to reverse-engineer intent
+    from silence.
+12. **Inactive/terminated employees (v1.5, Gate 1 G1-28)** — explicitly out
+    of scope for v1. There is no HRIS integration or termination event
+    feed (ADR-0004), so this app has no way to learn an employee has left;
+    an inactive employee's account and any in-flight request simply remain
+    as last written. Handling this correctly requires a real backend/HRIS
+    integration and is deferred alongside the rest of ADR-0004's Explicitly
+    Deferred items.
 
 ## Local Data Contract
 No network API — every operation below is a local method call against the
@@ -184,10 +253,26 @@ _Backs the Simulate Decision control (AC14) only — not a real stakeholder-faci
 }
 ```
 **Success:** `Result.success(TransferRequest)` — updated record, status
-recalculated per the state machine (see `plans/employee-internal-transfer.plan.md`).
+recalculated per the state machine (see `plans/employee-internal-transfer.plan.md`),
+and one entry appended to Decision History (v1.5, see "Decision History"
+above) recording `stakeholder`, `decision`, and a timestamp.
 **Errors:** "Invalid decision for the request's current state." if the
 stakeholder/decision combination doesn't match the expected next step (e.g.
-simulating an HR decision while still `PENDING_MANAGER_APPROVAL`).
+simulating an HR decision while still `PENDING_MANAGER_APPROVAL`, or any
+decision once the request is already terminal — including `FAILED`).
+
+**v1.5 addition:** `REJECTED` is now a valid `decision` for `PAYROLL`, `IT`,
+or `FACILITIES` while `PENDING_DOWNSTREAM_UPDATES` (previously only
+`COMPLETED` was valid for those three) — see AC16.
+
+### employee-internal-transfer.OP05 — getDecisionHistory (v1.5, Gate 1 G1-17)
+**Input:** `requestId: String`
+**Success:** `Result.success(List<DecisionHistoryEntry>)` — ordered
+oldest-first, one entry per state transition ever recorded for this request
+(including the initial submission). Empty list is never returned for a valid
+`requestId` — submission itself is the first entry.
+**Errors:** "No request found for this ID." if `requestId` doesn't exist —
+same wording as OP02.
 
 ## Acceptance Criteria
 1. **employee-internal-transfer.AC1** — Given an employee with no active
@@ -242,6 +327,21 @@ simulating an HR decision while still `PENDING_MANAGER_APPROVAL`).
     real stakeholder-facing feature) lets a tester record that decision
     locally via `OP04`, driving the same state transitions described in
     AC8–AC13.
+15. **employee-internal-transfer.AC15** (new, v1.5) — Given a request in
+    `PENDING_DOWNSTREAM_UPDATES`, when any one of Payroll, IT, or Facilities
+    is simulated as `REJECTED`, then the request's status becomes `FAILED`
+    (terminal), no stakeholder remains pending, and the employee may submit a
+    new request (same as AC9/AC11's "active request" release).
+16. **employee-internal-transfer.AC16** (new, v1.5) — Given a request already
+    in a terminal status (`COMPLETED`, `REJECTED_BY_MANAGER`,
+    `REJECTED_BY_HR`, or `FAILED`), when any further Simulate Decision is
+    attempted against it, then `OP04` returns `Result.error` and the
+    request's status does not change.
+17. **employee-internal-transfer.AC17** (new, v1.5) — Given a request with at
+    least one recorded state transition, when the employee views its
+    Decision History, then they see every transition in chronological order
+    (stakeholder, decision, timestamp), and this history is read-only —
+    nothing on this screen lets the employee edit or delete an entry.
 
 ## Unit Test Cases (spec-derived)
 | Test ID | Maps to AC | Scenario | Expected |
@@ -260,6 +360,10 @@ simulating an HR decision while still `PENDING_MANAGER_APPROVAL`).
 | employee-internal-transfer.UT12 | AC12, AC14 | Simulate all three downstream steps complete | status `COMPLETED`, `pendingStakeholders = []` |
 | employee-internal-transfer.UT13 | AC9 | After a manager rejection, employee submits a new request | New request accepted (rejected request does not count as "active") |
 | employee-internal-transfer.UT14 | AC14 | Simulate an HR decision while status is still `PENDING_MANAGER_APPROVAL` | `Result.error`, "invalid decision for current state" |
+| employee-internal-transfer.UT15 | AC15 | Simulate IT `REJECTED` while `PENDING_DOWNSTREAM_UPDATES` (Payroll/Facilities still pending) | status `FAILED`, `pendingStakeholders = []` |
+| employee-internal-transfer.UT16 | AC16 | Simulate any decision against a request already `COMPLETED` (or `FAILED`, `REJECTED_BY_MANAGER`, `REJECTED_BY_HR`) | `Result.error`, status unchanged |
+| employee-internal-transfer.UT17 | AC17 | `getDecisionHistory` after manager approve + HR approve | Two ordered entries returned, oldest first |
+| employee-internal-transfer.UT18 | AC15 | After a downstream `FAILED` request, employee submits a new request | New request accepted (`FAILED` does not count as "active") |
 
 ## Explicitly Out of Scope
 - Editing or withdrawing a submitted request.
@@ -276,6 +380,14 @@ simulating an HR decision while still `PENDING_MANAGER_APPROVAL`).
 - Any real backend, real datastore, or real integration with Manager/HR/
   Payroll/IT/Facilities systems (ADR-0004) — none exist for this project.
 - Multi-device sync — a request lives on the device it was submitted from.
+- Automatic retry, escalation, or compensation on a downstream `FAILED`
+  request (v1.5) — the employee's only recovery path is submitting a new
+  request once the failed one is terminal (AC15).
+- Manager-identity verification — `managerName` (v1.5) is a plain-text,
+  unverified field; there is no org-chart/HRIS lookup (ADR-0004).
+- Any handling for inactive/terminated employee accounts (v1.5, Gate 1
+  G1-28) — deferred alongside the rest of ADR-0004's Explicitly Deferred
+  items; requires a real HRIS integration this project does not have.
 
 ## Non-Functional Constraints (from constitution.md)
 - Local read (status view) and write (submission, Simulate Decision) complete

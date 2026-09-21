@@ -129,3 +129,65 @@ development proceeds:
 **Gate decision:** **Not approved.** Development remains blocked until the
 mandatory decisions above are resolved, reviewed, and traceable to updated
 project artefacts.
+
+## Remediation Pass — Indrajit Bhandari, 2026-09-21
+
+**Not a Gate 1 re-review** — the Author addressing his own findings does not
+satisfy constitution.md's "reviewer ≠ author" rule any more than the earlier
+self-review stand-ins did. Logged here for the same reason those were: so
+the gap is visible, not silently closed.
+
+An audit found the 30 G1 items above conflate two different situations:
+items with a genuine, documented v1 answer already in ADR-0004/ADR-0005 or
+the spec's own Assumptions/Out-of-Scope sections (G1-02, 03, 05, 08, 09, 10,
+13, 14, 15, 19, 20, 23, 25), versus items nothing in the project actually
+addressed (G1-07, 12, 17, 22, 24, 28), plus several partially answered ones
+(G1-01, 04, 06, 11, 16, 18, 21, 27, 29, 30).
+
+**Design changes made against the fully-open items:**
+- **G1-07 (manager identification)** — `employee-registration-login.OP01`
+  gains a mandatory `managerName` field (spec v1.2); displayed, not
+  verified.
+- **G1-17 (audit trail)** — new append-only `decision_history` Hive box
+  (plan v3) and `OP05.getDecisionHistory` (spec v1.5, AC17).
+- **G1-12 / G1-24 (failure handling / partial completion)** — new `FAILED`
+  terminal status when any downstream stakeholder is simulated as `REJECTED`
+  (spec v1.5, AC15/AC16); no retry/compensation, explicitly out of scope.
+- **G1-22 (data ownership)** — explicit field-ownership statement added to
+  spec v1.5 Assumptions.
+- **G1-28 (inactive employees)** — explicit out-of-scope statement added to
+  spec v1.5 Assumptions, matching the pattern ADR-0004 already uses for
+  comparable no-HRIS limitations.
+
+**Remaining genuinely-open items, left as comments rather than force-closed**
+(full per-item comment in `BRD.md`'s Gate 1 Mandatory Decision Register):
+- **G1-01** — no true `employeeId`/identity verification, only email +
+  password-hash match (ADR-0005's own stated limit).
+- **G1-04** — password lockout policy is undefined (complexity and hashing
+  are; reset is out of scope).
+- **G1-16** — no minimum lead-time rule for effective date (only "must be in
+  the future" is enforced) — judged a Product decision, not invented here.
+- **G1-18** — authorization remains a soft, local-only guarantee per
+  ADR-0005, not a real security boundary.
+- **G1-21** — idempotency of local operations beyond the double-tap UI case
+  (QA03) isn't explicitly discussed.
+- **G1-27** — PII retention period and subject-access-request handling are
+  undefined (logging restrictions and account-deletion status are).
+
+Each was deliberately left open with a comment explaining why it's
+acceptable for a local, backend-less demo, rather than force-closed with an
+unjustified placeholder — for Shamik to confirm, reject, or route to a
+business/Product owner.
+
+**Not done in this pass:** no code changes, no test_cases/ additions beyond
+what the spec's own Unit Test Cases table already lists, no tasks.md
+updates — this was a design-decision-only remediation, by explicit scope
+request. `tasks/employee-internal-transfer.tasks.md` still describes the
+pre-v1.5 design and will need new/amended tasks before v1.5 is actually
+built.
+
+**Next step, unchanged from the original verdict:** Shamik Bhattacharya
+reviews spec v1.5 / v1.2, the plan v3 changes, and `BRD.md` v3.0 (submitted
+for re-review, see that file's "Submitted for Gate 1 Re-Review" section) and
+either confirms them or requests further changes. This remediation pass does
+not move the Gate decision from "Not approved."

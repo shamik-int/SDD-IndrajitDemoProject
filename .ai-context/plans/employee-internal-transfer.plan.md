@@ -6,8 +6,14 @@ for this project. This revision follows **ADR-0004** (supersedes ADR-0003)
 throughout. See `.ai-context/decisions/ADR-0003-*.md` for the superseded
 version and why it was wrong, and `ADR-0004-*.md` for the corrected decision._
 
+_Revised 2026-09-21 (v3) — adds the `FAILED` state, `decision_history` box,
+and `managerName` display note to close spec v1.5's Gate 1 remediation items
+(G1-07, G1-12, G1-17, G1-24). Design-only revision — not yet reflected in
+`tasks/employee-internal-transfer.tasks.md` (all tasks there still describe
+the pre-v1.5 design) and not yet re-reviewed by Shamik Bhattacharya._
+
 ## Derived From
-`.ai-context/specs/employee-internal-transfer.spec.md` (v1.2, Approved)
+`.ai-context/specs/employee-internal-transfer.spec.md` (v1.5, Changes in progress)
 
 ## Architecture Approach
 - **No backend (ADR-0004).** There is no `transfer-request-service`, no
@@ -34,11 +40,27 @@ version and why it was wrong, and `ADR-0004-*.md` for the corrected decision._
   PENDING_HR_VALIDATION --(simulate: HR approves)--> PENDING_DOWNSTREAM_UPDATES
   PENDING_HR_VALIDATION --(simulate: HR rejects)--> REJECTED_BY_HR [terminal]
   PENDING_DOWNSTREAM_UPDATES --(simulate: Payroll+IT+Facilities all complete)--> COMPLETED [terminal]
+  PENDING_DOWNSTREAM_UPDATES --(simulate: any of Payroll/IT/Facilities rejects)--> FAILED [terminal]
   ```
   Entering `PENDING_DOWNSTREAM_UPDATES` creates three stakeholder-status
   entries (Payroll, IT, Facilities) simultaneously — the fan-out AC10
   describes. Any `OP04` call whose `stakeholder`/`decision` doesn't match the
-  current state's valid next step returns `Result.error` (UT14).
+  current state's valid next step returns `Result.error` (UT14), and this
+  includes any `OP04` call once a request is already terminal — including the
+  new `FAILED` state (v1.5, spec AC16, UT16).
+
+  **v1.5 addition — `FAILED` (Gate 1 G1-12/G1-24):** unlike the two rejection
+  branches above (which happen before downstream fan-out, with a single
+  rejecting stakeholder), `FAILED` can occur after Payroll/IT/Facilities are
+  already in a mixed state (e.g. Payroll `COMPLETED`, IT `REJECTED`,
+  Facilities still `PENDING`). v1 does not roll back Payroll's completed
+  work, retry IT, or otherwise reconcile the mixed state — the repository
+  simply stops evaluating further stakeholder transitions once `FAILED` is
+  set (any subsequent `OP04` call is rejected per AC16, same as any other
+  terminal status). This is a deliberate v1 simplification, not a
+  correctness gap being silently accepted — a real backend/integration would
+  need actual compensation logic here, which is out of scope until this
+  project has one (ADR-0004).
 
 ## Data Model
 Two Hive boxes (ADR-0004) — no relational tables, no server:
@@ -58,7 +80,28 @@ Two Hive boxes (ADR-0004) — no relational tables, no server:
   would.
 - No `employeeId` field — dropped per ADR-0004: one Hive store per app
   install already belongs to exactly one employee, so there's nothing to
-  scope against.
+  scope against. **(Superseded by ADR-0005 — tracked as this feature's own
+  upcoming plan amendment once `employee-registration-login` ships; not
+  applied in this revision.)**
+- **`decision_history`** (v1.5, Gate 1 G1-17) — append-only. Keyed by a
+  client-generated UUID v4 per entry (not by `requestId`, so multiple entries
+  per request coexist). Value per entry:
+  - `requestId` (foreign key into `transfer_requests`, no relational
+    enforcement — Hive has none, same caveat as `app_state`)
+  - `stakeholder` (`MANAGER`/`HR`/`PAYROLL`/`IT`/`FACILITIES`, or `null` for
+    the initial submission entry)
+  - `decision` (`SUBMITTED`/`APPROVED`/`REJECTED`/`COMPLETED`)
+  - `resultingStatus` (the `transfer_requests.status` value immediately after
+    this entry was applied)
+  - `recordedAt` (timestamp)
+
+  Entries are written by the same repository method that applies each state
+  transition (OP01 for the initial `SUBMITTED` entry, OP04 for every
+  subsequent one) — there is no separate "write history" call for the
+  presentation layer to remember to make, so history can't be forgotten by a
+  caller. Read via `OP05.getDecisionHistory`, filtered by `requestId`,
+  ordered by `recordedAt` ascending. Never updated or deleted after being
+  written — if this were ever wrong, the fix is a new entry, not an edit.
 
 ## Constitution Check
 - [x] No new datastore introduced without ADR — local persistence approved
@@ -89,6 +132,14 @@ Two Hive boxes (ADR-0004) — no relational tables, no server:
   scaffolding — `PROJECT_CHECKLIST.md` §1).
 - Any SLA/escalation logic, amend/withdraw, or notification channel beyond
   in-portal status (all explicitly out of scope per the spec).
+- Automatic retry/compensation on a `FAILED` request, and the `employeeId`
+  re-scoping this feature owes `employee-registration-login` (ADR-0005) —
+  both v1.5 items, sequenced as follow-up plan amendments, not implemented in
+  this revision (design-only per this Gate 1 remediation pass).
+- Manager-identity verification against an authoritative source —
+  `managerName` (v1.5, captured by `employee-registration-login.OP01`) is
+  displayed as-entered on the status screen (AC7); this plan does not add any
+  lookup, validation, or org-chart integration for it (ADR-0004: no HRIS).
 
 ## Sequencing
 1. Flutter: `domain/` — `TransferRequest` entity (incl. per-stakeholder

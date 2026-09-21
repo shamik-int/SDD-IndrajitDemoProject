@@ -1,9 +1,10 @@
 # Business Requirements Document (BRD)
 
-**Version:** 2.0  
-**Status:** In Peer Review — Changes Requested  
-**Updated:** 2026-09-18  
-**Previous version:** `BRD-v1-backup-2026-09-18.md`
+**Version:** 3.0  
+**Status:** Remediated — Submitted for Gate 1 Re-Review  
+**Updated:** 2026-09-21  
+**Previous version:** `BRD-v2-backup-2026-09-21.md` (itself following
+`BRD-v1-backup-2026-09-18.md`)
 
 _Numbered entries, per Blueprint §7 — the source spec authoring pulls from. A spec
 should never be the first place a requirement is written down._
@@ -109,47 +110,97 @@ un-silent correction ADR-0004 itself models.
 **Recorded by:** Shamik Bhattacharya, Gate 1 reviewer  
 **Recorded at:** 2026-09-18 16:02:25 +05:30  
 **Classification:** **P0 / Mandatory**  
-**Decision:** **Changes Requested — development remains blocked.**
+**Original decision:** **Changes Requested — development remains blocked.**
 
-The following decisions are mandatory before development proceeds. They are
-requirements to resolve, not assumptions or approvals. Each resolved item must
-be reflected in the applicable BRD, spec, plan, tasks, test cases, ADRs, and/or
-security documentation and returned for Gate 1 re-review.
+The following decisions were mandatory before development proceeds. They
+were requirements to resolve, not assumptions or approvals. Each resolved
+item must be reflected in the applicable BRD, spec, plan, tasks, test cases,
+ADRs, and/or security documentation and returned for Gate 1 re-review — this
+section is that return.
 
-| ID | Area | Required decision |
-|---|---|---|
-| G1-01 | Employee identity | Define `employeeId` and how it is verified. |
-| G1-02 | Registration | Define the employee-verification mechanism that prevents registration using another employee's details. |
-| G1-03 | Email | Define email ownership verification, including email verification or OTP. |
-| G1-04 | Password | Define password complexity, hashing, reset, and lockout policy. |
-| G1-05 | Authorization | Define RBAC and resource-level authorization. |
-| G1-06 | Current employee data | Decide whether department, location, and role are authoritative or user-entered. |
-| G1-07 | Manager identification | Define the source and timing of the manager relationship. |
-| G1-08 | Receiving manager | Decide whether receiving-manager approval is mandatory. |
-| G1-09 | HR eligibility | Define explicit HR eligibility rules. |
-| G1-10 | Workflow | Define the canonical workflow state machine, including every state and transition. |
-| G1-11 | Conditional tasks | Define the Payroll/IT/Facilities decision matrix. |
-| G1-12 | Failure handling | Define retry, timeout, escalation, and compensation behaviour for integration failures. |
-| G1-13 | Amend request | Define whether and how amendment is allowed. |
-| G1-14 | Withdrawal | Define withdrawal rules and downstream cancellation behaviour. |
-| G1-15 | Multiple requests | Define allowed concurrent-request states and conflict rules. |
-| G1-16 | Effective date | Define past/future validation and minimum lead-time rules. |
-| G1-17 | Audit | Require an immutable audit trail for decision history. |
-| G1-18 | Security | Define authentication, authorization, session, API, and PII controls. |
-| G1-19 | Notifications | Define the notification matrix, channels, and triggering events. |
-| G1-20 | SLA | Define an SLA per workflow task or explicitly exclude SLA from V1. |
-| G1-21 | Integration contracts | Define request/response schemas, errors, and idempotency for each API/event contract. |
-| G1-22 | Data ownership | Define field-level ownership for current and proposed employee data. |
-| G1-23 | Effective transfer completion | Define the final success condition for a completed transfer. |
-| G1-24 | Partial completion | Define recovery and/or compensation when HR approves but IT or another downstream step fails. |
-| G1-25 | Reconciliation | Define reconciliation for downstream data mismatches. |
-| G1-26 | Admin/support | Define operational visibility and support intervention capabilities. |
-| G1-27 | Regulatory/privacy | Define PII retention, deletion, access, and audit requirements. |
-| G1-28 | Registration lifecycle | Define behaviour for inactive or terminated employees. |
-| G1-29 | Duplicate accounts | Define employee-identity uniqueness beyond email uniqueness. |
-| G1-30 | V1 boundaries | Explicitly mark all V1 decisions and prevent unresolved items from expanding scope. |
+**How to read the Resolution column:**
+- **Fixed (v1.5/v1.2)** — genuinely unaddressed before this pass; a real
+  design decision was added to close the gap. Full detail in the linked
+  spec/plan section.
+- **Resolved via ADR** — already had a deliberate, documented v1 answer
+  (mostly ADR-0004 "no backend" or ADR-0005 "local-only auth") that this
+  register's original wording didn't credit as an answer. No new change in
+  this pass; a comment explains why the existing artifact already settles
+  it.
+- **Resolved in spec (pre-existing)** — already answered in the spec's
+  Assumptions/ACs, unrelated to the no-backend architecture. No new change.
+- **Open — comment only** — still genuinely open; a comment explains the
+  residual gap and why it's judged acceptable (or not) to leave open for a
+  local demo build. No design change made.
 
-**Traceability:** The complete dated review record is maintained in
-`.ai-context/reviews/employee-internal-transfer.gate1-review.md`. This BRD
-version does not approve, close, or silently resolve any of the mandatory
-decisions above.
+| ID | Area | Required decision | Resolution | Comment |
+|---|---|---|---|---|
+| G1-01 | Employee identity | Define `employeeId` and how it is verified. | Open — comment only | Account is keyed by email (ADR-0005), not a separate `employeeId`. Verification = password match against a locally stored hash only — ADR-0005 states outright this is "not identity verification in the sense a real backend would provide." Acceptable for a local-only demo; would need a real backend to actually resolve. |
+| G1-02 | Registration | Define the employee-verification mechanism that prevents registration using another employee's details. | Resolved via ADR | ADR-0005 names this limitation explicitly: nothing stops registering with someone else's name/dept/role under your own email. No real HRIS to check against (ADR-0004). Documented limitation, not a silent gap. |
+| G1-03 | Email | Define email ownership verification, including email verification or OTP. | Resolved via ADR | No email service exists (ADR-0004/0005) — OTP/verification is architecturally impossible without one. `employee-registration-login.spec.md` Out of Scope confirms this is deferred indefinitely, not just for v1. |
+| G1-04 | Password | Define password complexity, hashing, reset, and lockout policy. | Open — comment only | Hashing (salted SHA-256) and complexity (≥8 chars, letter+number) are defined; reset is out of scope (no email service). **Lockout policy is not defined anywhere** — no brute-force/lockout logic exists. Genuine residual gap; low risk for a local demo with no network attack surface, but should be an explicit "no lockout in v1" statement rather than silence. |
+| G1-05 | Authorization | Define RBAC and resource-level authorization. | Resolved via ADR | `employee-registration-login.spec.md` Out of Scope: no admin/manager account type; only one actor type (employee) exists. Manager/HR/Payroll/IT/Facilities are simulated via the Simulate Decision control, not real roles. RBAC has nothing to arbitrate in this architecture. |
+| G1-06 | Current employee data | Decide whether department, location, and role are authoritative or user-entered. | Resolved in spec (pre-existing) | `employee-registration-login.OP01`: user-entered at registration, no HRIS integration to source them from (ADR-0004). Decided, if implicitly. |
+| G1-07 | Manager identification | Define the source and timing of the manager relationship. | **Fixed (v1.2/v1.5)** | `employee-registration-login.OP01` now captures `managerName` (mandatory, free text) at registration; `employee-internal-transfer` v1.5 displays it as the pending approver on the status screen. Display-only, not verified against any org-chart source — see each spec's "Manager Identification"/Cross-Feature Impact sections. |
+| G1-08 | Receiving manager | Decide whether receiving-manager approval is mandatory. | Resolved in spec (pre-existing) | `employee-internal-transfer.spec.md` Assumption 1 / Out of Scope: only the current manager approves; receiving-department manager is not consulted in v1. |
+| G1-09 | HR eligibility | Define explicit HR eligibility rules. | Resolved in spec (pre-existing) | Spec Assumption 3 (Gate 1 self-review Finding 2): HR's eligibility rule is intentionally opaque to this app — no AC depends on it, HR's decision is treated as a black box. Business-side sign-off on the actual rule is still open per BRD-001, but that's a business question, not an engineering gap this register is scoped to. |
+| G1-10 | Workflow | Define the canonical workflow state machine, including every state and transition. | Resolved in spec (pre-existing) | `plans/employee-internal-transfer.plan.md` gives the full state machine with every transition and guard condition; spec's Status Definitions lists terminal/non-terminal explicitly. Now also includes the v1.5 `FAILED` transition (see G1-12/G1-24). |
+| G1-11 | Conditional tasks | Define the Payroll/IT/Facilities decision matrix. | Resolved in spec (pre-existing) | Spec Assumption 2: deliberately no matrix — all three always trigger uniformly in v1. A real, blunt decision, flagged in the original Gate 1 self-review (Finding 5) as a known operational cost, not a gap. |
+| G1-12 | Failure handling | Define retry, timeout, escalation, and compensation behaviour for integration failures. | **Fixed (v1.5)** | New terminal `FAILED` status: any downstream stakeholder (Payroll/IT/Facilities) simulated as `REJECTED` moves the request to `FAILED` instead of leaving it stuck (spec AC15, plan v3). No retry/compensation is built — explicitly out of scope until this project has a real backend/integration (ADR-0004) — but the request no longer gets stuck with an undefined next state. |
+| G1-13 | Amend request | Define whether and how amendment is allowed. | Resolved in spec (pre-existing) | Spec Assumption 5: no amend/withdraw in v1, explicit Out of Scope entry. |
+| G1-14 | Withdrawal | Define withdrawal rules and downstream cancellation behaviour. | Resolved in spec (pre-existing) | Same decision as G1-13 — bundled, both explicitly out of scope. |
+| G1-15 | Multiple requests | Define allowed concurrent-request states and conflict rules. | Resolved in spec (pre-existing) | Spec Assumption 4: exactly one non-terminal request per employee; enforced via the `app_state.activeRequestId` key (plan). |
+| G1-16 | Effective date | Define past/future validation and minimum lead-time rules. | Open — comment only | "Must be in the future" is fully defined and tested (AC5). **No minimum lead-time rule** (e.g. "≥14 days notice") exists — tomorrow currently qualifies. Genuine residual gap; a business/Product decision more than an engineering one — flagging for Shamik/Product rather than inventing a number unilaterally. |
+| G1-17 | Audit | Require an immutable audit trail for decision history. | **Fixed (v1.5)** | New append-only `decision_history` Hive box + `OP05.getDecisionHistory` (spec AC17, plan v3) — one entry per state transition, never edited or deleted. |
+| G1-18 | Security | Define authentication, authorization, session, API, and PII controls. | Open — comment only | Session handling, PII-in-logs, and password hashing are all defined (ADR-0005). API controls are N/A (no API exists, ADR-0004). **Authorization remains a soft, local-only guarantee** — ADR-0005 itself says this "must never be described to a business stakeholder as equivalent to real user authentication." That caveat is the honest answer for a local demo, not a fixable gap without a real backend. |
+| G1-19 | Notifications | Define the notification matrix, channels, and triggering events. | Resolved in spec (pre-existing) | Spec Assumption 7: in-portal status only, no email/push in v1, explicit Out of Scope entry. |
+| G1-20 | SLA | Define an SLA per workflow task or explicitly exclude SLA from V1. | Resolved in spec (pre-existing) | Spec Assumption 6: no SLA enforcement in v1, explicit Out of Scope entry — matches this item's own "or explicitly exclude" phrasing exactly. |
+| G1-21 | Integration contracts | Define request/response schemas, errors, and idempotency for each API/event contract. | Open — comment only | The Local Data Contract (OP01–OP05) fully specifies request/response shapes and error tables for every local operation — that part is resolved. Real external integration contracts are N/A (no backend, ADR-0004). **Idempotency for the local operations themselves (e.g. a double-submit replay) is not explicitly discussed** beyond the double-tap UI case (QA03) — residual gap, low risk given there's no network to cause genuine retries. |
+| G1-22 | Data ownership | Define field-level ownership for current and proposed employee data. | **Fixed (v1.5)** | Explicit statement added to spec Assumptions: employee-submitted fields are owned by the submitting employee via OP01; stakeholder-decision fields are owned by the Simulate Decision control standing in for that stakeholder via OP04. No real Payroll/IT/Facilities/HR system exists to dispute this in v1. |
+| G1-23 | Effective transfer completion | Define the final success condition for a completed transfer. | Resolved in spec (pre-existing) | AC12: all three downstream stakeholders reporting complete → `COMPLETED`, no stakeholder pending. Precise and tested. |
+| G1-24 | Partial completion | Define recovery and/or compensation when HR approves but IT or another downstream step fails. | **Fixed (v1.5)** | Same `FAILED` status as G1-12 covers this directly — e.g. Payroll completes, IT rejects, Facilities still pending → request moves to `FAILED`. No rollback of Payroll's already-completed work; the plan states this explicitly as a v1 simplification requiring real compensation logic once a real backend exists. |
+| G1-25 | Reconciliation | Define reconciliation for downstream data mismatches. | Resolved via ADR | ADR-0004: no real downstream system exists at all (only the Simulate Decision stand-in) — there is nothing to reconcile against. Moot by architecture, not silently skipped. |
+| G1-26 | Admin/support | Define operational visibility and support intervention capabilities. | Resolved via ADR | No admin/support console exists or is needed — there is no server-side state to have operational visibility into (ADR-0004). The Simulate Decision control is explicitly framed in-spec as a demo/test stand-in, not an ops tool. Weaker precedent than G1-02/03/05/25 (no single line says "admin tooling out of scope" in so many words) but consistent with the architecture throughout. |
+| G1-27 | Regulatory/privacy | Define PII retention, deletion, access, and audit requirements. | Open — comment only | No-PII-in-logs is strongly and repeatedly defined (constitution.md, both specs). Account deletion is at least named as deferred (`employee-registration-login.discovery.md`). **Retention period and subject-access-request handling are not addressed anywhere** — genuine residual gap; reasonable to leave open for a local demo with no real data-processing agreement in force, but should be named explicitly rather than left silent if this ever became a real product. |
+| G1-28 | Registration lifecycle | Define behaviour for inactive or terminated employees. | **Fixed (v1.5)** | Explicit Out of Scope statement added to spec Assumptions: no HRIS/termination feed exists (ADR-0004), so this app cannot know an employee has left; an inactive account and its requests simply remain as last written. Previously this was silently absent — now it's a named v1 limitation, deferred alongside ADR-0004's other Explicitly Deferred items. |
+| G1-29 | Duplicate accounts | Define employee-identity uniqueness beyond email uniqueness. | Resolved via ADR | Email uniqueness (case-insensitive) is fully defined and tested. "Uniqueness beyond email" is the same architectural limitation as G1-02 — ADR-0005 states there is no way to verify true identity beyond the password/email match. Same resolved-as-limitation treatment as G1-02, not a separate open item. |
+| G1-30 | V1 boundaries | Explicitly mark all V1 decisions and prevent unresolved items from expanding scope. | Resolved in spec (pre-existing), with residual noted | Both specs have explicit "Explicitly Out of Scope" sections and both relevant ADRs have "Explicitly Deferred" sections — the habit and mechanism are well-established. The five items still marked "Open — comment only" above (G1-01, 04, 16, 18, 21, 27) are the boundary not yet fully closed; they are now named here rather than silently missing from any Out-of-Scope list, which is itself the G1-30 fix for this pass — full closure (a business/Product decision on each) is still pending. |
+
+**Tally after this pass:** 6 fixed this pass (G1-07, 12, 17, 22, 24, 28) · 13
+already resolved pre-existing or via ADR-0004/0005, credited but unchanged
+(G1-02, 03, 05, 06, 08, 09, 10, 11, 13, 14, 15, 19, 20, 23, 25, 26, 29, 30 —
+30 counts G1-30 as "resolved with residual noted") · 6 remain genuinely open
+with a comment rather than a fix (G1-01, 04, 16, 18, 21, 27) — each is judged
+low-risk for a local, backend-less demo, but is a real gap if this project
+is ever taken toward production.
+
+**Traceability:** The complete dated review record, including this pass's
+detailed audit evidence per item, is maintained in
+`.ai-context/reviews/employee-internal-transfer.gate1-review.md`.
+
+## Submitted for Gate 1 Re-Review — Author, 2026-09-21
+
+**To:** Shamik Bhattacharya, Gate 1 reviewer  
+**From:** Indrajit Bhandari (Author)
+
+This BRD, `employee-internal-transfer.spec.md` (→ v1.5),
+`employee-registration-login.spec.md` (→ v1.2), and
+`plans/employee-internal-transfer.plan.md` (→ v3) are submitted together for
+Gate 1 re-review. Per constitution.md's Review Authority section, the Author
+addressing his own findings does **not** satisfy "reviewer ≠ author" — this
+submission is a remediation package for Shamik's independent review, not a
+self-approval. The original Gate decision ("Not approved — development
+remains blocked") stands until he reviews it.
+
+**What changed:** the 6 items above marked "Fixed" (G1-07, 12, 17, 22, 24,
+28) have real design changes in the linked spec/plan sections. The 6 items
+marked "Open — comment only" (G1-01, 04, 16, 18, 21, 27) were deliberately
+**not** force-closed with a placeholder decision — each comment states why
+it's judged acceptable to leave open for this project's local-demo scope,
+for Shamik to confirm, reject, or push to a business/Product owner as
+appropriate.
+
+**Not done in this pass:** no code changes, no `tasks/*.tasks.md` updates —
+those files still describe the pre-remediation design and will need
+amendment once Shamik's review lands (design-decision-only pass, by explicit
+scope request).
