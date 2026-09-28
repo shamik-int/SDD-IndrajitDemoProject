@@ -1,9 +1,10 @@
 # Business Requirements Document (BRD)
 
 **Version:** 5.2  
-**Status:** **Submitted for Gate 1 Re-Review. Not yet approved;
-development remains blocked** until the Gate 1 reviewer (Shamik
-Bhattacharya) approves this BRD.  
+**Status:** **Approved (Gate 1)** by Shamik Bhattacharya
+(shamik.bhattacharya@intglobal.com), 2026-09-28. The specs are now being
+rewritten from BRD-001; development stays blocked until the spec, plan and
+tasks are approved.  
 **Author:** Indrajit Bhandari  
 **Gate 1 reviewer:** Shamik Bhattacharya  
 **Updated:** 2026-09-28  
@@ -368,7 +369,7 @@ as a business rule (marked *V1 decision*) or listed as out of scope.
 | 13 | Rule against duplicate submission | BR-08 | ✅ Done |
 | 14 | Business owner | BRD-001 Sponsor, A-04. **Author comment:** BRD-002 is not followed and is kept for version control only; the author is Indrajit Bhandari | ✅ Done |
 | 15 | Correct the tally | Gate 1 Re-Review Submission: G1-01 to G1-30 map | ✅ Done |
-| 16 | Align BRD, spec, plan and tests | **Author comment:** I have stopped writing the specs, plan and tasks; I will write them after the BRD is approved | ⏸️ Deferred until BRD approval |
+| 16 | Align BRD, spec, plan and tests | **Author comment:** I have stopped writing the specs, plan and tasks; I will write them after the BRD is approved. **2026-09-28:** BRD approved; spec v2.0 rewritten from BRD-001 and submitted for Gate 1 | 🔄 In progress (spec submitted) |
 
 ---
 
@@ -377,7 +378,7 @@ as a business rule (marked *V1 decision*) or listed as out of scope.
 **Submitted by:** Indrajit Bhandari (Author)  
 **For:** Shamik Bhattacharya (Gate 1 reviewer)  
 **Document:** BRD v5.2, **BRD-001 only**  
-**Gate 1 status:** **Submitted for Re-Review. Not yet approved.**
+**Gate 1 status:** **Approved, 2026-09-28.**
 
 | Review item | Total | Done | Deferred | Open |
 |---|---|---|---|---|
@@ -440,8 +441,8 @@ confirmed (A-04).
 **After approval:** write the specs, plan, tasks and test cases from
 BRD-001 (comment #16).
 
-**Reviewer decision:** ☐ Approved  ☐ Changes Requested  
-**Reviewer / date:** ____________________
+**Reviewer decision:** ☑ Approved  ☐ Changes Requested  
+**Reviewer / date:** Shamik Bhattacharya (shamik.bhattacharya@intglobal.com), 2026-09-28
 
 ---
 
@@ -758,4 +759,4 @@ BRD-001/BRD-002.
 | 4.0 | 2026-09-28 | Gate 1 review comments incorporated: all open items closed as V1 decisions or V1 Out of Scope; V1 Posture added; BRD-002 owner reassigned; tally corrected. **Pending Gate 1 final approval — not yet approved** | `BRD-v4-backup-2026-09-28.md` |
 | 5.0 | 2026-09-28 | BRD-001 reviewed against the requirement document and rebuilt to depend **only** on it. Blocking comments B-01 to B-05 incorporated: journey steps 1–8, organisational record update, employee confirmation, conditional downstream triggers, integration needs per stakeholder, orchestration intent vs V1 simulation. Requirement-trace gaps T-01 to T-04 fixed: pending actions, security rules, no references to earlier specs/tests/ADRs, Deliverable 1 items. Numbered business rules BR-01 to BR-27, with primary users, assumptions, dependencies, source → BRD traceability, and coverage of all 16 review comments (15 done, #16 deferred) and G1-01 to G1-30. BRD-002 kept for version control only; V1 Posture folded into BRD-001; historical sections moved under "Review history and version control". **Submitted for Gate 1 Re-Review — not yet approved** | `BRD-v5-backup-2026-09-28.md` |
 | 5.1 | 2026-09-28 | BRD v5.0 review feedback (`reviews/BRD-v5.0.gate1-review.md`) incorporated. F-01: new BR-28, mandatory rejection reason for manager and HR, shown to the employee (BR-19, §7) and recorded in history (BR-27); §8 updated. F-02: history note on B-06/B-07/B-08 corrected. F-03: history tables and G1 register repointed to v5.1 section and rule numbers. F-04: the organisational record update takes effect from the effective date (BR-13, §3, §7). **Submitted for Gate 1 Re-Review — not yet approved** | `BRD-v5.1-backup-2026-09-28.md` |
-| 5.2 | 2026-09-28 | Author (Indrajit Bhandari) completed the BRD v5.0 review feedback. F-03 finished: the 16-comment history table and the remaining 22 G1 register rows now cite BRD-001 rules and sections. BR-28 moved after BR-27 so the rules read in number order; no rule content changed. F-01, F-02 and F-04 unchanged from v5.1. **Submitted for Gate 1 final approval — not yet approved** | — (current) |
+| 5.2 | 2026-09-28 | Author (Indrajit Bhandari) completed the BRD v5.0 review feedback. F-03 finished: the 16-comment history table and the remaining 22 G1 register rows now cite BRD-001 rules and sections. BR-28 moved after BR-27 so the rules read in number order; no rule content changed. F-01, F-02 and F-04 unchanged from v5.1. **Approved (Gate 1) by Shamik Bhattacharya, 2026-09-28**; only status lines changed on approval, no requirement content | — (current) |

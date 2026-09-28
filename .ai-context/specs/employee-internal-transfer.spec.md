@@ -4,401 +4,534 @@
 employee-internal-transfer
 
 ## Status
-**Changes in progress (v1.5)** — self-reviewed against Gate 1 checklist (see
-`.ai-context/reviews/employee-internal-transfer.gate1-review.md`) at v1.1,
-revised at v1.2 to correct an architecture assumption (no backend, ADR-0004
-supersedes ADR-0003), revised at v1.3 to make an implicit scoping call
-explicit (see "Scope Decision" below), revised at v1.4 purely for a reviewer
-reassignment (no ACs, contracts, or behavior changed at v1.3 or v1.4), and
-revised at v1.5 to resolve the genuinely-open Gate 1 items from Shamik
-Bhattacharya's decision register (G1-07, G1-12, G1-17, G1-22, G1-24, G1-28) —
-new `FAILED` status, Decision History (OP05, AC17), `managerName` field
-(via `employee-registration-login`), and explicit out-of-scope statements
-for data ownership and inactive employees. v1.5 has **not** been re-reviewed
-by Shamik yet — do not treat these additions as Gate-1-approved until he
-confirms them. Ratified by the Author (Indrajit Bhandari) in lieu of an
-independent Gate 1 sign-off at the time, by explicit instruction — departs
-from constitution.md's Review Authority ("reviewer ≠ author"), logged here
-rather than silently applied.
+**v2.0 — Submitted for Gate 1 review. Not yet approved.**
+Plan, tasks and test cases must not be written from this spec until the
+Gate 1 reviewer (Shamik Bhattacharya) approves it.
 
-**Gate 1 reviewer reassigned 2026-09-17:** at the time of the v1.1–v1.3
-self-review/ratification above, Subhajit Mukherjee was the assigned Gate 1
-reviewer (hence the earlier references to him in this file and in
-`reviews/employee-internal-transfer.gate1-review.md`) — that history is
-accurate and left as-is. **Subhajit Mukherjee is now the Gate 2 reviewer**;
-**Gate 1 for this project is now Shamik Bhattacharya**
-(shamik.bhattacharya@intglobal.com). No independent Gate 1 review has
-actually happened yet for any version of this spec — recommend **Shamik**
-performs it before this ships to production, and that Gate 2 code review is
-performed by **Subhajit Mukherjee** — see constitution.md's Review Authority
-section: no one else's sign-off satisfies either gate.
+| | |
+|---|---|
+| Author | Indrajit Bhandari |
+| Gate 1 reviewer | Shamik Bhattacharya |
+| Updated | 2026-09-28 |
+| Linked BRD | `.ai-context/BRD.md#BRD-001`, **v5.2, Gate 1 Approved 2026-09-28** |
+| Previous version | `employee-internal-transfer.spec-v1.5-backup-2026-09-28.md` |
 
-## Linked BRD
-`.ai-context/BRD.md#BRD-001`
+**How v2.0 was written.** v2.0 is rebuilt from **BRD-001 v5.2 only**
+(review comment #16). It does not carry anything over from spec v1.5,
+BRD-002 or `employee-registration-login`. Every acceptance criterion cites
+the BRD-001 rule it implements (see Traceability). Where BRD-001 leaves a
+detail open that the spec has to settle, the spec decision is listed under
+**Spec decisions for Gate 1**, so the reviewer can confirm or reject each one.
 
-> **Cross-reference note, added 2026-09-17 (not a version bump — nothing in
-> this spec's own ACs/contract changes yet):** `BRD-002` /
-> `specs/employee-registration-login.spec.md` introduces real employee
-> accounts, which invalidates this spec's "one Hive store = one employee"
-> assumption (originally ADR-0004). This spec will need an `employeeId` field
-> added to its data model and its single-in-flight-request/ownership logic
-> scoped per employee — tracked as this feature's own upcoming plan
-> amendment, not implemented here yet. See that spec's "Cross-Feature
-> Impact" section.
+**The existing code implements spec v1.5, not v2.0.** It must not be treated
+as meeting this spec. The main differences are listed under
+"Changes from v1.5".
 
 ## Intent
-Enable an employee to submit an internal transfer request — proposed
-department/business unit, location, role, effective date, and an optional
-reason — through the One-Point Employee Portal, and to see, at any time, the
-request's current overall status and which stakeholder(s) (Manager, HR,
-Payroll, IT, Facilities) currently hold the pending action. This replaces
-today's manual, multi-team coordination with a single, trackable, locally
-persisted journey. There is no backend for this project (ADR-0004) — "the
-portal orchestrates downstream activities" from BRD-001 is realized here as a
-locally-tracked state machine, not a real integration with those systems.
+An employee raises an internal transfer request in the One-Point Employee
+Portal and tracks it in one digital journey (BRD-001 §1). The portal runs
+the journey: current manager approval, HR eligibility, then the
+organisational record update and whichever of Payroll, IT and Facilities
+the change requires. The employee sees one view of progress: the overall
+status, each stakeholder step and its pending action, the reason for any
+rejection, an append-only history, and a confirmation for every final
+outcome.
 
 ## Context
-- Builds on: `.ai-context/architecture.md` (Integrations table), `ADR-0001`
-  (Flutter client architecture), `ADR-0002` (mobile security hardening),
-  `ADR-0004` (no backend — local DB as system of record)
-- Related: none — this is the first feature spec in this project
-- External API contract consumed: none. There is no backend, and no real
-  integration with Manager/HR/Payroll/IT/Facilities systems (ADR-0004) — this
-  spec's Local Data Contract below is the only contract in play, and it's
-  between the presentation layer and the local repository, not a network call
+- Business requirement: BRD-001 v5.2 (§1–§14). No other BRD applies.
+- Architecture constraints already decided:
+  - ADR-0001: Flutter client, Clean Architecture, GetX; every operation
+    returns the shared `Result<T>`.
+  - ADR-0002: runtime security hardening (root/jailbreak/hook detection).
+  - ADR-0004: no backend. Stakeholder outcomes are recorded through a
+    demo-only simulation (BRD-001 BR-24, §9). Storage and data model are
+    decided in the Plan, not here.
+- Depends on (BRD-001 §11), outside this spec:
+  - **D-01 sign-in:** the employee is signed in to the portal. Demo-level
+    in V1 (BR-26). This spec only consumes the signed-in employee's ID.
+  - **D-02 profile:** the portal profile supplies the employee's current
+    department, location, role and current manager (BR-03, BR-10).
+  - **D-03 reference lists:** departments/business units, locations and
+    roles (BR-02; A-02, A-03). Demo lists in V1.
+- The Plan decides how D-01 to D-03 are provided in V1 (for example, by the
+  existing demo sign-in). This spec defines only what it needs from them
+  (Consumed contract, below).
 
-## Scope Decision — One Spec, Not Multiple
-_(v1.3) This feature bundles concerns that can look like they belong in
-separate specs: employee-facing submission/status (AC1–AC13) and a demo-only
-Simulate Decision control (AC14). Both the Author and an external reviewer
-raised the question directly — "why is there only one spec, shouldn't there
-be more?" This section is the answer, made explicit rather than left as an
-undocumented assumption (which it was through v1.2)._
+## Scope Decision — one spec
+BRD-001 describes one capability with one journey, so there is one spec.
+The demo-only simulation (AC24–AC26) is part of this spec because, with no
+backend (ADR-0004), it is the only way stakeholder outcomes reach the
+journey (BR-24). It is not a separate feature and not a stakeholder
+interface.
 
-- **BRD-001 describes one cohesive business capability** — one intent, one
-  journey, one set of "Decided" bullets. There is no second BRD entry for a
-  second spec to trace back to, and the Blueprint requires a spec never be
-  "the first place a requirement is written down" (§7) — splitting here would
-  mean inventing a spec with no BRD behind it, which is its own anti-pattern,
-  not a fix for one.
-- **AC14 is not a business requirement in its own right.** It exists only
-  because ADR-0004 (no backend) removed the real mechanism by which AC7–AC13's
-  state transitions would occur. Without AC14, AC8–AC13 are undeliverable and
-  untestable — it is a technical necessity of *this* spec, not a separable
-  feature with its own "for whom."
-- The status screen (AC6–AC13) and the Simulate control that drives it (AC14)
-  are used together, by the same person, in the same session. A real
-  per-stakeholder split would only make sense if this app had actual per-role
-  interfaces for Manager/HR/Payroll/IT/Facilities — it explicitly does not
-  (Explicitly Out of Scope).
+## Definitions
 
-**This is a judgment call, not a default — confirm or reject it at Gate 1.**
-If a future BRD entry introduces a genuinely separate capability (e.g. a
-manager-facing approval app), that gets its own slug and spec; it would not
-retroactively justify splitting this one.
+### Request status (BR-06, BR-11 to BR-17)
+| Status | Final? | Meaning |
+|---|---|---|
+| `PENDING_MANAGER_APPROVAL` | No | Submitted; waiting for the current manager |
+| `PENDING_HR_ELIGIBILITY` | No | Manager approved; waiting for HR |
+| `IN_PROGRESS` | No | HR approved; downstream steps running |
+| `COMPLETED` | Yes | Org record update and every required step completed (BR-15) |
+| `REJECTED_BY_MANAGER` | Yes | Manager rejected, with reason (BR-11, BR-28) |
+| `REJECTED_BY_HR` | Yes | HR rejected, with reason (BR-12, BR-28) |
+| `FAILED` | Yes | A required downstream step failed (BR-16) |
 
-## Status Definitions
-- **Non-terminal** (an "active" request, per AC2/AC9/AC11): `PENDING_MANAGER_APPROVAL`, `PENDING_HR_VALIDATION`, `PENDING_DOWNSTREAM_UPDATES`.
-- **Terminal**: `COMPLETED`, `REJECTED_BY_MANAGER`, `REJECTED_BY_HR`. A terminal request never counts toward the single-in-flight-request rule (AC2) and never has a pending stakeholder.
-- **`FAILED`** (v1.5, terminal) — a per-request status meaning one or more
-  downstream stakeholders (Payroll/IT/Facilities) was simulated as `REJECTED`
-  during `PENDING_DOWNSTREAM_UPDATES` (see AC15/AC16, Gate 1 G1-12/G1-24).
-  Distinct from `REJECTED_BY_MANAGER`/`REJECTED_BY_HR`, which happen *before*
-  downstream fan-out — `FAILED` means the request was approved by both Manager
-  and HR but could not fully complete.
+A request is **in progress** when its status is not final (BR-07, BR-17).
 
-## Manager Identification (v1.5, Gate 1 G1-07)
-BRD-001/this spec previously treated "the employee's current manager" as an
-approver with no defined source — the Simulate Decision control let a tester
-record a manager decision without the app ever knowing *who* that manager is.
-Resolved for v1: `employee-registration-login.OP01` (register) captures a
-`managerName: String` field alongside current department/location/role (see
-that spec's Cross-Feature Impact section, added at the same time as this
-change). This is a plain text field, not a lookup against an org-chart system
-— there is no HRIS integration (ADR-0004) to validate it against, so it is
-display-only: the status screen (AC7) shows this name as the pending
-approver, and the Simulate Decision control's "Manager" action is unchanged.
-No manager-identity verification is implied or performed, consistent with
-this project's local-access-gate posture (ADR-0005).
+### Steps (BRD-001 §3, §6)
+| Step ID | Stakeholder | Pending action shown (§6) | Required |
+|---|---|---|---|
+| `MANAGER_APPROVAL` | Current manager | Manager approval | Always |
+| `HR_ELIGIBILITY` | HR | HR eligibility check | Always |
+| `ORG_RECORD_UPDATE` | HR | Organisational record update | Always, once HR approves (BR-13) |
+| `PAYROLL_UPDATE` | Payroll | Payroll update | Role **or** location changes (§5) |
+| `IT_ACCESS_CHANGE` | IT | IT access change: provision new access, remove old access | Department **or** role changes (§5) |
+| `FACILITIES_WORKSPACE` | Facilities | Facilities: workspace at the new location | Location changes (§5) |
 
-## Decision History (v1.5, Gate 1 G1-17)
-Previously, `transfer_requests` records were overwritten in place on every
-state transition, with no record of what happened before the current state —
-there was no way to answer "who decided what, and when" after the fact.
-Resolved for v1: every successful state transition (AC8–AC13, AC15, AC16)
-appends one immutable entry to a new **Decision History** local record (see
-`plans/employee-internal-transfer.plan.md`'s Data Model for the storage
-shape) — it is never edited or deleted, only appended to. AC17 below defines
-the employee-visible behavior; the append itself is a repository-layer
-side-effect of `OP04`, not a separate operation the employee triggers.
+### Step state (BR-19)
+`PENDING`, `COMPLETED`, `REJECTED`, `FAILED`, `STOPPED`, `NOT_REQUIRED`.
+No other state is used (spec decision SD-01).
 
-## How Stakeholder Actions Are Recorded
-**Revised at v1.2 (ADR-0004).** This project has no backend, so there is no
-server for Manager/HR/Payroll/IT/Facilities to call into, and no real
-integration with their systems. Their decisions are recorded through a
-**Simulate Decision control** (AC14), a clearly-labeled, non-production
-affordance backed by `employee-internal-transfer.OP04`, that writes a state
-transition directly to the local store. This is a deliberate, flagged
-stand-in for a real integration that does not exist in this project's scope
-— it does not claim to verify that a real Manager/HR/Payroll/IT/Facilities
-decision occurred.
+- An approval by the manager or HR records that step as `COMPLETED` with
+  decision `APPROVED` (SD-02).
+- `REJECTED` applies only to `MANAGER_APPROVAL` and `HR_ELIGIBILITY`.
+- `FAILED` and `STOPPED` apply only to the four downstream steps.
 
-## Assumptions Requiring Gate 1 Confirmation
-BRD-001 left several questions open. Each is resolved below with a specific,
-testable v1 default so the Acceptance Criteria aren't built on an ambiguity —
-Gate 1 should explicitly confirm or reject each, not wave them through:
+### Downstream triggers (BRD-001 §5)
+Computed when HR approves, by comparing the proposed values with the
+**current values snapshot** taken at submission (SD-03):
 
-1. **Approver** — only the employee's *current* manager approves in v1; the
-   receiving department's manager is not consulted. (BRD-001 open question 1)
-2. **Downstream fan-out** — Payroll, IT, and Facilities are **always** all
-   three triggered once HR approves, regardless of what actually changed
-   (e.g. a same-location role change still raises a Facilities step). No
-   conditional skipping in v1. (BRD-001 open question 3)
-3. **HR eligibility rule is intentionally opaque to this app** — revised at
-   Gate 1 self-review (Finding 2): no AC in this spec depends on knowing HR's
-   actual eligibility rule; every AC treats HR's decision as a black box
-   ("given HR approves"/"given HR rejects"). The rule itself is HR's own
-   internal process and is out of scope for this spec — it does not need
-   business sign-off to Approve this spec.
-4. **Single in-flight request** — an employee may have exactly one
-   non-terminal transfer request at a time; a second submission attempt is
-   rejected. (BRD-001 open question 6 — resolved, not deferred)
-5. **No amend/withdraw** — a submitted request cannot be edited or withdrawn
-   by the employee in v1. (BRD-001 open question 4 — resolved: out of scope)
-6. **No SLA enforcement** — no reminders or escalation on stakeholder
-   inaction in v1; the employee only sees elapsed pending time, not a
-   breach state. (BRD-001 open question 5 — resolved: out of scope)
-7. **In-portal status only** — no email/push notification in v1. (BRD-001
-   open question 7 — resolved: out of scope)
-8. **No backend, no real stakeholder integration (v1.2, ADR-0004)** — all
-   Manager/HR/Payroll/IT/Facilities decisions are recorded via the in-app
-   Simulate Decision control (AC14). This app cannot, on its own, guarantee a
-   decision reflects a real stakeholder action — that limitation is inherent
-   to this project's backend-less scope.
-9. **Partial downstream failure (v1.5, Gate 1 G1-12/G1-24)** — if any of
-   Payroll/IT/Facilities is simulated as `REJECTED` while
-   `PENDING_DOWNSTREAM_UPDATES`, the request moves to `FAILED` (terminal)
-   rather than being left stuck with no valid next state. There is no retry,
-   automatic compensation, or partial-undo of the other two stakeholders'
-   already-completed work — v1 surfaces the failure and stops there. Manual
-   resolution (e.g. a corrected Simulate Decision, or the employee submitting
-   a new request once this one is terminal) is the only recovery path;
-   building real retry/compensation logic against real Payroll/IT/Facilities
-   systems is out of scope until this project has real integrations
-   (ADR-0004).
-10. **Manager identification (v1.5, Gate 1 G1-07)** — the employee's manager
-    is a plain-text `managerName` captured at registration
-    (`employee-registration-login.OP01`), display-only, not verified against
-    any authoritative source. See "Manager Identification" above.
-11. **Field-level data ownership (v1.5, Gate 1 G1-22)** — for v1, the
-    employee-submitted fields (department/location/role/effective
-    date/reason) are owned and editable only by the submitting employee, via
-    this spec's own OP01. Stakeholder-reported fields (each stakeholder's
-    decision/status) are owned by the Simulate Decision control standing in
-    for that stakeholder (OP04) — no other actor writes them. There is no
-    real Payroll/IT/Facilities/HR system in this project to dispute or
-    reconcile ownership against (ADR-0004); this ownership statement exists
-    so a future real-backend project doesn't have to reverse-engineer intent
-    from silence.
-12. **Inactive/terminated employees (v1.5, Gate 1 G1-28)** — explicitly out
-    of scope for v1. There is no HRIS integration or termination event
-    feed (ADR-0004), so this app has no way to learn an employee has left;
-    an inactive employee's account and any in-flight request simply remain
-    as last written. Handling this correctly requires a real backend/HRIS
-    integration and is deferred alongside the rest of ADR-0004's Explicitly
-    Deferred items.
+| Changed | Org record | Payroll | IT | Facilities |
+|---|---|---|---|---|
+| Department only | Required | Not required | Required | Not required |
+| Location only | Required | Required | Not required | Required |
+| Role only | Required | Required | Required | Not required |
+| Department + location | Required | Required | Required | Required |
+| Department + role | Required | Required | Required | Not required |
+| Location + role | Required | Required | Required | Required |
+| All three | Required | Required | Required | Required |
+
+These are the V1 business rule; the Sponsor confirms them before production
+(BRD-001 A-06).
+
+## Consumed contract (dependencies D-01 to D-03)
+What this feature needs from the portal. How it is provided in V1 is a Plan
+decision.
+
+```dart
+// D-01 — the signed-in employee. null when nobody is signed in.
+String? currentEmployeeId();
+
+// D-02 — the employee's current values, as of a given date.
+EmployeeCurrentValues getCurrentValues(String employeeId, {required DateTime asOf});
+// { departmentId, locationId, roleId, managerName }
+
+// D-02 — record an organisational change that takes effect later (BR-13).
+void scheduleOrganisationalChange(String employeeId, {
+  required String departmentId, required String locationId,
+  required String roleId, required DateTime effectiveFrom,
+});
+
+// D-03 — reference lists.
+List<ReferenceItem> departments();  // { id, name }
+List<ReferenceItem> locations();
+List<ReferenceItem> roles();
+```
+
+`getCurrentValues` returns the scheduled values only when `asOf` is on or
+after `effectiveFrom`; before that it returns the previous values (BR-13).
+`managerName` is demo data, not verified, and grants no authority outside
+the request (BR-10).
 
 ## Local Data Contract
-No network API — every operation below is a local method call against the
-repository (`data/repositories/`), backed by `LocalDbService` (Hive,
-ADR-0004). All return the shared `Result<T>` type (ADR-0001 §4).
+Local operations between the presentation layer and the repository. No
+network API (ADR-0004). Every operation returns `Result<T>` (ADR-0001) and
+works **only on the signed-in employee's own requests** (BR-23). If nobody
+is signed in, every operation returns `Result.error("Please sign in.")`.
 
 ### employee-internal-transfer.OP01 — submitTransferRequest
 **Input:**
 ```dart
 {
+  submissionId: String,     // generated once per submit action (BR-08)
   departmentId: String,
   locationId: String,
   roleId: String,
-  effectiveDate: DateTime,
-  reason: String?,
+  effectiveDate: DateTime,  // date only
+  reason: String?,          // optional free text
 }
 ```
-**Success:** `Result.success(TransferRequest)` — new record created, `status = PENDING_MANAGER_APPROVAL`.
-**Errors (`Result.error(message)`):**
-| Condition | Message |
-|---|---|
-| A mandatory field is missing/invalid | field-specific validation message |
-| `effectiveDate` is not in the future | "Effective date must be in the future." |
-| An active (non-terminal) request already exists | "You already have a transfer request in progress." |
+**Success:** `Result.success(TransferRequest)`. The new request:
+- belongs to the signed-in employee;
+- holds a snapshot of the current department, location, role and manager
+  name, read from D-02 as of today (BR-03);
+- has status `PENDING_MANAGER_APPROVAL`, step `MANAGER_APPROVAL` =
+  `PENDING` (BR-06);
+- has one `SUBMITTED` history entry (BR-27).
 
-### employee-internal-transfer.OP02 — getTransferRequestById
-**Input:** `requestId: String`
-**Success:** `Result.success(TransferRequest)`
-**Errors:** "No request found for this ID." if absent from local storage.
+**Idempotency (BR-08):** if a request with the same `submissionId` already
+exists for this employee, OP01 returns that request unchanged. No second
+request and no second history entry are created.
 
-### employee-internal-transfer.OP03 — getActiveTransferRequest
+**Errors**, checked in this order; no request and no history entry is
+created:
+| # | Condition | Message |
+|---|---|---|
+| 1 | Department, location or role missing, or not in its reference list | Field-level message, e.g. "Select a department." |
+| 2 | Effective date missing | "Enter an effective date." |
+| 3 | Effective date is today or earlier (device local date) | "Effective date must be in the future." |
+| 4 | Department, location and role all equal the current values | "Change at least one of department, location or role." |
+| 5 | The employee already has a request in progress | "You already have a transfer request in progress." |
+
+A reason that is empty or only spaces is stored as no reason.
+
+### employee-internal-transfer.OP02 — getMyActiveTransferRequest
 **Input:** none.
-**Success:** `Result.success(TransferRequest)` if an active (non-terminal)
-request exists locally, or `Result.success(null)` if there is none.
+**Success:** `Result.success(TransferRequest?)`: the employee's request in
+progress, or `null` if there is none.
 
-### employee-internal-transfer.OP04 — recordStakeholderDecision
-_Backs the Simulate Decision control (AC14) only — not a real stakeholder-facing operation._
+### employee-internal-transfer.OP03 — listMyTransferRequests
+**Input:** none.
+**Success:** `Result.success(List<TransferRequestSummary>)`: all of the
+employee's requests, newest first (`requestId`, submitted date, status).
+Empty list if none.
+
+### employee-internal-transfer.OP04 — getMyTransferRequest
+**Input:** `requestId: String`
+**Success:** `Result.success(TransferRequest)` with its steps.
+**Errors:** "No request found." when the ID does not exist **or belongs to
+another employee**. The two cases give the same message (SD-04).
+
+### employee-internal-transfer.OP05 — getRequestHistory
+**Input:** `requestId: String`
+**Success:** `Result.success(List<HistoryEntry>)`, oldest first. Never empty
+for a valid request: `SUBMITTED` is always the first entry.
+**Errors:** "No request found.", same rule as OP04.
+
+### employee-internal-transfer.OP06 — recordStakeholderOutcome (demo-only)
+_Backs the demo-only simulation (AC24–AC26). Not a stakeholder interface
+(BR-24)._
+
 **Input:**
 ```dart
 {
   requestId: String,
-  stakeholder: MANAGER | HR | PAYROLL | IT | FACILITIES,
-  decision: APPROVED | REJECTED | COMPLETED,
+  stepId: MANAGER_APPROVAL | HR_ELIGIBILITY | ORG_RECORD_UPDATE
+        | PAYROLL_UPDATE | IT_ACCESS_CHANGE | FACILITIES_WORKSPACE,
+  outcome: APPROVED | REJECTED | COMPLETED | FAILED,
+  reason: String?,   // mandatory when outcome == REJECTED (BR-28)
 }
 ```
-**Success:** `Result.success(TransferRequest)` — updated record, status
-recalculated per the state machine (see `plans/employee-internal-transfer.plan.md`),
-and one entry appended to Decision History (v1.5, see "Decision History"
-above) recording `stakeholder`, `decision`, and a timestamp.
-**Errors:** "Invalid decision for the request's current state." if the
-stakeholder/decision combination doesn't match the expected next step (e.g.
-simulating an HR decision while still `PENDING_MANAGER_APPROVAL`, or any
-decision once the request is already terminal — including `FAILED`).
 
-**v1.5 addition:** `REJECTED` is now a valid `decision` for `PAYROLL`, `IT`,
-or `FACILITIES` while `PENDING_DOWNSTREAM_UPDATES` (previously only
-`COMPLETED` was valid for those three) — see AC16.
+**Valid outcomes per step:**
+| Step | Valid outcomes |
+|---|---|
+| `MANAGER_APPROVAL`, `HR_ELIGIBILITY` | `APPROVED`, `REJECTED` (with reason) |
+| `ORG_RECORD_UPDATE`, `PAYROLL_UPDATE`, `IT_ACCESS_CHANGE`, `FACILITIES_WORKSPACE` | `COMPLETED`, `FAILED` |
 
-### employee-internal-transfer.OP05 — getDecisionHistory (v1.5, Gate 1 G1-17)
-**Input:** `requestId: String`
-**Success:** `Result.success(List<DecisionHistoryEntry>)` — ordered
-oldest-first, one entry per state transition ever recorded for this request
-(including the initial submission). Empty list is never returned for a valid
-`requestId` — submission itself is the first entry.
-**Errors:** "No request found for this ID." if `requestId` doesn't exist —
-same wording as OP02.
+**Effects** (each outcome, its history entries and any status change are
+saved together or not at all):
+| Outcome | Effect |
+|---|---|
+| Manager `APPROVED` | Step `COMPLETED`; status → `PENDING_HR_ELIGIBILITY`; `HR_ELIGIBILITY` = `PENDING` |
+| Manager `REJECTED` | Step `REJECTED` with reason; status → `REJECTED_BY_MANAGER` |
+| HR `APPROVED` | Step `COMPLETED`; status → `IN_PROGRESS`; `ORG_RECORD_UPDATE` = `PENDING`; Payroll/IT/Facilities = `PENDING` or `NOT_REQUIRED` per the triggers table |
+| HR `REJECTED` | Step `REJECTED` with reason; status → `REJECTED_BY_HR` |
+| Downstream `COMPLETED` | Step `COMPLETED`. If this was the last pending step: status → `COMPLETED`. `ORG_RECORD_UPDATE` completed also calls `scheduleOrganisationalChange` with the proposed values and `effectiveFrom = effectiveDate` (BR-13) |
+| Downstream `FAILED` | Step `FAILED`; every other `PENDING` step → `STOPPED`; `COMPLETED` steps stay `COMPLETED` (not rolled back); status → `FAILED` (BR-16) |
+
+**Errors** (nothing is changed):
+| Condition | Message |
+|---|---|
+| Request not found, or belongs to another employee | "No request found." |
+| Request is in a final outcome | "This request is already closed." |
+| The step is not `PENDING` (not reached, already recorded, `STOPPED` or `NOT_REQUIRED`) | "This step is not pending." |
+| Outcome not valid for the step | "This outcome is not valid for this step." |
+| `REJECTED` with no reason, or a reason of only spaces | "A rejection reason is required." |
+
+### Data shapes
+```dart
+TransferRequest {
+  requestId, employeeId, submissionId,
+  current:  { departmentId, locationId, roleId, managerName },  // snapshot (BR-03)
+  proposed: { departmentId, locationId, roleId },
+  effectiveDate, reason?, submittedAt,
+  status: RequestStatus,
+  steps: List<Step>,   // only steps that have been reached (SD-01)
+}
+Step { stepId, stakeholder, state: StepState, decision?, reason?, recordedAt? }
+HistoryEntry {
+  sequence, recordedAt,
+  actor: EMPLOYEE | MANAGER | HR | PAYROLL | IT | FACILITIES,
+  type: SUBMITTED | STEP_OUTCOME | STATUS_CHANGED,
+  stepId?, outcome?, reason?, fromStatus?, toStatus?,
+  stoppedSteps?,       // on the FAILED status change
+}
+```
 
 ## Acceptance Criteria
-1. **employee-internal-transfer.AC1** — Given an employee with no active
-   transfer request, when they open the Internal Transfer Request screen,
-   then they can select proposed department, location, role, enter an
-   effective date, and optionally enter a reason.
-2. **employee-internal-transfer.AC2** — Given an employee already has a
-   non-terminal transfer request, when they attempt to open the submission
-   screen, then they see a message that a request is already in progress and
-   cannot submit a new one.
-3. **employee-internal-transfer.AC3** — Given all mandatory fields are valid
-   and the effective date is in the future, when the employee submits, then
-   the request is created with status `PENDING_MANAGER_APPROVAL` and the
-   employee sees a confirmation.
-4. **employee-internal-transfer.AC4** — Given department, location, role, or
-   effective date is missing, when the employee attempts to submit, then
-   submission is blocked with a field-level validation message and no
-   request is created.
-5. **employee-internal-transfer.AC5** — Given an effective date that is today
-   or in the past, when the employee attempts to submit, then submission is
-   blocked with a message stating the effective date must be in the future.
-6. **employee-internal-transfer.AC6** — Given a submitted request, when the
-   employee views "My Transfer Request" status, then they see the overall
-   status and the department/location/role/effective date/reason they
-   submitted.
-7. **employee-internal-transfer.AC7** — Given a request in
-   `PENDING_MANAGER_APPROVAL`, when the employee views pending actions, then
-   "Manager" is shown as the sole pending stakeholder.
-8. **employee-internal-transfer.AC8** — Given the manager approves, when HR
-   validation begins, then status moves to `PENDING_HR_VALIDATION` and the
-   pending stakeholder becomes "HR".
-9. **employee-internal-transfer.AC9** — Given the manager rejects, when the
-   employee views status, then the request shows `REJECTED_BY_MANAGER`, no
-   stakeholder is pending, and the employee may submit a new request (AC2's
-   "active request" check no longer blocks them).
-10. **employee-internal-transfer.AC10** — Given HR approves, when downstream
-    updates are triggered, then status moves to `PENDING_DOWNSTREAM_UPDATES`
-    and the pending stakeholders shown are exactly Payroll, IT, and
-    Facilities.
-11. **employee-internal-transfer.AC11** — Given HR rejects, when the employee
-    views status, then the request shows `REJECTED_BY_HR`, no stakeholder is
-    pending, and the employee may submit a new request.
-12. **employee-internal-transfer.AC12** — Given Payroll, IT, and Facilities
-    have all reported their step complete, when the employee views status,
-    then the request shows `COMPLETED` and no stakeholder is pending.
-13. **employee-internal-transfer.AC13** — Given Payroll has completed but IT
-    and Facilities have not, when the employee views pending actions, then
-    only IT and Facilities are shown as pending.
-14. **employee-internal-transfer.AC14** (new, v1.2) — Given this app has no
-    backend, when Manager/HR/Payroll/IT/Facilities need to act on a request,
-    then a clearly-labeled Simulate Decision control (never presented as a
-    real stakeholder-facing feature) lets a tester record that decision
-    locally via `OP04`, driving the same state transitions described in
-    AC8–AC13.
-15. **employee-internal-transfer.AC15** (new, v1.5) — Given a request in
-    `PENDING_DOWNSTREAM_UPDATES`, when any one of Payroll, IT, or Facilities
-    is simulated as `REJECTED`, then the request's status becomes `FAILED`
-    (terminal), no stakeholder remains pending, and the employee may submit a
-    new request (same as AC9/AC11's "active request" release).
-16. **employee-internal-transfer.AC16** (new, v1.5) — Given a request already
-    in a terminal status (`COMPLETED`, `REJECTED_BY_MANAGER`,
-    `REJECTED_BY_HR`, or `FAILED`), when any further Simulate Decision is
-    attempted against it, then `OP04` returns `Result.error` and the
-    request's status does not change.
-17. **employee-internal-transfer.AC17** (new, v1.5) — Given a request with at
-    least one recorded state transition, when the employee views its
-    Decision History, then they see every transition in chronological order
-    (stakeholder, decision, timestamp), and this history is read-only —
-    nothing on this screen lets the employee edit or delete an entry.
+
+### Request capture
+1. **employee-internal-transfer.AC01** — Given a signed-in employee with no
+   request in progress, when they open the transfer request form, then they
+   can select a proposed department/business unit, location and role from
+   the reference lists, pick an effective date, and optionally enter a
+   reason. *(BR-01, BR-02)*
+2. **employee-internal-transfer.AC02** — Given the form is open, then it
+   shows the employee's current department, location, role and manager,
+   read-only, from their portal profile. *(BR-03)*
+3. **employee-internal-transfer.AC03** — Given valid values that change at
+   least one of department, location or role, and a future effective date,
+   when the employee submits, then one request is created with status
+   `PENDING_MANAGER_APPROVAL`, the manager step shows the pending action
+   "Manager approval", and the employee sees that the request was
+   submitted. *(BR-06, BR-19)*
+4. **employee-internal-transfer.AC04** — Given department, location, role
+   or effective date is missing, when the employee submits, then submission
+   is blocked with a field-level message and no request is created.
+   *(BR-02)*
+5. **employee-internal-transfer.AC05** — Given an effective date of today or
+   earlier, when the employee submits, then submission is blocked with
+   "Effective date must be in the future." Given any future date, including
+   tomorrow, the date is accepted: there is no minimum lead time. *(BR-05)*
+6. **employee-internal-transfer.AC06** — Given proposed department, location
+   and role all equal the current values, when the employee submits, then
+   submission is blocked with "Change at least one of department, location
+   or role." and no request is created. *(BR-04)*
+7. **employee-internal-transfer.AC07** — Given the employee has a request in
+   progress, when they try to start a new one, then they see "You already
+   have a transfer request in progress." and cannot submit. *(BR-07)*
+8. **employee-internal-transfer.AC08** — Given the employee has submitted,
+   while the submission is being processed the submit action is disabled;
+   and a repeated submit with the same `submissionId` returns the existing
+   request. Either way exactly one request and one `SUBMITTED` history
+   entry exist. *(BR-08)*
+9. **employee-internal-transfer.AC09** — Given a submitted request, then the
+   request screen offers no way to edit or withdraw it. *(BR-09)*
+
+### Approval and orchestration
+10. **employee-internal-transfer.AC10** — Given `PENDING_MANAGER_APPROVAL`,
+    when the manager approves, then the manager step is `COMPLETED`
+    (Approved), status becomes `PENDING_HR_ELIGIBILITY`, and the HR step
+    shows "HR eligibility check". *(BR-10, BR-11)*
+11. **employee-internal-transfer.AC11** — Given `PENDING_MANAGER_APPROVAL`,
+    when the manager rejects with a reason, then the manager step is
+    `REJECTED` with that reason, status becomes `REJECTED_BY_MANAGER`, and
+    no further step starts. *(BR-11, BR-28)*
+12. **employee-internal-transfer.AC12** — Given `PENDING_HR_ELIGIBILITY`,
+    when HR rejects with a reason, then the HR step is `REJECTED` with that
+    reason, status becomes `REJECTED_BY_HR`, and no further step starts.
+    The portal applies no eligibility rule of its own. *(BR-12, BR-28)*
+13. **employee-internal-transfer.AC13** — Given `PENDING_HR_ELIGIBILITY`,
+    when HR approves, then status becomes `IN_PROGRESS`, the organisational
+    record update is `PENDING`, and Payroll, IT and Facilities are each
+    `PENDING` or `NOT_REQUIRED` exactly as the triggers table gives for the
+    change. *(BR-13, §5)*
+14. **employee-internal-transfer.AC14** — Given a step is `NOT_REQUIRED`,
+    then it never becomes `PENDING`, accepts no outcome, and is shown as
+    "Not required". *(BR-14)*
+15. **employee-internal-transfer.AC15** — Given `IN_PROGRESS`, when the
+    organisational record update and every required step are `COMPLETED`,
+    in any order, then status becomes `COMPLETED`. *(BR-15; A-07)*
+16. **employee-internal-transfer.AC16** — Given the organisational record
+    update completes, then the new department, location and role are
+    recorded with effect from the effective date: before that date the
+    employee's profile still shows the current values; from that date it
+    shows the new values. *(BR-13)*
+17. **employee-internal-transfer.AC17** — Given `IN_PROGRESS`, when any
+    required step fails, then that step is `FAILED`, every other pending
+    step is `STOPPED`, completed steps stay `COMPLETED`, status becomes
+    `FAILED`, and stopped steps accept no further outcome. *(BR-16)*
+18. **employee-internal-transfer.AC18** — Given a request in any final
+    outcome, then no step accepts an outcome, and the employee can submit a
+    new request. *(BR-17)*
+
+### Visibility and confirmation
+19. **employee-internal-transfer.AC19** — Given a request, when the employee
+    opens it, then they see the overall status, the proposed values,
+    effective date and reason they submitted, and each step that has been
+    reached with its state; each pending step shows its pending action as
+    named in the Steps table; each rejected step shows its rejection
+    reason. *(BR-18, BR-19, §6)*
+20. **employee-internal-transfer.AC20** — Given a final outcome, when the
+    employee opens the request, then they see the confirmation for that
+    outcome, ending with "You may submit a new request": *(BR-20, §7)*
+    - `COMPLETED`: transfer confirmed, the new department, location and
+      role, "effective from <effective date>", and the completed steps;
+    - `REJECTED_BY_MANAGER`: not approved by the manager, the manager's
+      reason, and that no further steps were taken;
+    - `REJECTED_BY_HR`: not approved by HR, HR's reason, and that no
+      further steps were taken;
+    - `FAILED`: which step failed, which steps had completed (not undone),
+      and which steps were stopped.
+21. **employee-internal-transfer.AC21** — Given any status change, then the
+    employee is informed only inside the portal; no email or push
+    notification is sent, and no SLA timer, reminder or escalation is
+    shown or run. *(BR-21, BR-22)*
+
+### Security, ownership and audit
+22. **employee-internal-transfer.AC22** — Given two employees, when one
+    lists, opens or reads the history of requests, then only their own
+    requests are returned; another employee's request ID gives "No request
+    found." *(BR-23)*
+23. **employee-internal-transfer.AC23** — Given any submission, stakeholder
+    outcome or status change, then an entry is appended to the request's
+    history (actor, step, outcome or status change, reason for a
+    rejection, time); the employee can view it oldest first; no entry is
+    ever edited or deleted, and the screen offers no way to do so.
+    *(BR-27, BR-28)*
+
+### Demo-only simulation (V1)
+24. **employee-internal-transfer.AC24** — Given a request in progress, then
+    a control labelled "Demo only: simulate stakeholder outcome" lets a
+    tester record an outcome for the **pending** steps only, offering just
+    the valid outcomes for each step (Approve / Reject for manager and HR;
+    Complete / Fail for downstream steps). It is never presented as a real
+    stakeholder interface. *(BR-24, §9)*
+25. **employee-internal-transfer.AC25** — Given the tester chooses Reject,
+    then a reason is required: the rejection cannot be recorded while the
+    reason is empty or only spaces. *(BR-28)*
+26. **employee-internal-transfer.AC26** — Given an outcome for a step that is
+    not pending, not valid for that step, or on a closed request, then it
+    is refused with the matching OP06 error and nothing changes. *(BR-17,
+    BR-24)*
 
 ## Unit Test Cases (spec-derived)
-| Test ID | Maps to AC | Scenario | Expected |
+| Test ID | AC | Scenario | Expected |
 |---|---|---|---|
-| employee-internal-transfer.UT01 | AC3 | Submit with all valid fields + future effective date | `Result.success`, status `PENDING_MANAGER_APPROVAL` |
-| employee-internal-transfer.UT02 | AC4 | Submit with `departmentId` missing | `Result.error`, field-level message, no record created |
-| employee-internal-transfer.UT03 | AC5 | Submit with `effectiveDate` = today | `Result.error`, "must be in the future" |
-| employee-internal-transfer.UT04 | AC5 | Submit with `effectiveDate` in the past | `Result.error` |
-| employee-internal-transfer.UT05 | AC2 | Submit while a non-terminal request already exists | `Result.error`, no second record created |
-| employee-internal-transfer.UT06 | AC6, AC7 | Read status of a request in `PENDING_MANAGER_APPROVAL` | Submitted fields returned; `pendingStakeholders = ["Manager"]` |
-| employee-internal-transfer.UT07 | AC9, AC14 | Simulate Manager reject | status `REJECTED_BY_MANAGER`, `pendingStakeholders = []` |
-| employee-internal-transfer.UT08 | AC8, AC14 | Simulate Manager approve | status `PENDING_HR_VALIDATION`, `pendingStakeholders = ["HR"]` |
-| employee-internal-transfer.UT09 | AC11, AC14 | Simulate HR reject | status `REJECTED_BY_HR`, `pendingStakeholders = []` |
-| employee-internal-transfer.UT10 | AC10, AC14 | Simulate HR approve | status `PENDING_DOWNSTREAM_UPDATES`, `pendingStakeholders = ["Payroll","IT","Facilities"]` |
-| employee-internal-transfer.UT11 | AC13, AC14 | Simulate Payroll complete; IT/Facilities still pending | `pendingStakeholders = ["IT","Facilities"]` |
-| employee-internal-transfer.UT12 | AC12, AC14 | Simulate all three downstream steps complete | status `COMPLETED`, `pendingStakeholders = []` |
-| employee-internal-transfer.UT13 | AC9 | After a manager rejection, employee submits a new request | New request accepted (rejected request does not count as "active") |
-| employee-internal-transfer.UT14 | AC14 | Simulate an HR decision while status is still `PENDING_MANAGER_APPROVAL` | `Result.error`, "invalid decision for current state" |
-| employee-internal-transfer.UT15 | AC15 | Simulate IT `REJECTED` while `PENDING_DOWNSTREAM_UPDATES` (Payroll/Facilities still pending) | status `FAILED`, `pendingStakeholders = []` |
-| employee-internal-transfer.UT16 | AC16 | Simulate any decision against a request already `COMPLETED` (or `FAILED`, `REJECTED_BY_MANAGER`, `REJECTED_BY_HR`) | `Result.error`, status unchanged |
-| employee-internal-transfer.UT17 | AC17 | `getDecisionHistory` after manager approve + HR approve | Two ordered entries returned, oldest first |
-| employee-internal-transfer.UT18 | AC15 | After a downstream `FAILED` request, employee submits a new request | New request accepted (`FAILED` does not count as "active") |
+| UT01 | AC03 | Submit valid request changing role only | Success; `PENDING_MANAGER_APPROVAL`; 1 `SUBMITTED` entry |
+| UT02 | AC02, AC03 | Submit | Request snapshot equals profile current values as of today |
+| UT03 | AC04 | Submit with `departmentId` missing | Error "Select a department."; no request |
+| UT04 | AC04 | Submit with a location not in the reference list | Field error; no request |
+| UT05 | AC05 | Effective date = today | Error "must be in the future" |
+| UT06 | AC05 | Effective date = yesterday | Same error |
+| UT07 | AC05 | Effective date = tomorrow | Success |
+| UT08 | AC06 | Proposed values equal current values | Error "Change at least one…"; no request |
+| UT09 | AC07 | Submit while a request is in progress | Error "already in progress"; still one request |
+| UT10 | AC08 | Submit twice with the same `submissionId` | Same request returned; 1 request, 1 history entry |
+| UT11 | AC10 | Manager approves | `PENDING_HR_ELIGIBILITY`; HR step `PENDING` |
+| UT12 | AC11 | Manager rejects with reason | `REJECTED_BY_MANAGER`; reason stored on step and in history |
+| UT13 | AC25 | Manager rejects with blank reason | Error "A rejection reason is required."; nothing changes |
+| UT14 | AC12 | HR rejects with reason | `REJECTED_BY_HR`; reason stored |
+| UT15 | AC13 | HR approves; department only changed | Org `PENDING`, IT `PENDING`, Payroll and Facilities `NOT_REQUIRED` |
+| UT16 | AC13 | HR approves; location only changed | Org, Payroll, Facilities `PENDING`; IT `NOT_REQUIRED` |
+| UT17 | AC13 | HR approves; role only changed | Org, Payroll, IT `PENDING`; Facilities `NOT_REQUIRED` |
+| UT18 | AC13 | HR approves; all three changed | All four downstream steps `PENDING` |
+| UT19 | AC14 | Outcome recorded on a `NOT_REQUIRED` step | Error "This step is not pending." |
+| UT20 | AC15 | All required steps complete in a different order each run | `COMPLETED` after the last one |
+| UT21 | AC16 | Org record completes; read profile before and on the effective date | Old values before; new values on the date |
+| UT22 | AC17 | Payroll completes, then IT fails; Org and Facilities pending | IT `FAILED`; Org and Facilities `STOPPED`; Payroll stays `COMPLETED`; `FAILED` |
+| UT23 | AC17 | Outcome recorded on a `STOPPED` step | Error; nothing changes |
+| UT24 | AC18 | New submission after each final outcome (4 cases) | Accepted |
+| UT25 | AC18, AC26 | Any outcome on a closed request | Error "already closed"; nothing changes |
+| UT26 | AC26 | HR outcome while `PENDING_MANAGER_APPROVAL` | Error "not pending" |
+| UT27 | AC26 | `COMPLETED` outcome on `MANAGER_APPROVAL` | Error "not valid for this step" |
+| UT28 | AC22 | Employee B reads, lists and reads history of employee A's request | "No request found."; B's list excludes A's request |
+| UT29 | AC22 | No employee signed in | Every operation returns "Please sign in." |
+| UT30 | AC23 | Full journey to `COMPLETED` | History has submission, each outcome and each status change, in order |
+| UT31 | AC23 | Outcome that fails validation | No history entry added |
+| UT32 | AC20 | Confirmation content for each of the 4 final outcomes | Matches §7 of BRD-001 |
 
-## Explicitly Out of Scope
-- Editing or withdrawing a submitted request.
-- SLA timers, reminders, or escalation for stakeholder inaction.
-- Email/push notification (in-portal status view only).
-- Conditional skipping of Payroll/IT/Facilities based on what actually
-  changed — all three always run in v1.
-- Receiving-department manager approval — only the current manager approves.
-- More than one non-terminal request per employee at a time.
-- International or cross-legal-entity transfers (per BRD-001 notes).
-- A production-grade, authenticated, per-stakeholder action interface — the
-  Simulate Decision control (AC14) is a single, unauthenticated, in-app
-  stand-in for demo/test purposes only.
-- Any real backend, real datastore, or real integration with Manager/HR/
-  Payroll/IT/Facilities systems (ADR-0004) — none exist for this project.
-- Multi-device sync — a request lives on the device it was submitted from.
-- Automatic retry, escalation, or compensation on a downstream `FAILED`
-  request (v1.5) — the employee's only recovery path is submitting a new
-  request once the failed one is terminal (AC15).
-- Manager-identity verification — `managerName` (v1.5) is a plain-text,
-  unverified field; there is no org-chart/HRIS lookup (ADR-0004).
-- Any handling for inactive/terminated employee accounts (v1.5, Gate 1
-  G1-28) — deferred alongside the rest of ADR-0004's Explicitly Deferred
-  items; requires a real HRIS integration this project does not have.
+## Explicitly Out of Scope (BRD-001 §12)
+- International or cross-legal-entity transfers.
+- Receiving-department manager approval.
+- Capturing or verifying the conversation with the manager (journey step 1).
+- Amending or withdrawing a submitted request.
+- SLA timers, reminders and escalation.
+- Email and push notifications.
+- A minimum transfer lead time.
+- Portal-defined HR eligibility rules.
+- Real integrations with HR, Payroll, IT and Facilities, and with them
+  retry, rollback, compensation and reconciliation.
+- An admin or support console.
+- Inactive or terminated employees.
+- Sign-in features: password policy, lockout, email verification/OTP,
+  identity uniqueness (BR-26). Sign-in is a dependency (D-01), not part of
+  this spec.
+- A production-grade interface for each stakeholder role.
+- Payroll, IT and Facilities' own internal workflows.
 
-## Non-Functional Constraints (from constitution.md)
-- Local read (status view) and write (submission, Simulate Decision) complete
-  well under 500ms on a mid-range device — no network latency applies, since
-  this feature has no backend (ADR-0004).
-- No employee PII beyond what's operationally necessary appears in any log,
-  at any level.
-- Ownership ("may only read/act on a request they own") is inherent to the
-  local, single-employee-per-device data model (ADR-0004) — not a
-  server-enforced rule, since there is no server.
-- Every mandatory field (department, location, role, effective date) has a
-  client-side validator (`core/utils/validators.dart`); since the local
-  repository is the only boundary (no separate API layer), it is also
-  re-validated there before writing to `LocalDbService`.
+## Non-Functional Constraints
+- **Demo posture (BR-24 to BR-26, §9):** V1 is a demo. It uses test/demo
+  data only and must not be loaded with real employee records. Sign-in is
+  demo-level and not production-ready. The simulation cannot prove that a
+  real stakeholder took a decision.
+- **Privacy (BR-25):** no employee personal data in logs at any level,
+  including the reason and rejection reasons. The screens show only what
+  the journey needs.
+- **Ownership (BR-23, BR-24):** the employee-ID check is enforced in the
+  repository, not only hidden in the UI.
+- **Audit (BR-27):** history is append-only at the repository level; there
+  is no update or delete operation for it.
+- **Validation:** every mandatory field has a client-side validator
+  (`core/utils/validators.dart`) and is re-checked in the repository before
+  saving.
+- **Performance:** local reads and writes complete in under 500 ms on a
+  mid-range device.
+
+## Spec decisions for Gate 1
+Details BRD-001 leaves open that the spec has to settle. Please confirm or
+reject each.
+
+| ID | Decision | Why |
+|---|---|---|
+| SD-01 | Only steps that have been reached are shown. HR appears after the manager approves; the four downstream steps appear when HR approves. There is no "Not started" state. | BR-19 lists six states and no "not started" state. Showing unreached steps would need a seventh. |
+| SD-02 | A manager or HR approval shows the step as `COMPLETED` (Approved). | BR-19 has no "Approved" state; Completed is the closest. |
+| SD-03 | Triggers use the current values snapshot taken at submission, not the profile at HR approval time. | The employee confirmed the change against those values (BR-03). The snapshot keeps the decision stable. |
+| SD-04 | Another employee's request gives the same "No request found." as a missing one. | Avoids telling one employee that another's request exists (BR-23, BR-25). |
+| SD-05 | The effective date is checked only at submission. A request that is still in progress after its effective date has passed carries on; the date is not re-checked. | BRD-001 has no rule for this case; re-checking would add one. |
+| SD-06 | If a new request is submitted after `COMPLETED` but before the effective date, its current values are the old ones (the profile as of today). | Follows BR-13: until the effective date the profile keeps the current values. |
+| SD-07 | Idempotency uses a `submissionId` generated once per submit action. | Makes BR-08 testable at the repository, not only in the UI. |
+| SD-08 | The employee can list all their requests (OP03), not only the latest. | BR-27 says the employee can view the history; after a new request, the old request's history would otherwise be unreachable. |
+| SD-09 | A downstream failure carries no reason. | §8 needs back only "Completed / Failed". BR-28 requires a reason only for manager and HR rejections. |
+
+## Traceability: BRD-001 → spec
+| BRD-001 | Spec |
+|---|---|
+| BR-01, BR-02 | AC01, AC04, OP01 |
+| BR-03 | AC02, OP01 snapshot, SD-03 |
+| BR-04 | AC06 |
+| BR-05 | AC05, SD-05 |
+| BR-06 | AC03 |
+| BR-07 | AC07, OP02 |
+| BR-08 | AC08, SD-07 |
+| BR-09 | AC09 |
+| BR-10, BR-11 | AC10, AC11 |
+| BR-12 | AC12 |
+| BR-13, §5 | AC13, AC16, triggers table, SD-06 |
+| BR-14 | AC14 |
+| BR-15 | AC15 |
+| BR-16 | AC17 |
+| BR-17 | AC18, AC26 |
+| BR-18, BR-19, §6 | AC19, Steps table, SD-01, SD-02 |
+| BR-20, §7 | AC20 |
+| BR-21, BR-22 | AC21 |
+| BR-23 | AC22, OP03–OP05, SD-04 |
+| BR-24 | AC24, AC26, OP06 |
+| BR-25, BR-26 | Non-Functional Constraints, Out of Scope, Consumed contract |
+| BR-27 | AC23, OP05, SD-08 |
+| BR-28 | AC11, AC12, AC20, AC25 |
+| §8 integration needs | OP06 valid outcomes and effects; Consumed contract |
+| §11 D-01 to D-03 | Consumed contract |
+| §12 | Explicitly Out of Scope |
+
+## Changes from v1.5
+| Area | v1.5 | v2.0 (from BRD-001 v5.2) |
+|---|---|---|
+| Source | BRD-001 v1–v4, BRD-002, ADR-0005 | BRD-001 v5.2 only |
+| Current values and manager | Registration (BRD-002) | Portal profile, read-only on the form (BR-03, D-02) |
+| At least one change | Not checked | Required (BR-04) |
+| Duplicate submission | UI only | `submissionId` idempotency (BR-08) |
+| Downstream steps | Payroll, IT, Facilities always | Org record update always; others by trigger (BR-13, §5) |
+| Organisational record update | Absent | Step with effective-from date (BR-13) |
+| Rejection reason | None | Mandatory for manager and HR (BR-28) |
+| Downstream outcome | `REJECTED` | `FAILED`; pending steps `STOPPED` (BR-16) |
+| Step states and pending actions | Stakeholder names | Six states and named actions (BR-19, §6) |
+| Confirmation | None | Per final outcome (BR-20, §7) |
+| Ownership | Per device install | Per signed-in employee (BR-23) |
+| History | Decisions only | Submission, outcomes and status changes, with reasons (BR-27) |
+
+## Next
+On Gate 1 approval of this spec: write the plan (with Constitution Check),
+then tasks, then spec-derived test cases, each for review in turn.

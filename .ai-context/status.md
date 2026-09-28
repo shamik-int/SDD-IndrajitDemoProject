@@ -4,11 +4,16 @@ _Last updated: 2026-09-28_
 ## Current Gate
 | Item | Status | Owner | Last Updated | Notes |
 |---|---|---|---|---|
-| **BRD v5.0 (BRD-001)** | **Submitted for Gate 1 Re-Review — not yet approved** | Indrajit Bhandari (Author); Shamik Bhattacharya (Gate 1) | 2026-09-28 | G1-01–G1-30: 30/30 done, 0 open. Review comments #1–#16: 15 done, #16 deferred until BRD approval. BRD review blocking items B-01–B-05: done. BRD-002 kept for version control only. Next: Shamik approves or requests changes. |
+| **BRD v5.2 (BRD-001)** | **Approved (Gate 1), 2026-09-28** | Indrajit Bhandari (Author); Shamik Bhattacharya (Gate 1) | 2026-09-28 | Approved by Shamik Bhattacharya. BRD-002 kept for version control only. |
+| **Spec v2.0 (employee-internal-transfer)** | **Submitted for Gate 1 review — not yet approved** | Indrajit Bhandari (Author); Shamik Bhattacharya (Gate 1) | 2026-09-28 | Rebuilt from BRD-001 v5.2 only: 26 ACs, 6 local operations, 32 unit tests, 9 spec decisions (SD-01–SD-09) for the reviewer to confirm. Next: Shamik approves or requests changes. Plan, tasks and test cases wait for spec approval. |
 
 ## Active Specs
-> **Paused (2026-09-28).** The specs, plan, tasks and test cases below are not being updated. They will be recreated from the approved BRD. The rows are kept for history.
+| Spec ID | Title | Status | Owner | Last Updated | Notes |
+|---|---|---|---|---|---|
+| employee-internal-transfer | Employee Internal Transfer Digital Journey | **v2.0 — Submitted for Gate 1 review** | Indrajit Bhandari | 2026-09-28 | Rebuilt from BRD-001 v5.2. v1.5 kept as `specs/employee-internal-transfer.spec-v1.5-backup-2026-09-28.md`. The existing code implements v1.5, not v2.0. Plan, tasks and test cases are still the paused v1.5 versions and will be recreated after spec approval. |
+| employee-registration-login | Employee Registration & Login | **Not followed** | Indrajit Bhandari | 2026-09-28 | Traces to BRD-002 (version control only). Sign-in is a BRD-001 dependency (D-01, BR-26). Kept for history. |
 
+### Earlier rows (paused 2026-09-28, kept for history)
 | Spec ID | Title | Status | Owner | Last Updated | Notes |
 |---|---|---|---|---|---|
 | employee-internal-transfer | Employee Internal Transfer Digital Journey | In QA | Indrajit Bhandari | 2026-09-17 | All 6 tasks (T01–T06) merged. 91/91 unit/widget tests + 3/3 integration tests passing, `flutter analyze` clean. Spec at **v1.4**. **A 7th task (T07, `employeeId` scoping) is now planned** — see `employee-registration-login.plan.md`'s Cross-Feature Amendment — not yet written into this feature's own tasks file. Next: Gate 1 review by Shamik (still outstanding for *this* spec specifically), then Gate 2 by Subhajit + Security Assessment. |
@@ -190,3 +195,10 @@ _Last updated: 2026-09-28_
 - **F-03 completed:** all 16 rows of the "Gate 1 Review Comments — 2026-09-28" history table and all 30 G1 register rows now cite BRD-001 rules or sections. No cell refers to a removed section name. BR-28 moved after BR-27 so the rules read in number order; no rule content changed.
 - F-01, F-02 and F-04 as resolved in v5.1. Author response added to `reviews/BRD-v5.0.gate1-review.md`, with all four feedback points checked.
 - **Gate 1 status: BRD v5.2 submitted for final approval — not yet approved. Awaiting Shamik Bhattacharya's decision.**
+
+### 2026-09-28 (cont'd) — BRD v5.2 approved at Gate 1; spec v2.0 submitted
+- **Shamik Bhattacharya approved BRD v5.2 (Gate 1).** Identity checked: shamik.bhattacharya@intglobal.com matches the Review Authority table. Decision recorded in `BRD.md` (status, reviewer decision line, revision history) and `reviews/BRD-v5.0.gate1-review.md`. Comment #16 moved from Deferred to In progress.
+- Reviewer: specs not approved; revise and share again.
+- `specs/employee-internal-transfer.spec.md` rewritten as **v2.0** from BRD-001 v5.2 only (v1.5 kept as `employee-internal-transfer.spec-v1.5-backup-2026-09-28.md`): 7 request statuses, 6 steps with 6 step states, triggers table, consumed contract for sign-in/profile/reference lists (D-01–D-03), 6 local operations (OP01–OP06, incl. `submissionId` idempotency and per-employee scoping), 26 ACs, 32 unit tests, 9 spec decisions (SD-01–SD-09), BRD → spec traceability, and a v1.5 → v2.0 change table.
+- `specs/employee-registration-login.spec.md` marked **Not followed** (its BRD-002 is version control only).
+- **Spec v2.0 submitted for Gate 1 — not yet approved.** Plan, tasks and test cases wait for spec approval. Development remains blocked.

@@ -3,5 +3,5 @@
 One file per feature, named by slug: `<feature-slug>.spec.md` (Blueprint §9, §11).
 
 ## Registered slugs
-- `employee-internal-transfer` — Employee Internal Transfer Digital Journey. Derived from `BRD-001`. Status: **Approved (v1.4)** (Author-ratified — see `.ai-context/status.md`). Pending cross-feature change: `employeeId` scoping once `employee-registration-login` ships.
-- `employee-registration-login` — Employee Registration & Login (access gate in front of `employee-internal-transfer`). Derived from `BRD-002`. Status: **Approved (v1.1)** — reviewed at Gate 1 by Shamik Bhattacharya (see `.ai-context/reviews/employee-registration-login.gate1-review.md`; identity confirmed by explicit self-declaration, session metadata caveat logged there and in `.ai-context/status.md`).
+- `employee-internal-transfer` — Employee Internal Transfer Digital Journey. Derived from `BRD-001` v5.2 (Gate 1 Approved 2026-09-28). Status: **v2.0, submitted for Gate 1 review, not yet approved**. v1.5 kept as `employee-internal-transfer.spec-v1.5-backup-2026-09-28.md`.
+- `employee-registration-login` — **Not followed.** Derived from `BRD-002`, which is kept for version control only. Sign-in is a dependency of BRD-001 (D-01, BR-26), not a feature spec. Kept for history; do not plan or implement from it.

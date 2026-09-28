@@ -128,3 +128,17 @@ order. No rule content changed.
 - [x] F-04: effective timing of the organisational record update decided
 
 **Awaiting the Gate 1 reviewer's decision** (Approved / Changes Requested).
+
+## Gate 1 decision — BRD v5.2 (Shamik Bhattacharya, 2026-09-28)
+
+**Verdict: Approved (Gate 1).** Reviewer identity checked against
+constitution.md Review Authority: Shamik Bhattacharya,
+shamik.bhattacharya@intglobal.com, which matches the session account.
+
+Reviewer comment: "BRD seems okay. Approved from my side, however specs
+need to be updated. BRD approved, specs not approved yet. Revise the specs
+and share again."
+
+- [x] F-01 · [x] F-02 · [x] F-03 · [x] F-04
+- **The specs are not approved.** `specs/employee-internal-transfer.spec.md`
+  has been rewritten as v2.0 from BRD-001 v5.2 and submitted for Gate 1.

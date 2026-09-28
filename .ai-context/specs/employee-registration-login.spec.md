@@ -4,6 +4,12 @@
 employee-registration-login
 
 ## Status
+> **Not followed (2026-09-28).** This spec traces to BRD-002, which is kept
+> for version control only. BRD-001 v5.2 (Gate 1 Approved) treats sign-in
+> as a dependency of the existing portal (D-01, BR-26), not as a feature.
+> Do not plan or implement from this spec. See
+> `employee-internal-transfer.spec.md` v2.0, "Consumed contract".
+
 **Changes in progress (v1.2)** — self-reviewed by the Author at v1.0 (see
 "Author Self-Review Notes" below), then independently reviewed at Gate 1 by
 **Shamik Bhattacharya** (see
