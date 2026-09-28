@@ -117,8 +117,8 @@
   <section class="verdict" aria-label="Gate 1 status">
     <div class="icon" aria-hidden="true">⏳</div>
     <div>
-      <h2>BRD v5.0 is submitted for Gate 1 re-review</h2>
-      <p>BRD-001 now depends only on the requirement PDF: 27 numbered business rules, all 23 requirements covered, and all 16 review comments mapped. <strong>It is waiting for Shamik Bhattacharya's decision</strong>; development stays blocked until he approves. The project now approves the BRD first; after that, the specs, plan, tasks and test cases are recreated from it.</p>
+      <h2>BRD v5.2 is submitted for Gate 1 final approval</h2>
+      <p>All 4 of Shamik's v5.0 feedback points (F-01 to F-04) are resolved, and nothing is open in any review set. <strong>Waiting for Shamik Bhattacharya's final decision</strong>; development stays blocked until he approves. The project now approves the BRD first; after that, the specs, plan, tasks and test cases are recreated from it.</p>
     </div>
   </section>
 
@@ -126,14 +126,15 @@
     <div class="card kpi"><div class="label">G1-01 to G1-30 register</div><div class="value">30 / 30</div><div class="sub">resolved · 0 open</div></div>
     <div class="card kpi"><div class="label">Review comments (28 Sep)</div><div class="value">15 / 16</div><div class="sub">done · #16 deferred until approval</div></div>
     <div class="card kpi"><div class="label">Blocking, from the PDF</div><div class="value">5 / 5</div><div class="sub">B-01 to B-05 fixed in v5.0</div></div>
-    <div class="card kpi"><div class="label">Requirement PDF coverage</div><div class="value">23 / 23</div><div class="sub">T-01 to T-04 fixed · BR-01 to BR-27</div></div>
+    <div class="card kpi"><div class="label">v5.0 review feedback</div><div class="value">4 / 4</div><div class="sub">F-01 to F-04 resolved in v5.2</div></div>
+    <div class="card kpi"><div class="label">Requirement PDF coverage</div><div class="value">23 / 23</div><div class="sub">T-01 to T-04 fixed · BR-01 to BR-28</div></div>
     <div class="card kpi"><div class="label">Specs · plan · tasks</div><div class="value" style="font-size:22px">Paused</div><div class="sub">recreated after BRD approval</div></div>
   </div>
 
   <h2>Where we are</h2>
   <div class="pipeline">
-    <div class="step done"><div class="n">DONE</div><h3>BRD v5.0</h3><p>Checked against the requirement PDF; BRD-001 is standalone.</p></div>
-    <div class="step current"><div class="n">CURRENT</div><h3>Gate 1 re-review</h3><p>Shamik Bhattacharya approves, or requests changes.</p></div>
+    <div class="step done"><div class="n">DONE</div><h3>BRD v5.2</h3><p>Standalone BRD-001, BR-01 to BR-28; all v5.0 review feedback resolved.</p></div>
+    <div class="step current"><div class="n">CURRENT</div><h3>Gate 1 final approval</h3><p>Shamik Bhattacharya approves, or requests changes.</p></div>
     <div class="step"><div class="n">NEXT</div><h3>Recreate specs, plan, tasks, tests</h3><p>Written from BRD-001 v5.0 (comment #16).</p></div>
     <div class="step"><div class="n">THEN</div><h3>Test-first build</h3><p>RED, then GREEN, per task.</p></div>
     <div class="step"><div class="n">LATER</div><h3>Gate 2 + Security</h3><p>Subhajit Mukherjee: code review and security assessment.</p></div>
@@ -207,7 +208,7 @@
   <h2>Next steps</h2>
   <div class="card">
     <ol class="list">
-      <li><strong>Shamik Bhattacharya</strong> reviews BRD v5.0 (BRD-001) and ticks the decision line in "Gate 1 Re-Review Submission".</li>
+      <li><strong>Shamik Bhattacharya</strong> gives the final decision on BRD v5.2 (BRD-001) and ticks the decision line in "Gate 1 Re-Review Submission".</li>
       <li>After approval, recreate the <strong>specs, plan, tasks and test cases</strong> from BRD-001 v5.0, tracing to the requirement document.</li>
       <li>Test-first implementation, then <strong>Gate 2</strong> and the <strong>security assessment</strong>.</li>
       <li>Before production: the Sponsor confirms the downstream trigger rules and names the HR Product Owner.</li>
@@ -218,6 +219,8 @@
   <div class="table-wrap"><table>
     <thead><tr><th>Date</th><th>Change</th></tr></thead>
     <tbody>
+      <tr><td class="date">28 Sep</td><td>BRD v5.2 released by the Author: F-03 completed (all 16 history rows and all 30 G1 rows cite BRD-001 rules), BR-28 moved into number order. Resubmitted for Gate 1 final approval.</td></tr>
+      <tr><td class="date">28 Sep</td><td>Shamik reviewed BRD v5.0: Changes Requested with F-01 to F-04. BRD v5.1 released: BR-28 rejection reason, effective-date timing, history fixes. Checked: F-01, F-02, F-04 resolved; F-03 partial (11 cells).</td></tr>
       <tr><td class="date">28 Sep</td><td>Removed the unsubmitted v5.0 draft backup. BRD v5.0 is the current version; v4.0 is the previous one.</td></tr>
       <tr><td class="date">28 Sep</td><td>BRD v5.0 final draft: BRD-001 rebuilt from the requirement PDF only. It has 27 numbered rules (BR-01 to BR-27), users, pending actions, security rules, assumptions and traceability. T-01 to T-04 fixed, and all 16 comments mapped (15 done, #16 deferred). Submitted for Gate 1 re-review.</td></tr>
       <tr><td class="date">28 Sep</td><td>BRD-001 traced against the requirement PDF only: 20/23 requirements fully covered, 3 partial, 0 missing. 16 comments: 10 trace to the PDF, 3 N/A (BRD-002), 3 housekeeping. 4 gaps (T-01–T-04) to fix before approval. See <code>reviews/BRD-v5.0.requirement-trace.md</code>.</td></tr>

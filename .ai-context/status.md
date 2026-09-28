@@ -177,3 +177,16 @@ _Last updated: 2026-09-28_
 - BRD-001 rebuilt from `Requirement for SDD (2).pdf` only: primary users, journey steps 1–8, numbered business rules BR-01 to BR-27, downstream triggers, pending actions, employee confirmation, integration needs, business vs technical decisions, assumptions A-01 to A-07, dependencies D-01 to D-04, out of scope, open questions (none), source → BRD traceability, and coverage of all 16 review comments (15 done, #16 deferred) and G1-01 to G1-30.
 - Requirement-trace gaps T-01 to T-04 fixed; no references to earlier specs, tests or ADRs remain in BRD-001. V1 Posture folded into BRD-001; historical sections moved under "Review history and version control".
 - **Gate 1 status: Submitted for Re-Review — not yet approved. Awaiting Shamik Bhattacharya's decision.**
+
+### 2026-09-28 (cont'd) — BRD v5.0 Gate 1 review by Shamik; BRD v5.1 released
+- Shamik Bhattacharya reviewed BRD v5.0 (`reviews/BRD-v5.0.gate1-review.md`, commit `76f5ecb`): **Changes Requested**, 4 feedback points: F-01 mandatory rejection reason, F-02 stale B-06/07/08 history note, F-03 history cells pointing at removed section names, F-04 when the organisational record update takes effect. B-01–B-08 and N-01–N-07 confirmed covered; N-03 raised to F-01. The review states that the next version is approved if these four are fixed as asked.
+- BRD **v5.1** released in the same commit (v5.0 kept as `BRD-v5-backup-2026-09-28.md`): new BR-28 (rejection reason); BR-13 effective-date timing (option a); B-01–B-08 history table corrected; 8 G1 register cells repointed.
+- Checked against the four points: **F-01, F-02 and F-04 resolved. F-03 partly resolved.** The "Gate 1 Review Comments — 2026-09-28" history table still cites removed section names in 11 cells (#1–4, 6, 8–13: "V1 Posture", "V1 decisions", "FAILED state", "Effective date", "Duplicate submission", "BRD-002 V1 decisions").
+- Process note: v5.1 was committed by the reviewer, although the review's own instruction (N-07) says the Author makes the revision.
+- **Gate 1 status: BRD v5.1 submitted for re-review — not yet approved.**
+
+### 2026-09-28 (cont'd) — BRD v5.2: reviewer feedback completed, resubmitted for final approval
+- v5.1 preserved as `BRD-v5.1-backup-2026-09-28.md`. BRD v5.2 released by the Author (Indrajit Bhandari), as the review's N-07 instruction asks.
+- **F-03 completed:** all 16 rows of the "Gate 1 Review Comments — 2026-09-28" history table and all 30 G1 register rows now cite BRD-001 rules or sections. No cell refers to a removed section name. BR-28 moved after BR-27 so the rules read in number order; no rule content changed.
+- F-01, F-02 and F-04 as resolved in v5.1. Author response added to `reviews/BRD-v5.0.gate1-review.md`, with all four feedback points checked.
+- **Gate 1 status: BRD v5.2 submitted for final approval — not yet approved. Awaiting Shamik Bhattacharya's decision.**

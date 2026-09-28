@@ -72,7 +72,10 @@ recreated from it; the existing ones are paused._
 - [x] BRD v5.0 traced against the requirement document only (`reviews/BRD-v5.0.requirement-trace.md`): 20/23 requirements fully covered, 3 partial; 16 comments: 10 trace, 3 N/A (BRD-002), 3 housekeeping
 - [x] Fix requirement-trace gaps T-01 to T-04 in BRD-001 (pending actions, security rules, traceability to the requirement document only, Deliverable 1 items)
 - [x] BRD-001 rebuilt to depend only on the requirement document: BR-01 to BR-27, users, assumptions, dependencies, traceability, all 16 review comments covered (15 done, #16 deferred)
-- [ ] **Gate 1 approval of BRD v5.0 by Shamik Bhattacharya**
+- [x] Shamik reviewed BRD v5.0: Changes Requested, F-01 to F-04 (`reviews/BRD-v5.0.gate1-review.md`)
+- [x] BRD v5.1 released: F-01 (BR-28 rejection reason), F-02, F-04 (effective-date timing) resolved
+- [x] F-03 completed in BRD v5.2: all 16 history-table rows and all 30 G1 register rows cite BRD-001 rules; BR-28 moved into number order
+- [ ] **Gate 1 approval of BRD v5.2 by Shamik Bhattacharya**
 - [ ] Sponsor confirms the V1 downstream trigger rules (before any production commitment)
 - [ ] After approval: recreate specs, plan, tasks and test cases from BRD-001 v5.0 (comment #16)
 
