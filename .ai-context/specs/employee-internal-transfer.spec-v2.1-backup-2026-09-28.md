@@ -4,13 +4,9 @@
 employee-internal-transfer
 
 ## Status
-**v2.2 — Resubmitted for Gate 1 review. Not yet approved.**
-Plan, tasks and the implementation test cases
-(`.ai-context/test_cases/employee-internal-transfer.test_cases.md`) must
-not be written from this spec until the Gate 1 reviewer (Shamik
-Bhattacharya) approves it. The acceptance scenarios in this spec (UT01–UT62,
-XF01–XF08) are part of the spec itself, not implementation test cases; see
-"Acceptance scenarios".
+**v2.1 — Submitted for Gate 1 review. Not yet approved.**
+Plan, tasks and test cases must not be written from this spec until the
+Gate 1 reviewer (Shamik Bhattacharya) approves it.
 
 | | |
 |---|---|
@@ -18,23 +14,7 @@ XF01–XF08) are part of the spec itself, not implementation test cases; see
 | Gate 1 reviewer | Shamik Bhattacharya |
 | Updated | 2026-09-28 |
 | Linked BRD | `.ai-context/BRD.md#BRD-001`, **v5.2, Gate 1 Approved 2026-09-28** |
-| Previous version | `employee-internal-transfer.spec-v2.1-backup-2026-09-28.md` (v2.1), following v2.0 and v1.5 backups |
-| Gate 1 review of v2.1 | `.ai-context/reviews/employee-internal-transfer.spec-v2.1.gate1-review.md` (11 items, 8 scenarios) |
-
-**How v2.2 was written.** v2.2 answers the Gate 1 reviewer's 11 mandatory
-items on v2.1 (items 1–4 critical). The main changes: the organisational
-change is applied to the profile only when the whole request completes, so a
-downstream failure never leaves a transfer scheduled (SD-16); a new request
-is blocked until a completed transfer has taken effect (SD-17, **needs a
-BRD-001 clarification**, see below); only a demo tester, never an employee,
-can use the simulation (SD-18); the history has a `SYSTEM` actor (SD-19). See
-"Changes in v2.2" for the full list.
-
-**BRD-001 clarification needed before approval.** SD-17 narrows BR-07 and
-BR-17 (a new request is blocked after `COMPLETED` until the effective date).
-This is a business rule, so BRD-001 needs a v5.3 clarification approved by
-the Gate 1 reviewer; the spec does not change the approved BRD on its own.
-Every other v2.2 change stays within BRD-001 v5.2.
+| Previous version | `employee-internal-transfer.spec-v2.0-backup-2026-09-28.md` (v2.0), itself following `employee-internal-transfer.spec-v1.5-backup-2026-09-28.md` |
 
 **How v2.1 was written.** v2.1 is the Author's revision of v2.0, after a
 rule-by-rule check of BRD-001 v5.2 against the spec, so that nothing in
@@ -113,14 +93,9 @@ interface.
 | Payroll | Records `PAYROLL_UPDATE` (simulated) |
 | IT | Records `IT_ACCESS_CHANGE` (simulated) |
 | Facilities | Records `FACILITIES_WORKSPACE` (simulated) |
-| Demo tester (V1 only) | A demo sign-in account with the `TESTER` role (D-01). The only user who can open the simulation and record stakeholder outcomes on others' requests (OP06, OP07; SD-18). Cannot submit or own a transfer request. Not a BRD-001 actor: it stands in for the stakeholders, because V1 has no real integration (BR-24) |
-| System | The portal itself. Records every status change, every step it starts, stops or marks not required, and the scheduling of the organisational change (SD-19). Never records a stakeholder decision |
 
 The history `actor` of each stakeholder outcome is the actor that owns the
-step, never the employee or the tester (BR-24). When the outcome was
-entered through the simulation, the entry also records `simulatedBy` (the
-tester's user ID), so the history shows both who owns the decision and who
-actually entered it in the demo.
+step, never the employee (BR-24).
 
 ### Request status (BR-06, BR-11 to BR-17)
 | Status | Final? | Label shown to the employee (SD-14) | Meaning |
@@ -134,29 +109,6 @@ actually entered it in the demo.
 | `FAILED` | Yes | Failed | A required downstream step failed (BR-16) |
 
 A request is **in progress** when its status is not final (BR-07, BR-17).
-
-A `COMPLETED` request is **awaiting effect** while the device local date is
-before its effective date: the transfer is approved and scheduled, but the
-employee's profile still shows the current values (BR-13). It is shown as
-"Completed: takes effect on <effective date>" (SD-17). A request that is not
-`COMPLETED` is never awaiting effect.
-
-### The three moments of the organisational change (SD-16)
-The reviewer asked what `ORG_RECORD_UPDATE` = `COMPLETED` means. Three
-separate moments are defined, and only the third changes what the profile
-shows:
-
-| Moment | When | What it means | What changes |
-|---|---|---|---|
-| **Recorded** | HR records `ORG_RECORD_UPDATE` = `COMPLETED` | HR has confirmed the new department, location and role for the effective date. The step is done | Step state only. The profile and the schedule do **not** change |
-| **Scheduled** | The request becomes `COMPLETED` (the last required step completes) | The portal calls `scheduleOrganisationalChange` once, in the same save as the status change | A scheduled change exists, effective from the effective date |
-| **Effective** | The device local date reaches the effective date | The scheduled change takes effect | The profile (`getCurrentValues`) shows the new values |
-
-A request that ends `FAILED` never reaches "Scheduled", so no transfer is
-scheduled and the profile never changes. This keeps BR-16: the completed
-`ORG_RECORD_UPDATE` step is not rolled back (it stays `COMPLETED` in the
-request and the history); there is simply nothing to roll back, because the
-change is applied only when the whole transfer succeeds.
 
 ### Steps (BRD-001 §3, §6)
 | Step ID | Stakeholder | Pending action shown (§6) | Required |
@@ -201,25 +153,18 @@ What this feature needs from the portal. How it is provided in V1 is a Plan
 decision.
 
 ```dart
-// D-01 — the signed-in user. null when nobody is signed in.
-CurrentUser? currentUser();
-// { userId, role: EMPLOYEE | TESTER }   (TESTER exists in V1 demo builds only, SD-18)
+// D-01 — the signed-in employee. null when nobody is signed in.
+String? currentEmployeeId();
 
 // D-02 — the employee's current values, as of a given date.
 EmployeeCurrentValues getCurrentValues(String employeeId, {required DateTime asOf});
 // { departmentId, locationId, roleId, managerName }
 
-// D-02 — schedule an organisational change that takes effect later (BR-13).
-// Called only when a request becomes COMPLETED (SD-16). Idempotent by requestId (SD-20).
-Result<ScheduledChange> scheduleOrganisationalChange(String employeeId, {
-  required String requestId,
+// D-02 — record an organisational change that takes effect later (BR-13).
+void scheduleOrganisationalChange(String employeeId, {
   required String departmentId, required String locationId,
   required String roleId, required DateTime effectiveFrom,
 });
-// ScheduledChange { requestId, employeeId, departmentId, locationId, roleId, effectiveFrom, scheduledAt }
-
-// D-02 — the employee's scheduled change that has not taken effect yet, if any (SD-17).
-ScheduledChange? pendingScheduledChange(String employeeId, {required DateTime asOf});
 
 // D-03 — reference lists.
 List<ReferenceItem> departments();  // { id, name }
@@ -231,21 +176,6 @@ List<ReferenceItem> roles();
 after `effectiveFrom`; before that it returns the previous values (BR-13).
 `managerName` is demo data, not verified, and grants no authority outside
 the request (BR-10).
-
-**`scheduleOrganisationalChange` idempotency and conflicts (SD-20).** The
-unique key is `requestId`: at most one scheduled change exists per request.
-
-| Call | Result |
-|---|---|
-| First call for this `requestId` | `Result.success(ScheduledChange)`; one change is scheduled |
-| Repeat call, same `requestId`, same values and date | `Result.success` with the **existing** `ScheduledChange` (same `scheduledAt`). Nothing new is created |
-| Repeat call, same `requestId`, different values or date | `Result.error("A different change is already scheduled for this request.")`. The existing change is kept |
-| Call for another `requestId` while this employee has a change that has not taken effect | `Result.error("Another transfer is already scheduled for this employee.")`. Nothing is scheduled |
-
-If the call returns an error, the request does not become `COMPLETED`: the
-last step's outcome, the status change and the schedule are saved together
-or not at all (OP06), and OP06 returns the error. With SD-17 in force, the
-last two rows cannot happen through the journey; they guard the contract.
 
 ## Local Data Contract
 Local operations between the presentation layer and the repository. No
