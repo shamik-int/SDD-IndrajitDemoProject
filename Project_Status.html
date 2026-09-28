@@ -4,35 +4,25 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Project Status Report</title>
-<meta name="description" content="SDD Indrajit Demo Project — delivery and Gate 1 review status as of 2026-09-28.">
+<meta name="description" content="SDD Indrajit Demo Project — BRD v5.0 Gate 1 re-review status, updated after every task.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #f6f7f4;
-    --surface: #ffffff;
-    --surface-2: #eef1ea;
-    --text: #1d2419;
-    --muted: #5c6657;
-    --border: #d9ded3;
+    --bg: #f6f7f4; --surface: #ffffff; --surface-2: #eef1ea;
+    --text: #1d2419; --muted: #5c6657; --border: #d9ded3;
     --brand: #2e7d32;
-    --brand-soft: #e3f1e3;
-    --ok: #2e7d32;      --ok-soft: #e3f1e3;
-    --warn: #8a6100;    --warn-soft: #fff4d1;
-    --bad: #b3261e;     --bad-soft: #fce8e6;
-    --info: #1f5fa8;    --info-soft: #e5eefa;
+    --ok: #2e7d32;   --ok-soft: #e3f1e3;
+    --warn: #8a6100; --warn-soft: #fff4d1;
+    --bad: #b3261e;  --bad-soft: #fce8e6;
+    --info: #1f5fa8; --info-soft: #e5eefa;
     --shadow: 0 1px 2px rgba(0,0,0,.05), 0 2px 8px rgba(0,0,0,.04);
   }
   @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) {
-      --bg: #121510;
-      --surface: #1b1f18;
-      --surface-2: #232820;
-      --text: #e7ebe3;
-      --muted: #a2ab9c;
-      --border: #333a2e;
+      --bg: #121510; --surface: #1b1f18; --surface-2: #232820;
+      --text: #e7ebe3; --muted: #a2ab9c; --border: #333a2e;
       --brand: #7cc47f;
-      --brand-soft: #1f3320;
       --ok: #7cc47f;   --ok-soft: #1f3320;
       --warn: #f0c350; --warn-soft: #3a2f10;
       --bad: #f2877e;  --bad-soft: #3d1c19;
@@ -41,31 +31,20 @@
     }
   }
   :root[data-theme="dark"] {
-    --bg: #121510;
-    --surface: #1b1f18;
-    --surface-2: #232820;
-    --text: #e7ebe3;
-    --muted: #a2ab9c;
-    --border: #333a2e;
+    --bg: #121510; --surface: #1b1f18; --surface-2: #232820;
+    --text: #e7ebe3; --muted: #a2ab9c; --border: #333a2e;
     --brand: #7cc47f;
-    --brand-soft: #1f3320;
     --ok: #7cc47f;   --ok-soft: #1f3320;
     --warn: #f0c350; --warn-soft: #3a2f10;
     --bad: #f2877e;  --bad-soft: #3d1c19;
     --info: #8ab8f0; --info-soft: #1a2a3d;
     --shadow: none;
   }
-
   * { box-sizing: border-box; }
   html { -webkit-text-size-adjust: 100%; }
-  body {
-    margin: 0;
-    background: var(--bg);
-    color: var(--text);
-    font: 16px/1.55 "Lato", system-ui, -apple-system, "Segoe UI", sans-serif;
-  }
+  body { margin: 0; background: var(--bg); color: var(--text); font: 16px/1.55 "Lato", system-ui, -apple-system, "Segoe UI", sans-serif; }
   .wrap { max-width: 1040px; margin: 0 auto; padding: 32px 16px 64px; }
-  header { margin-bottom: 28px; }
+  header { margin-bottom: 24px; }
   .eyebrow { color: var(--muted); font-size: 13px; letter-spacing: .06em; text-transform: uppercase; font-weight: 700; }
   h1 { font-size: clamp(26px, 5vw, 36px); line-height: 1.15; margin: 6px 0 10px; font-weight: 900; }
   h2 { font-size: 20px; margin: 40px 0 14px; font-weight: 900; }
@@ -74,262 +53,293 @@
   .muted { color: var(--muted); }
   code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: .88em; background: var(--surface-2); padding: 1px 5px; border-radius: 4px; }
 
-  .verdict {
-    display: flex; gap: 16px; align-items: flex-start;
-    background: var(--bad-soft); border: 1px solid var(--bad);
-    border-radius: 12px; padding: 18px 20px;
-  }
-  .verdict .icon { flex: 0 0 auto; width: 36px; height: 36px; border-radius: 50%; background: var(--bad); color: var(--bg); display: grid; place-items: center; font-weight: 900; font-size: 20px; }
-  .verdict h2 { margin: 0 0 4px; font-size: 18px; color: var(--bad); }
+  .verdict { display: flex; gap: 16px; align-items: flex-start; background: var(--warn-soft); border: 1px solid var(--warn); border-radius: 12px; padding: 18px 20px; }
+  .verdict .icon { flex: 0 0 auto; width: 36px; height: 36px; border-radius: 50%; background: var(--warn); color: var(--bg); display: grid; place-items: center; font-weight: 900; font-size: 18px; }
+  .verdict h2 { margin: 0 0 4px; font-size: 18px; color: var(--warn); }
   .verdict p { margin: 0; }
 
   .grid { display: grid; gap: 14px; }
-  .kpis { grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); margin-top: 18px; }
+  .kpis { grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); margin-top: 18px; }
   .card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 16px 18px; box-shadow: var(--shadow); min-width: 0; }
   .kpi .label { font-size: 13px; color: var(--muted); font-weight: 700; }
-  .kpi .value { font-size: 30px; font-weight: 900; line-height: 1.1; margin: 4px 0 2px; font-variant-numeric: tabular-nums; }
+  .kpi .value { font-size: 28px; font-weight: 900; line-height: 1.1; margin: 4px 0 2px; font-variant-numeric: tabular-nums; }
   .kpi .sub { font-size: 13px; color: var(--muted); }
-
-  .features { grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
-  .feature-head { display: flex; justify-content: space-between; gap: 10px; align-items: flex-start; flex-wrap: wrap; margin-bottom: 10px; }
-  dl { display: grid; grid-template-columns: max-content 1fr; gap: 6px 14px; margin: 12px 0 0; font-size: 14px; }
-  dt { color: var(--muted); font-weight: 700; }
-  dd { margin: 0; }
 
   .pill { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; padding: 3px 10px; border-radius: 999px; white-space: nowrap; }
   .pill::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
-  .pill.ok   { color: var(--ok);   background: var(--ok-soft); }
+  .pill.ok { color: var(--ok); background: var(--ok-soft); }
   .pill.warn { color: var(--warn); background: var(--warn-soft); }
-  .pill.bad  { color: var(--bad);  background: var(--bad-soft); }
+  .pill.bad { color: var(--bad); background: var(--bad-soft); }
   .pill.info { color: var(--info); background: var(--info-soft); }
   .pill.neutral { color: var(--muted); background: var(--surface-2); }
 
-  .tasks { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
-  .task { font-size: 12px; font-weight: 700; padding: 4px 8px; border-radius: 6px; border: 1px solid var(--border); background: var(--surface-2); color: var(--muted); }
-  .task.done { background: var(--ok-soft); color: var(--ok); border-color: transparent; }
-
-  /* Gate pipeline */
   .pipeline { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 10px; }
-  .step { position: relative; padding: 14px 16px; border-radius: 10px; border: 1px solid var(--border); background: var(--surface); }
+  .step { padding: 14px 16px; border-radius: 10px; border: 1px solid var(--border); background: var(--surface); }
   .step .n { font-size: 12px; font-weight: 900; color: var(--muted); }
-  .step.done { border-color: var(--ok); }
-  .step.done .n { color: var(--ok); }
-  .step.current { border-color: var(--bad); background: var(--bad-soft); }
-  .step.current .n { color: var(--bad); }
+  .step.done { border-color: var(--ok); } .step.done .n { color: var(--ok); }
+  .step.current { border-color: var(--warn); background: var(--warn-soft); } .step.current .n { color: var(--warn); }
   .step h3 { margin-top: 4px; }
   .step p { font-size: 13px; color: var(--muted); margin: 0; }
 
-  /* Register tally bar */
-  .bar { display: flex; height: 14px; border-radius: 999px; overflow: hidden; gap: 2px; margin: 12px 0 10px; }
-  .bar span { display: block; }
-  .legend { display: flex; flex-wrap: wrap; gap: 8px 18px; font-size: 14px; }
-  .legend i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 6px; vertical-align: middle; }
-
-  .filters { display: flex; flex-wrap: wrap; gap: 8px; margin: 18px 0 12px; }
-  .filters button {
-    font: inherit; font-size: 13px; font-weight: 700; cursor: pointer;
-    padding: 6px 12px; border-radius: 999px; border: 1px solid var(--border);
-    background: var(--surface); color: var(--text);
-  }
-  .filters button[aria-pressed="true"] { background: var(--text); color: var(--bg); border-color: var(--text); }
-  .filters button:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
+  .tabs { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 12px; }
+  .tabs button, .filters button { font: inherit; font-size: 13px; font-weight: 700; cursor: pointer; padding: 6px 12px; border-radius: 999px; border: 1px solid var(--border); background: var(--surface); color: var(--text); }
+  .tabs button[aria-selected="true"], .filters button[aria-pressed="true"] { background: var(--text); color: var(--bg); border-color: var(--text); }
+  .tabs button:focus-visible, .filters button:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
+  .filters { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 12px; }
 
   .table-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: 12px; background: var(--surface); }
   table { width: 100%; border-collapse: collapse; font-size: 14px; }
   th, td { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--border); vertical-align: top; }
-  th { font-size: 12px; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); background: var(--surface-2); position: sticky; top: 0; }
+  th { font-size: 12px; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); background: var(--surface-2); }
   tr:last-child td { border-bottom: 0; }
   td.id { font-weight: 900; white-space: nowrap; font-variant-numeric: tabular-nums; }
-  td.area { font-weight: 700; min-width: 130px; }
-  td.note { color: var(--muted); min-width: 260px; }
+  td.strong { font-weight: 700; min-width: 140px; }
+  td.note { color: var(--muted); min-width: 240px; }
+  td.date { white-space: nowrap; font-variant-numeric: tabular-nums; color: var(--muted); }
 
-  ol.next { padding-left: 22px; margin: 0; }
-  ol.next li { margin-bottom: 8px; }
-
-  .notice { border-left: 4px solid var(--warn); background: var(--warn-soft); padding: 12px 16px; border-radius: 0 10px 10px 0; font-size: 14px; }
+  ol.list, ul.list { padding-left: 22px; margin: 0; }
+  ol.list li, ul.list li { margin-bottom: 8px; }
+  .notice { border-left: 4px solid var(--info); background: var(--info-soft); padding: 12px 16px; border-radius: 0 10px 10px 0; font-size: 14px; }
+  .two { grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
   footer { margin-top: 48px; font-size: 13px; color: var(--muted); border-top: 1px solid var(--border); padding-top: 16px; }
-
-  @media (max-width: 560px) {
-    .verdict { flex-direction: column; gap: 10px; }
-    dl { grid-template-columns: 1fr; gap: 2px; }
-    dd { margin-bottom: 8px; }
-  }
+  @media (max-width: 560px) { .verdict { flex-direction: column; gap: 10px; } }
 </style>
 </head>
 <body>
 <div class="wrap">
 
   <header>
-    <div class="eyebrow">SDD Demo Project · Flutter · Status as of 28 Sep 2026</div>
+    <div class="eyebrow">SDD Demo Project · Employee Internal Transfer · Last updated 28 Sep 2026</div>
     <h1>Project Status Report</h1>
-    <p class="muted">Employee Internal Transfer and Employee Registration &amp; Login, on the <code>employee-transfer-request</code> branch. This page is built from the files in <code>.ai-context/</code>: the BRD, specs, plans, tasks, reviews and status log.</p>
+    <p class="muted">Built from <code>.ai-context/status.md</code>, <code>BRD.md</code> v5.0, the Gate 1 review files and <code>PROJECT_CHECKLIST.md</code>. This page is updated after every task; the newest change is at the top of the Update Log below.</p>
   </header>
 
-  <section class="verdict" aria-label="Gate 1 verdict">
-    <div class="icon" aria-hidden="true">!</div>
+  <section class="verdict" aria-label="Gate 1 status">
+    <div class="icon" aria-hidden="true">⏳</div>
     <div>
-      <h2>Gate 1 is not approved</h2>
-      <p>Gate 1 reviewer Shamik Bhattacharya recorded 30 P0 / mandatory points on 18 Sep 2026 and requested changes. The author fixed what they could on 21 Sep and resubmitted, as BRD v3.0 and spec v1.5. <strong>Shamik has not re-reviewed it yet</strong>, so development of the v1.5 changes is blocked.</p>
+      <h2>BRD v5.0 is submitted for Gate 1 re-review</h2>
+      <p>BRD-001 now depends only on the requirement PDF: 27 numbered business rules, all 23 requirements covered, and all 16 review comments mapped. <strong>It is waiting for Shamik Bhattacharya's decision</strong>; development stays blocked until he approves. The project now approves the BRD first; after that, the specs, plan, tasks and test cases are recreated from it.</p>
     </div>
   </section>
 
   <div class="grid kpis">
-    <div class="card kpi"><div class="label">Gate 1 points</div><div class="value">24 / 30</div><div class="sub">fixed or resolved; 6 still open</div></div>
-    <div class="card kpi"><div class="label">Tasks merged</div><div class="value">10 / 12</div><div class="sub">T07 and T05 not started</div></div>
-    <div class="card kpi"><div class="label">Tests passing</div><div class="value">147 / 147</div><div class="sub">plus <code>flutter analyze</code> clean, last run 18 Sep</div></div>
-    <div class="card kpi"><div class="label">Latest versions</div><div class="value" style="font-size:22px">BRD v3.0</div><div class="sub">Spec v1.5 · Login spec v1.2 · Plan v3</div></div>
+    <div class="card kpi"><div class="label">G1-01 to G1-30 register</div><div class="value">30 / 30</div><div class="sub">resolved · 0 open</div></div>
+    <div class="card kpi"><div class="label">Review comments (28 Sep)</div><div class="value">15 / 16</div><div class="sub">done · #16 deferred until approval</div></div>
+    <div class="card kpi"><div class="label">Blocking, from the PDF</div><div class="value">5 / 5</div><div class="sub">B-01 to B-05 fixed in v5.0</div></div>
+    <div class="card kpi"><div class="label">Requirement PDF coverage</div><div class="value">23 / 23</div><div class="sub">T-01 to T-04 fixed · BR-01 to BR-27</div></div>
+    <div class="card kpi"><div class="label">Specs · plan · tasks</div><div class="value" style="font-size:22px">Paused</div><div class="sub">recreated after BRD approval</div></div>
   </div>
 
-  <h2>Review gates</h2>
+  <h2>Where we are</h2>
   <div class="pipeline">
-    <div class="step done"><div class="n">DONE</div><h3>Discovery &amp; spec</h3><p>BRD, discovery docs and specs written for both features.</p></div>
-    <div class="step current"><div class="n">CURRENT · BLOCKED</div><h3>Gate 1: spec review</h3><p>Shamik Bhattacharya. Changes were requested and resubmitted; re-review is pending.</p></div>
-    <div class="step"><div class="n">NEXT</div><h3>Update tasks &amp; build v1.5</h3><p>The task list still describes the design from before v1.5.</p></div>
-    <div class="step"><div class="n">LATER</div><h3>Gate 2 + Security</h3><p>Subhajit Mukherjee does code review, then the security assessment runs.</p></div>
+    <div class="step done"><div class="n">DONE</div><h3>BRD v5.0</h3><p>Checked against the requirement PDF; BRD-001 is standalone.</p></div>
+    <div class="step current"><div class="n">CURRENT</div><h3>Gate 1 re-review</h3><p>Shamik Bhattacharya approves, or requests changes.</p></div>
+    <div class="step"><div class="n">NEXT</div><h3>Recreate specs, plan, tasks, tests</h3><p>Written from BRD-001 v5.0 (comment #16).</p></div>
+    <div class="step"><div class="n">THEN</div><h3>Test-first build</h3><p>RED, then GREEN, per task.</p></div>
+    <div class="step"><div class="n">LATER</div><h3>Gate 2 + Security</h3><p>Subhajit Mukherjee: code review and security assessment.</p></div>
   </div>
 
-  <h2>Features</h2>
-  <div class="grid features">
-    <article class="card">
-      <div class="feature-head">
-        <h3>Employee Internal Transfer</h3>
-        <span class="pill bad">Gate 1: Not approved</span>
-      </div>
-      <p class="muted" style="font-size:14px">Employees submit an internal transfer request and track it through Manager, HR, then Payroll, IT and Facilities. The request data lives in Hive on the device and there is no backend (ADR-0004).</p>
-      <dl>
-        <dt>Spec</dt><dd>v1.5, changes in progress</dd>
-        <dt>Plan</dt><dd>v3 (adds a <code>decision_history</code> box and a <code>FAILED</code> status)</dd>
-        <dt>Gate 1</dt><dd>Changes requested on 18 Sep; resubmitted on 21 Sep</dd>
-        <dt>Build</dt><dd>T01 to T06 merged against the pre-v1.5 design. 91 unit/widget tests and 3 integration tests passed at merge.</dd>
-        <dt>Gap</dt><dd>The tasks file has not been updated for v1.5 (AC15 to AC17, <code>managerName</code>). T07 (<code>employeeId</code> scoping) is planned but not yet added to the tasks file.</dd>
-      </dl>
-      <div class="tasks" aria-label="Tasks">
-        <span class="task done">T01</span><span class="task done">T02</span><span class="task done">T03</span>
-        <span class="task done">T04</span><span class="task done">T05</span><span class="task done">T06</span>
-        <span class="task">T07 planned</span><span class="task">v1.5 tasks: none yet</span>
-      </div>
-    </article>
-
-    <article class="card">
-      <div class="feature-head">
-        <h3>Employee Registration &amp; Login</h3>
-        <span class="pill warn">Gate 1: Re-review needed</span>
-      </div>
-      <p class="muted" style="font-size:14px">Account registration and login on the device only, with a salted SHA-256 password hash and a session that controls which screen opens first (ADR-0005).</p>
-      <dl>
-        <dt>Spec</dt><dd>v1.2, changes in progress</dd>
-        <dt>Gate 1</dt><dd>Approved by Shamik at v1.1 (17 Sep). The v1.2 change, a mandatory <code>managerName</code> field, has not been reviewed.</dd>
-        <dt>Build</dt><dd>T01 to T04 merged: domain layer, Hive data layer, Login and Register screens, session-aware entry screen and Logout.</dd>
-        <dt>Pending</dt><dd>T05, the end-to-end integration test. AC9 is excluded until internal transfer T07 lands.</dd>
-      </dl>
-      <div class="tasks" aria-label="Tasks">
-        <span class="task done">T01</span><span class="task done">T02</span><span class="task done">T03</span>
-        <span class="task done">T04</span><span class="task">T05 pending</span>
-      </div>
-    </article>
-  </div>
-
-  <h2>Gate 1 decision register (G1-01 to G1-30)</h2>
-  <div class="card">
-    <p style="margin:0">Where the 30 mandatory review points stand after the 21 Sep fix-up pass. That pass was done by the author, so it <strong>does not count</strong> as a Gate 1 re-review (the reviewer must be a different person from the author).</p>
-    <div class="bar" role="img" aria-label="6 fixed, 18 resolved by existing design, 6 open">
-      <span style="flex:6;background:var(--ok)"></span>
-      <span style="flex:18;background:var(--info)"></span>
-      <span style="flex:6;background:var(--warn)"></span>
+  <h2>For the reviewer to re-check</h2>
+  <div class="grid two">
+    <div class="card">
+      <h3>Changed since the last review</h3>
+      <ol class="list">
+        <li><strong>Downstream triggers are conditional</strong> (requirement: "may need"): Payroll when role or location changes, IT when department or role changes, Facilities when location changes. <span class="pill warn">Sponsor to confirm</span></li>
+        <li><strong>Organisational record update</strong> (journey step 4) is a new step owned by HR, always required.</li>
+        <li><strong>FAILED</strong> also applies when the org record update fails (comment #6).</li>
+        <li><strong>Tally:</strong> G1-11 and G1-23 moved to "Decided in BRD v5.0" (comment #15).</li>
+        <li><strong>BRD-001 is standalone:</strong> sign-in, the employee profile and the current manager come from the existing portal. BRD-002 is kept for version control only.</li>
+        <li><strong>New security rules</strong> BR-23 to BR-26: own requests only, outcome ownership, test/demo data, demo-level sign-in.</li>
+      </ol>
     </div>
-    <div class="legend">
-      <span><i style="background:var(--ok)"></i><strong>6</strong> fixed in this pass</span>
-      <span><i style="background:var(--info)"></i><strong>18</strong> already covered by the spec or ADRs</span>
-      <span><i style="background:var(--warn)"></i><strong>6</strong> open, with a comment for the reviewer</span>
+    <div class="card">
+      <h3>Journey coverage (requirement §2)</h3>
+      <div class="table-wrap" style="border:0">
+        <table>
+          <tbody>
+            <tr><td class="id">1</td><td>Discuss with manager</td><td><span class="pill neutral">Precondition</span></td></tr>
+            <tr><td class="id">2</td><td>Manager confirms</td><td><span class="pill ok">Covered</span></td></tr>
+            <tr><td class="id">3</td><td>HR validates eligibility</td><td><span class="pill ok">Covered</span></td></tr>
+            <tr><td class="id">4</td><td>Org information updated</td><td><span class="pill ok">Covered</span></td></tr>
+            <tr><td class="id">5–7</td><td>Payroll / IT / Facilities, if needed</td><td><span class="pill ok">Conditional</span></td></tr>
+            <tr><td class="id">8</td><td>Employee receives confirmation</td><td><span class="pill ok">Covered</span></td></tr>
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
 
-  <div class="filters" role="group" aria-label="Filter register">
-    <button type="button" data-filter="all" aria-pressed="true">All (30)</button>
-    <button type="button" data-filter="open" aria-pressed="false">Open (6)</button>
-    <button type="button" data-filter="fixed" aria-pressed="false">Fixed (6)</button>
-    <button type="button" data-filter="resolved" aria-pressed="false">Resolved (18)</button>
+  <h2>Review items</h2>
+  <div class="tabs" role="tablist" aria-label="Review item sets">
+    <button type="button" role="tab" data-tab="comments" aria-selected="true">16 review comments</button>
+    <button type="button" role="tab" data-tab="brd" aria-selected="false">BRD vs requirement (B-01–B-08)</button>
+    <button type="button" role="tab" data-tab="register" aria-selected="false">G1-01 to G1-30 register</button>
   </div>
 
-  <div class="table-wrap">
-    <table>
-      <thead><tr><th>ID</th><th>Area</th><th>Status</th><th>How it's handled</th></tr></thead>
+  <div id="panel-comments" role="tabpanel">
+    <div class="table-wrap"><table>
+      <thead><tr><th>#</th><th>Comment (Shamik, 28 Sep)</th><th>Status</th><th>Note</th></tr></thead>
+      <tbody id="comments"></tbody>
+    </table></div>
+  </div>
+
+  <div id="panel-brd" role="tabpanel" hidden>
+    <div class="table-wrap"><table>
+      <thead><tr><th>ID</th><th>Point</th><th>In the PDF?</th><th>Status</th></tr></thead>
+      <tbody id="brdpoints"></tbody>
+    </table></div>
+  </div>
+
+  <div id="panel-register" role="tabpanel" hidden>
+    <div class="filters" role="group" aria-label="Filter register">
+      <button type="button" data-filter="all" aria-pressed="true">All (30)</button>
+      <button type="button" data-filter="fixed" aria-pressed="false">Fixed (6)</button>
+      <button type="button" data-filter="resolved" aria-pressed="false">Resolved (16)</button>
+      <button type="button" data-filter="decided" aria-pressed="false">V1 decision (6)</button>
+      <button type="button" data-filter="oos" aria-pressed="false">Out of scope (2)</button>
+    </div>
+    <div class="table-wrap"><table>
+      <thead><tr><th>ID</th><th>Area</th><th>Resolution</th><th>How it's handled</th></tr></thead>
       <tbody id="register"></tbody>
-    </table>
+    </table></div>
   </div>
 
   <h2>Next steps</h2>
   <div class="card">
-    <ol class="next">
-      <li><strong>Shamik Bhattacharya re-reviews</strong> BRD v3.0, internal transfer spec v1.5, registration/login spec v1.2 and plan v3. He then approves them or asks for more changes, and decides on the 6 open items (G1-01, 04, 16, 18, 21, 27). Some of these may need a Product or business owner.</li>
-      <li><strong>Update the internal transfer tasks</strong> for v1.5 (AC15 to AC17, <code>FAILED</code> status, decision history, <code>managerName</code>) and add T07 (<code>employeeId</code> scoping).</li>
-      <li><strong>Build and test</strong> the new tasks, then finish registration/login T05 (integration test).</li>
-      <li><strong>Gate 2</strong> code review by Subhajit Mukherjee, then the <strong>security assessment</strong>.</li>
-      <li>Before any release build: set up separate UAT and PROD build flavours for Android/iOS, and the real <code>freerasp</code> configuration.</li>
+    <ol class="list">
+      <li><strong>Shamik Bhattacharya</strong> reviews BRD v5.0 (BRD-001) and ticks the decision line in "Gate 1 Re-Review Submission".</li>
+      <li>After approval, recreate the <strong>specs, plan, tasks and test cases</strong> from BRD-001 v5.0, tracing to the requirement document.</li>
+      <li>Test-first implementation, then <strong>Gate 2</strong> and the <strong>security assessment</strong>.</li>
+      <li>Before production: the Sponsor confirms the downstream trigger rules and names the HR Product Owner.</li>
     </ol>
   </div>
 
-  <h2>Things to know</h2>
+  <h2>Update log</h2>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Date</th><th>Change</th></tr></thead>
+    <tbody>
+      <tr><td class="date">28 Sep</td><td>Removed the unsubmitted v5.0 draft backup. BRD v5.0 is the current version; v4.0 is the previous one.</td></tr>
+      <tr><td class="date">28 Sep</td><td>BRD v5.0 final draft: BRD-001 rebuilt from the requirement PDF only. It has 27 numbered rules (BR-01 to BR-27), users, pending actions, security rules, assumptions and traceability. T-01 to T-04 fixed, and all 16 comments mapped (15 done, #16 deferred). Submitted for Gate 1 re-review.</td></tr>
+      <tr><td class="date">28 Sep</td><td>BRD-001 traced against the requirement PDF only: 20/23 requirements fully covered, 3 partial, 0 missing. 16 comments: 10 trace to the PDF, 3 N/A (BRD-002), 3 housekeeping. 4 gaps (T-01–T-04) to fix before approval. See <code>reviews/BRD-v5.0.requirement-trace.md</code>.</td></tr>
+      <tr><td class="date">28 Sep</td><td>Rule added to <code>AGENT.md</code>: update this page and <code>PROJECT_CHECKLIST.md</code> after every task. Page rebuilt for the re-review state.</td></tr>
+      <tr><td class="date">28 Sep</td><td>BRD v5.0 <strong>submitted for Gate 1 re-review</strong>. BRD-001 made standalone: sign-in, profile and manager come from the existing portal. Added the Preconditions &amp; Dependencies list and the re-review submission section.</td></tr>
+      <tr><td class="date">28 Sep</td><td>BRD-002 marked as version control only. 16 comments given a status: 15 done, #16 deferred until BRD approval.</td></tr>
+      <tr><td class="date">28 Sep</td><td>BRD v5.0: B-01 to B-05 fixed (journey steps 1–8, org record update, confirmation, conditional triggers, integration needs). v4.0 backed up.</td></tr>
+      <tr><td class="date">28 Sep</td><td>BRD v4.0 reviewed only against the requirement PDF: 8 blocking points, of which 5 are in the PDF.</td></tr>
+      <tr><td class="date">28 Sep</td><td>Approach reset: approve the BRD first; specs, plan and tasks are paused.</td></tr>
+      <tr><td class="date">28 Sep</td><td>Shamik released BRD v4.0 with 16 review comments; all 16 validated as valid.</td></tr>
+      <tr><td class="date">21 Sep</td><td>Author remediation of the 30 G1 points (BRD v3.0); 6 left open with a comment.</td></tr>
+      <tr><td class="date">18 Sep</td><td>Shamik recorded 30 P0 Gate 1 points (G1-01 to G1-30): Changes Requested.</td></tr>
+      <tr><td class="date">15–18 Sep</td><td>First build: internal transfer T01–T06 and registration/login T01–T04 merged, 147/147 tests. Now paused.</td></tr>
+    </tbody>
+  </table></div>
+
+  <h2>Earlier build (paused)</h2>
   <div class="notice">
-    <p><strong>No independent review has happened yet for the internal transfer spec.</strong> The two earlier passes, the 15 Sep self-review and the 21 Sep fix-up, were both done by the author. Shamik's 18 Sep review requested changes and did not approve anything.</p>
-    <p style="margin:0"><strong>Identity check:</strong> the registration/login Gate 1 approval was recorded because the reviewer confirmed in the session that they were Shamik. The project has no SSO or signed commits to verify who a reviewer is, and the review file says so.</p>
+    <p style="margin:0">The code on this branch was built from the old specs: internal transfer T01–T06 and registration/login T01–T04, with 147/147 tests passing at the last run on 18 Sep. It will be revisited against the new specs once BRD v5.0 is approved. Known gaps from that build: requests are scoped per device rather than per employee, and <code>FAILED</code> and decision history are not implemented.</p>
   </div>
 
   <footer>
-    Sources: <code>.ai-context/status.md</code> (last updated 18 Sep), <code>BRD.md</code> v3.0, <code>reviews/*.gate1-review.md</code>, <code>specs/</code>, <code>tasks/</code>, and commit <code>13b0a6c</code> (21 Sep 2026). Test counts are from the last logged run on 18 Sep 2026 and were not run again for this report.
+    Sources: <code>.ai-context/status.md</code>, <code>.ai-context/BRD.md</code> v5.0, <code>.ai-context/reviews/BRD-v4.0.gate1-review.md</code>, <code>PROJECT_CHECKLIST.md</code>. Nothing here is an approval: only the named Gate 1 reviewer can approve the BRD.
   </footer>
 </div>
 
 <script>
-  const REGISTER = [
-    ["G1-01","Employee identity","open","Accounts are keyed by email, not a separate employeeId. The only verification is a password-hash match, which is ADR-0005's stated limit."],
-    ["G1-02","Registration","resolved","ADR-0005 names this limitation: there is no HRIS to check employee details against (ADR-0004)."],
-    ["G1-03","Email","resolved","There is no email service, so OTP or email verification is impossible. Deferred indefinitely."],
-    ["G1-04","Password","open","Complexity and salted SHA-256 hashing are defined; password reset is out of scope. No lockout policy is defined."],
-    ["G1-05","Authorization","resolved","The only actor type is the employee; other stakeholders are simulated. RBAC has nothing to decide between."],
-    ["G1-06","Current employee data","resolved","The employee enters department, location and role at registration (OP01)."],
-    ["G1-07","Manager identification","fixed","New mandatory managerName field (login spec v1.2), shown on the status screen. It is not verified."],
-    ["G1-08","Receiving manager","resolved","Only the current manager approves in v1."],
-    ["G1-09","HR eligibility","resolved","The app treats the HR rule as a black box; business sign-off on the rule itself is still open."],
-    ["G1-10","Workflow","resolved","The plan defines the full state machine, now including FAILED."],
-    ["G1-11","Conditional tasks","resolved","No decision matrix: Payroll, IT and Facilities are always triggered in v1."],
-    ["G1-12","Failure handling","fixed","New FAILED end status when any downstream stakeholder rejects (AC15). No retry or compensation."],
-    ["G1-13","Amend request","resolved","Out of scope for v1."],
-    ["G1-14","Withdrawal","resolved","Out of scope for v1, together with amend."],
-    ["G1-15","Multiple requests","resolved","One open (non-final) request per employee, enforced through activeRequestId."],
-    ["G1-16","Effective date","open","The date must be in the future. There is no minimum notice rule; that is a Product decision."],
-    ["G1-17","Audit","fixed","New append-only decision_history box and OP05 (AC17)."],
-    ["G1-18","Security","open","Authorization is only enforced on the device (ADR-0005), so it is not a real security boundary."],
-    ["G1-19","Notifications","resolved","Status is shown in the portal only; no email or push in v1."],
-    ["G1-20","SLA","resolved","SLAs are explicitly excluded from v1."],
-    ["G1-21","Integration contracts","open","The local contract OP01 to OP05 is fully specified. Protection against repeated operations is only discussed for double taps (QA03)."],
-    ["G1-22","Data ownership","fixed","A field-ownership statement was added to the v1.5 spec's Assumptions."],
-    ["G1-23","Transfer completion","resolved","AC12: the request is COMPLETED when all 3 downstream stakeholders complete."],
-    ["G1-24","Partial completion","fixed","Covered by the FAILED status. No rollback, which is a stated v1 simplification."],
-    ["G1-25","Reconciliation","resolved","There is no real downstream system to reconcile against (ADR-0004)."],
-    ["G1-26","Admin/support","resolved","There is no server-side state to monitor, so no admin console is needed."],
-    ["G1-27","Regulatory/privacy","open","Personal data is never logged. How long data is kept, and how access requests are handled, is not defined."],
-    ["G1-28","Registration lifecycle","fixed","Inactive or terminated employees are explicitly out of scope, because there is no HRIS feed."],
-    ["G1-29","Duplicate accounts","resolved","Emails must be unique regardless of case; the same limitation as G1-02."],
-    ["G1-30","V1 boundaries","resolved","Out-of-scope and deferred sections exist; the 6 open items are listed by name."]
+  const COMMENTS = [
+    [1,"Remove stale \"Open\" items","done",""],
+    [2,"Authentication is local/demo only","done",""],
+    [3,"Auth not production-ready; server-side needed","done",""],
+    [4,"managerName is demo/reference only","done","Manager now comes from the portal profile"],
+    [5,"HR eligibility not implemented; no invented rules","done",""],
+    [6,"FAILED: completed actions not rolled back","done","Extended to the org record update in v5.0; re-check"],
+    [7,"Turn open items into decisions or out of scope","done",""],
+    [8,"No minimum lead time","done",""],
+    [9,"Lockout out of scope","done",""],
+    [10,"No email verification/OTP","done",""],
+    [11,"Test/demo data only","done",""],
+    [12,"Retry, rollback, compensation are future requirements","done",""],
+    [13,"Duplicate-submission rule","done",""],
+    [14,"Business owner for BRD-002","done","Author comment: BRD-002 is not followed, kept for version control only; author is Indrajit Bhandari"],
+    [15,"Correct the tally","done","Changed again in v5.0; re-check"],
+    [16,"Align BRD, spec, plan and tests","deferred","Author comment: specs, plan and tasks are paused and will be written after BRD approval"]
   ];
-  const LABEL = { open: ["Open","warn"], fixed: ["Fixed","ok"], resolved: ["Resolved","info"] };
-  const tbody = document.getElementById("register");
-  tbody.innerHTML = REGISTER.map(([id, area, st, note]) =>
-    `<tr data-status="${st}"><td class="id">${id}</td><td class="area">${area}</td>` +
-    `<td><span class="pill ${LABEL[st][1]}">${LABEL[st][0]}</span></td><td class="note">${note}</td></tr>`
-  ).join("");
+  const BRDPOINTS = [
+    ["B-01","Journey steps 1 and 4","yes","done"],
+    ["B-02","Employee confirmation (step 8)","yes","done"],
+    ["B-03","Conditional Payroll / IT / Facilities","yes","done"],
+    ["B-04","Integration needs; IT provision and remove","yes","done"],
+    ["B-05","Orchestration intent vs V1 simulation","yes","done"],
+    ["B-06","Business vs technical decisions","no","nonblocking"],
+    ["B-07","Users, journey stages, business rules","no","nonblocking"],
+    ["B-08","References to discarded artefacts","no","nonblocking"]
+  ];
+  const REGISTER = [
+    ["G1-01","Employee identity","decided","Identity comes from the existing portal sign-in; demo-level in V1, the user is not verified as the actual employee."],
+    ["G1-02","Registration","resolved","Accepted limitation: no HR master data to check against in V1."],
+    ["G1-03","Email","resolved","No email verification or OTP in V1."],
+    ["G1-04","Password","oos","Password policy belongs to the portal sign-in; lockout is out of scope for V1."],
+    ["G1-05","Authorization","resolved","One actor type (employee); other stakeholders are simulated. Production needs server-side authorization."],
+    ["G1-06","Current employee data","resolved","Current values come from the employee's portal profile (test/demo data in V1)."],
+    ["G1-07","Manager identification","fixed","The current manager comes from the employee's portal profile."],
+    ["G1-08","Receiving manager","resolved","Only the current manager approves in V1."],
+    ["G1-09","HR eligibility","resolved","Not implemented in V1; the HR decision is simulated and no rules are invented."],
+    ["G1-10","Workflow","resolved","Full state machine including FAILED."],
+    ["G1-11","Conditional tasks","decided","v5.0: org record update always; Payroll, IT and Facilities only when required."],
+    ["G1-12","Failure handling","fixed","Any required downstream failure ends the request as FAILED; no retry in V1."],
+    ["G1-13","Amend request","resolved","No amendment in V1."],
+    ["G1-14","Withdrawal","resolved","No withdrawal in V1."],
+    ["G1-15","Multiple requests","resolved","Exactly one non-terminal request per employee."],
+    ["G1-16","Effective date","decided","Must be in the future; no minimum lead time."],
+    ["G1-17","Audit","fixed","Append-only decision history."],
+    ["G1-18","Security","decided","Sign-in and authorization are demo-level only; not production-ready."],
+    ["G1-19","Notifications","resolved","In-portal only; the confirmation is shown on the status screen."],
+    ["G1-20","SLA","resolved","SLA explicitly excluded from V1."],
+    ["G1-21","Integration contracts","decided","Duplicate-submission rule; integration needs listed per stakeholder."],
+    ["G1-22","Data ownership","fixed","Field ownership stated."],
+    ["G1-23","Transfer completion","decided","v5.0: Completed when the org record update and every required step have completed."],
+    ["G1-24","Partial completion","fixed","FAILED with no rollback; pending steps stop."],
+    ["G1-25","Reconciliation","resolved","Nothing to reconcile in V1; future requirement."],
+    ["G1-26","Admin/support","resolved","No admin console in V1."],
+    ["G1-27","Regulatory/privacy","oos","Retention and subject-access handling out of scope; test/demo data only."],
+    ["G1-28","Registration lifecycle","fixed","Inactive or terminated employees out of scope for V1."],
+    ["G1-29","Duplicate accounts","resolved","Same accepted limitation as G1-02."],
+    ["G1-30","V1 boundaries","resolved","All V1 decisions and exclusions are explicit; 0 open."]
+  ];
+  const STATUS = {
+    done: ["Done","ok"], deferred: ["Deferred","warn"], nonblocking: ["Non-blocking","neutral"],
+    yes: ["Yes","ok"], no: ["No","neutral"],
+    fixed: ["Fixed","ok"], resolved: ["Resolved","info"], decided: ["V1 decision","info"], oos: ["Out of scope","neutral"]
+  };
+  const pill = k => `<span class="pill ${STATUS[k][1]}">${STATUS[k][0]}</span>`;
 
-  const buttons = document.querySelectorAll(".filters button");
-  function applyFilter(f) {
-    buttons.forEach(b => b.setAttribute("aria-pressed", String(b.dataset.filter === f)));
-    tbody.querySelectorAll("tr").forEach(r => { r.hidden = f !== "all" && r.dataset.status !== f; });
-    try { localStorage.setItem("status-filter", f); } catch (e) {}
+  document.getElementById("comments").innerHTML = COMMENTS.map(([n, c, s, note]) =>
+    `<tr><td class="id">${n}</td><td class="strong">${c}</td><td>${pill(s)}</td><td class="note">${note}</td></tr>`).join("");
+  document.getElementById("brdpoints").innerHTML = BRDPOINTS.map(([id, p, inPdf, s]) =>
+    `<tr><td class="id">${id}</td><td class="strong">${p}</td><td>${pill(inPdf)}</td><td>${pill(s)}</td></tr>`).join("");
+  const reg = document.getElementById("register");
+  reg.innerHTML = REGISTER.map(([id, a, s, note]) =>
+    `<tr data-status="${s}"><td class="id">${id}</td><td class="strong">${a}</td><td>${pill(s)}</td><td class="note">${note}</td></tr>`).join("");
+
+  const tabs = document.querySelectorAll(".tabs button");
+  function showTab(t) {
+    tabs.forEach(b => b.setAttribute("aria-selected", String(b.dataset.tab === t)));
+    ["comments","brd","register"].forEach(p => { document.getElementById("panel-" + p).hidden = p !== t; });
+    try { localStorage.setItem("status-tab", t); } catch (e) {}
   }
-  buttons.forEach(b => b.addEventListener("click", () => applyFilter(b.dataset.filter)));
-  let saved = "all";
-  try { saved = localStorage.getItem("status-filter") || "all"; } catch (e) {}
-  applyFilter(saved);
+  tabs.forEach(b => b.addEventListener("click", () => showTab(b.dataset.tab)));
+
+  const filters = document.querySelectorAll(".filters button");
+  function applyFilter(f) {
+    filters.forEach(b => b.setAttribute("aria-pressed", String(b.dataset.filter === f)));
+    reg.querySelectorAll("tr").forEach(r => { r.hidden = f !== "all" && r.dataset.status !== f; });
+  }
+  filters.forEach(b => b.addEventListener("click", () => applyFilter(b.dataset.filter)));
+
+  let savedTab = "comments";
+  try { savedTab = localStorage.getItem("status-tab") || "comments"; } catch (e) {}
+  if (!["comments","brd","register"].includes(savedTab)) savedTab = "comments";
+  showTab(savedTab);
+  applyFilter("all");
 </script>
 </body>
 </html>

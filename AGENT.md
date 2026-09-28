@@ -64,7 +64,10 @@ is the "vibe coding" anti-pattern this whole workspace exists to prevent
    `.ai-context/prompt_history.md` (per `.agent/rules/auto-log.md`) and update
    `.ai-context/status.md` the same day. An agent session that doesn't do this
    recreates the exact "ask around to find out what's in flight" problem SDD
-   exists to remove.
+   exists to remove. **After every task, also tick `PROJECT_CHECKLIST.md` and
+   update `Project_Status.html`** (the shareable status page): its "Last
+   updated" date, its gate/progress figures, and a new row at the top of its
+   Update Log. The page must never show a different state from `status.md`.
 
 ## Non-negotiables
 Full, authoritative list: **`.ai-context/constitution.md`**. Not restated here —

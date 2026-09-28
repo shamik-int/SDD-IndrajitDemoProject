@@ -57,7 +57,24 @@ _Core scaffolding done and verified (`flutter analyze` clean, `flutter test`
 - [x] Self-review pass performed against the Gate 1 checklist (`.ai-context/reviews/employee-internal-transfer.gate1-review.md`) — 5 findings: 2 blocking (fixed, spec → v1.1), 1 testability gap (fixed), 1 QA-completeness gap (fixed in test_cases), 1 accepted-as-flagged v1 scope decision
 - [x] Outcome recorded as **Approved (v1.1, since revised to v1.4)** — ratified by Author (Indrajit Bhandari) in lieu of an independent Gate 1 sign-off, by explicit instruction 2026-09-15. **Not** an independent peer review — logged as such in the spec's own Status field, not hidden. Subhajit Mukherjee was the assigned Gate 1 reviewer at that time (now reassigned to Gate 2); **recommend Shamik Bhattacharya performs the real Gate 1 review** before production release.
 - [x] Deliverable 9 evidence = `.ai-context/reviews/employee-internal-transfer.gate1-review.md` + the Author-ratification note in the spec's Status field
-- [ ] **Real Gate 1 review by Shamik Bhattacharya** (the current named reviewer, reassigned 2026-09-17) — review points recorded 2026-09-18 in `.ai-context/reviews/employee-internal-transfer.gate1-review.md`; 30 P0 decisions remain open, so the gate is not approved
+- [ ] **Real Gate 1 review by Shamik Bhattacharya** (the current named reviewer, reassigned 2026-09-17) — review points recorded 2026-09-18 in `.ai-context/reviews/employee-internal-transfer.gate1-review.md`. _Update 2026-09-28: all 30 G1 decisions are now resolved in BRD v5.0 (0 open); the gate itself is still not approved — see the BRD-first items below._
+
+### 3a. BRD-first Gate 1 (approach reset 2026-09-28)
+_The BRD is approved first. Specs, plan, tasks and test cases are then
+recreated from it; the existing ones are paused._
+- [x] Shamik's 16 Gate 1 review comments (2026-09-28) incorporated into BRD v4.0 (by the reviewer) and validated: all 16 valid
+- [x] BRD v4.0 reviewed against `Requirement for SDD (2).pdf` only — `.ai-context/reviews/BRD-v4.0.gate1-review.md`, 8 blocking comments
+- [x] Blocking comments checked against the requirement document: 5 in it (B-01–B-05), 3 not (B-06–B-08, downgraded to non-blocking)
+- [x] BRD v5.0: B-01–B-05 incorporated (journey steps 1–8, organisational record update, employee confirmation, conditional downstream triggers, integration needs per stakeholder); v4.0 backed up
+- [x] BRD-002 marked as version control only; BRD-001 made standalone (sign-in, profile and manager from the existing portal)
+- [x] 16 review comments given a status: #1–#15 Done (#14 author comment added), #16 Deferred until BRD approval
+- [x] BRD v5.0 **submitted for Gate 1 Re-Review** (with a "Gate 1 Re-Review Submission" section)
+- [x] BRD v5.0 traced against the requirement document only (`reviews/BRD-v5.0.requirement-trace.md`): 20/23 requirements fully covered, 3 partial; 16 comments: 10 trace, 3 N/A (BRD-002), 3 housekeeping
+- [x] Fix requirement-trace gaps T-01 to T-04 in BRD-001 (pending actions, security rules, traceability to the requirement document only, Deliverable 1 items)
+- [x] BRD-001 rebuilt to depend only on the requirement document: BR-01 to BR-27, users, assumptions, dependencies, traceability, all 16 review comments covered (15 done, #16 deferred)
+- [ ] **Gate 1 approval of BRD v5.0 by Shamik Bhattacharya**
+- [ ] Sponsor confirms the V1 downstream trigger rules (before any production commitment)
+- [ ] After approval: recreate specs, plan, tasks and test cases from BRD-001 v5.0 (comment #16)
 
 ## 4. Plan & Tasks — Deliverables 4–7 (Milestone 3)
 - [x] Deliverable 4 — `.ai-context/plans/employee-internal-transfer.plan.md`: Architecture Approach, Data Model, Constitution Check, Explicitly Deferred, Sequencing (revised to **4 steps**, all Flutter-only — the original 8-step version had 4 backend steps that no longer exist)

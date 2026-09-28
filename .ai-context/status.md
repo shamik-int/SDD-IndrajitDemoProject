@@ -1,7 +1,14 @@
 # Project Status Board
-_Last updated: 2026-09-18_
+_Last updated: 2026-09-28_
+
+## Current Gate
+| Item | Status | Owner | Last Updated | Notes |
+|---|---|---|---|---|
+| **BRD v5.0 (BRD-001)** | **Submitted for Gate 1 Re-Review — not yet approved** | Indrajit Bhandari (Author); Shamik Bhattacharya (Gate 1) | 2026-09-28 | G1-01–G1-30: 30/30 done, 0 open. Review comments #1–#16: 15 done, #16 deferred until BRD approval. BRD review blocking items B-01–B-05: done. BRD-002 kept for version control only. Next: Shamik approves or requests changes. |
 
 ## Active Specs
+> **Paused (2026-09-28).** The specs, plan, tasks and test cases below are not being updated. They will be recreated from the approved BRD. The rows are kept for history.
+
 | Spec ID | Title | Status | Owner | Last Updated | Notes |
 |---|---|---|---|---|---|
 | employee-internal-transfer | Employee Internal Transfer Digital Journey | In QA | Indrajit Bhandari | 2026-09-17 | All 6 tasks (T01–T06) merged. 91/91 unit/widget tests + 3/3 integration tests passing, `flutter analyze` clean. Spec at **v1.4**. **A 7th task (T07, `employeeId` scoping) is now planned** — see `employee-registration-login.plan.md`'s Cross-Feature Amendment — not yet written into this feature's own tasks file. Next: Gate 1 review by Shamik (still outstanding for *this* spec specifically), then Gate 2 by Subhajit + Security Assessment. |
@@ -145,3 +152,28 @@ _Last updated: 2026-09-18_
 - Updated `.ai-context/BRD.md` to version 4.0 per Shamik Bhattacharya's Gate 1 review comments (2026-09-28): added a cross-cutting **V1 Posture** section (local demo, test/demo data only, local/demo authentication only, not production-ready auth, future integration retry/rollback/compensation/reconciliation); closed every former "Open at BRD stage" item in BRD-001/BRD-002 as an explicit V1 decision or V1 Out-of-Scope item (HR eligibility not implemented, FAILED with no rollback, no minimum lead time, duplicate-submission rule, `managerName` demo/reference only, no lockout, no email verification/OTP); reassigned the BRD-002 Business Owner to the One-Point Portal HR Product Owner; corrected the Gate 1 tally (6 Fixed · 12 Resolved in spec · 6 Resolved via ADR · 4 Decided for V1 · 2 Out of Scope for V1 = 30, 0 open).
 - **By instruction, BRD only** — spec, plan, tasks and test cases were not changed. BRD v4.0 lists the resulting alignment items under "Downstream Alignment Required" for the joint BRD/Spec/Plan/Test-case review.
 - **Gate 1 status: not yet finally approved.** BRD v4.0 is pending Gate 1 final approval by Shamik Bhattacharya; development remains blocked until then.
+
+### 2026-09-28 (cont'd) — BRD v5.0: BRD Gate 1 review against the requirement document
+- Reset of approach: BRD is approved first, then specs, plan, tasks and test cases are recreated from it.
+- BRD v4.0 reviewed only against `Requirement for SDD (2).pdf` — `reviews/BRD-v4.0.gate1-review.md` (8 blocking comments).
+- Each blocking comment checked against the requirement document: **5 of 8 are directly in it** (B-01 journey steps 1 & 4, B-02 employee confirmation, B-03 conditional Payroll/IT/Facilities "may need", B-04 integration needs incl. IT provision/remove, B-05 orchestration intent vs V1 simulation). **3 are not** (B-06, B-07 are Deliverable 1 / discovery items already covered; B-08 arises from the spec reset) — downgraded to non-blocking.
+- Preserved v4.0 as `BRD-v4-backup-2026-09-28.md`. Updated `BRD.md` to **v5.0** with B-01–B-05: journey table (steps 1–8), organisational record update step, downstream trigger rules, integration-needs table per stakeholder, employee confirmation per final outcome. G1-11 and G1-23 re-decided; tally updated.
+- **Gate 1 status: BRD v5.0 submitted for approval — not yet approved.** The downstream trigger rules are a V1 business rule and need Sponsor confirmation before production.
+- Gate 1 review comments (16 points of 2026-09-28): Status column added in `BRD.md`. #1–#15 marked **Done**. #14 author comment: BRD-002 is not being followed and is kept for version control only; the author is Indrajit Bhandari. #16 author comment: specs, plan and tasks are paused and will be written after BRD approval — **Deferred until BRD approval**.
+
+### 2026-09-28 (cont'd) — BRD v5.0 submitted for Gate 1 Re-Review
+- BRD-001 made standalone now that BRD-002 is not followed: sign-in, the current department/location/role and the current manager come from the employee's existing One-Point Portal profile (requirement §2), not from BRD-002 registration. Added BRD-001 "Preconditions & Dependencies"; added a v5.0 note on the G1 register rows that cited BRD-002.
+- Added "Gate 1 Re-Review Submission" to `BRD.md`, with a status summary (0 open across the register, the 16 comments and B-01–B-05), the items changed since the last review for the reviewer to re-check, and a reviewer decision line. "Downstream Alignment Required" marked superseded.
+- **Gate 1 status: BRD v5.0 submitted for Re-Review — not yet approved. Development remains blocked.**
+
+### 2026-09-28 (cont'd) — BRD v5.0 traced against the requirement document only
+- `reviews/BRD-v5.0.requirement-trace.md`: BRD-001 checked against `Requirement for SDD (2).pdf` only (no older BRDs, specs, plans or tests).
+- Requirement items R01–R23: 20 fully covered, 3 partial (R19 pending *actions*, R22 security, R23 traceability), 0 missing. Deliverable 1 items: 6 of 10 present; primary users, numbered business rules, assumptions and the business/technical split are partial.
+- 16 review comments: 10 trace to the requirement document (4 directly, 1 partially, 5 as V1 decisions), 3 do not apply to BRD-001 (#9, 10, 14 concern BRD-002), 3 are housekeeping (#1, 7, 15).
+- **4 blocking gaps (T-01 to T-04) must be fixed in BRD-001 before Gate 1 approval.** The BRD stays "Submitted for Gate 1 Re-Review — not yet approved".
+
+### 2026-09-28 (cont'd) — BRD v5.0 final draft: depends only on the requirement document
+- Earlier v5.0 draft not kept as a separate backup (it was an unsubmitted, same-day draft); v4.0 remains the previous version (`BRD-v4-backup-2026-09-28.md`).
+- BRD-001 rebuilt from `Requirement for SDD (2).pdf` only: primary users, journey steps 1–8, numbered business rules BR-01 to BR-27, downstream triggers, pending actions, employee confirmation, integration needs, business vs technical decisions, assumptions A-01 to A-07, dependencies D-01 to D-04, out of scope, open questions (none), source → BRD traceability, and coverage of all 16 review comments (15 done, #16 deferred) and G1-01 to G1-30.
+- Requirement-trace gaps T-01 to T-04 fixed; no references to earlier specs, tests or ADRs remain in BRD-001. V1 Posture folded into BRD-001; historical sections moved under "Review history and version control".
+- **Gate 1 status: Submitted for Re-Review — not yet approved. Awaiting Shamik Bhattacharya's decision.**
