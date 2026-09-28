@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Project Status Report</title>
-<meta name="description" content="SDD Indrajit Demo Project — BRD v5.2 approved; spec v2.0 in Gate 1 review. Updated after every task.">
+<meta name="description" content="SDD Indrajit Demo Project — BRD v5.2 approved; spec v2.1 in Gate 1 review. Updated after every task.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
 <style>
@@ -117,14 +117,14 @@
   <section class="verdict" aria-label="Gate 1 status">
     <div class="icon" aria-hidden="true">⏳</div>
     <div>
-      <h2>BRD v5.2 approved · Spec v2.0 submitted for Gate 1</h2>
+      <h2>BRD v5.2 approved · Spec v2.1 submitted for Gate 1</h2>
       <p>Shamik Bhattacharya <strong>approved BRD v5.2</strong> on 28 Sep. The spec was not approved and has been rewritten as <strong>v2.0 from BRD-001 only</strong>. <strong>Waiting for Shamik's decision on the spec</strong>; development stays blocked until the spec, plan and tasks are approved.</p>
     </div>
   </section>
 
   <div class="grid kpis">
     <div class="card kpi"><div class="label">BRD-001 v5.2</div><div class="value" style="font-size:22px">Approved</div><div class="sub">Gate 1 · Shamik · 28 Sep</div></div>
-    <div class="card kpi"><div class="label">Spec v2.0</div><div class="value" style="font-size:22px">In review</div><div class="sub">submitted for Gate 1</div></div>
+    <div class="card kpi"><div class="label">Spec v2.1</div><div class="value" style="font-size:22px">In review</div><div class="sub">30 ACs · 50 tests · 28/28 BRs covered</div></div>
     <div class="card kpi"><div class="label">Acceptance criteria</div><div class="value">26</div><div class="sub">each cites a BR-xx rule</div></div>
     <div class="card kpi"><div class="label">Spec-derived unit tests</div><div class="value">32</div><div class="sub">UT01 to UT32</div></div>
     <div class="card kpi"><div class="label">Spec decisions to confirm</div><div class="value">9</div><div class="sub">SD-01 to SD-09</div></div>
@@ -134,13 +134,13 @@
   <h2>Where we are</h2>
   <div class="pipeline">
     <div class="step done"><div class="n">DONE</div><h3>BRD v5.2 approved</h3><p>Gate 1 approved by Shamik Bhattacharya, 28 Sep.</p></div>
-    <div class="step current"><div class="n">CURRENT</div><h3>Spec v2.0 Gate 1</h3><p>Shamik approves the spec, or requests changes.</p></div>
-    <div class="step"><div class="n">NEXT</div><h3>Plan, tasks, tests</h3><p>Written from spec v2.0 (comment #16).</p></div>
+    <div class="step current"><div class="n">CURRENT</div><h3>Spec v2.1 Gate 1</h3><p>Shamik approves the spec, or requests changes.</p></div>
+    <div class="step"><div class="n">NEXT</div><h3>Plan, tasks, tests</h3><p>Written from the approved spec (comment #16).</p></div>
     <div class="step"><div class="n">THEN</div><h3>Test-first build</h3><p>RED, then GREEN, per task.</p></div>
     <div class="step"><div class="n">LATER</div><h3>Gate 2 + Security</h3><p>Subhajit Mukherjee: code review and security assessment.</p></div>
   </div>
 
-  <h2>For the reviewer to check in spec v2.0</h2>
+  <h2>For the reviewer to check in spec v2.1</h2>
   <div class="grid two">
     <div class="card">
       <h3>Spec decisions (details the BRD leaves open)</h3>
@@ -154,6 +154,12 @@
         <li><strong>SD-07</strong> Duplicate submission blocked with a per-submit <code>submissionId</code>.</li>
         <li><strong>SD-08</strong> The employee can list all their requests, so old history stays reachable.</li>
         <li><strong>SD-09</strong> A downstream failure carries no reason. <span class="pill warn">Confirm</span></li>
+        <li><strong>SD-10</strong> Reason and rejection reason: at most 500 characters.</li>
+        <li><strong>SD-11</strong> No maximum effective date.</li>
+        <li><strong>SD-12</strong> "Demo — test data only" indicator on V1 screens.</li>
+        <li><strong>SD-13</strong> Simulation control in every V1 build; removed before production.</li>
+        <li><strong>SD-14</strong> Status labels shown to the employee.</li>
+        <li><strong>SD-15</strong> Stakeholder task content fixed when the step becomes pending.</li>
       </ol>
     </div>
     <div class="card">
@@ -211,8 +217,8 @@
   <h2>Next steps</h2>
   <div class="card">
     <ol class="list">
-      <li><strong>Shamik Bhattacharya</strong> reviews spec v2.0 (<code>specs/employee-internal-transfer.spec.md</code>), including SD-01 to SD-09, and approves or requests changes.</li>
-      <li>After spec approval, write the <strong>plan, tasks and test cases</strong> from spec v2.0.</li>
+      <li><strong>Shamik Bhattacharya</strong> reviews spec v2.1 (<code>specs/employee-internal-transfer.spec.md</code>), including SD-01 to SD-15 and the new stakeholder contract, and approves or requests changes.</li>
+      <li>After spec approval, write the <strong>plan, tasks and test cases</strong> from the approved spec.</li>
       <li>Test-first implementation, then <strong>Gate 2</strong> and the <strong>security assessment</strong>.</li>
       <li>Before production: the Sponsor confirms the downstream trigger rules and names the HR Product Owner.</li>
     </ol>
@@ -222,6 +228,7 @@
   <div class="table-wrap"><table>
     <thead><tr><th>Date</th><th>Change</th></tr></thead>
     <tbody>
+      <tr><td class="date">28 Sep</td><td>Spec v2.1 (Author revision): full check against the approved BRD-001. Added the stakeholder contract (§8), status labels, actors, AC27–AC30, UT33–UT50 and SD-10 to SD-15. Every BR-01 to BR-28 has an AC. Submitted for Gate 1.</td></tr>
       <tr><td class="date">28 Sep</td><td><strong>Shamik approved BRD v5.2 (Gate 1).</strong> Spec not approved: <code>employee-internal-transfer.spec.md</code> rewritten as v2.0 from BRD-001 only (26 ACs, 6 operations, 32 unit tests, 9 spec decisions); v1.5 backed up. Registration/login spec marked not followed. Spec v2.0 submitted for Gate 1.</td></tr>
       <tr><td class="date">28 Sep</td><td>BRD v5.2 released by the Author: F-03 completed (all 16 history rows and all 30 G1 rows cite BRD-001 rules), BR-28 moved into number order. Resubmitted for Gate 1 final approval.</td></tr>
       <tr><td class="date">28 Sep</td><td>Shamik reviewed BRD v5.0: Changes Requested with F-01 to F-04. BRD v5.1 released: BR-28 rejection reason, effective-date timing, history fixes. Checked: F-01, F-02, F-04 resolved; F-03 partial (11 cells).</td></tr>

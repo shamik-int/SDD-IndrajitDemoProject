@@ -5,7 +5,7 @@ _Last updated: 2026-09-28_
 | Item | Status | Owner | Last Updated | Notes |
 |---|---|---|---|---|
 | **BRD v5.2 (BRD-001)** | **Approved (Gate 1), 2026-09-28** | Indrajit Bhandari (Author); Shamik Bhattacharya (Gate 1) | 2026-09-28 | Approved by Shamik Bhattacharya. BRD-002 kept for version control only. |
-| **Spec v2.0 (employee-internal-transfer)** | **Submitted for Gate 1 review — not yet approved** | Indrajit Bhandari (Author); Shamik Bhattacharya (Gate 1) | 2026-09-28 | Rebuilt from BRD-001 v5.2 only: 26 ACs, 6 local operations, 32 unit tests, 9 spec decisions (SD-01–SD-09) for the reviewer to confirm. Next: Shamik approves or requests changes. Plan, tasks and test cases wait for spec approval. |
+| **Spec v2.1 (employee-internal-transfer)** | **Submitted for Gate 1 review — not yet approved** | Indrajit Bhandari (Author); Shamik Bhattacharya (Gate 1) | 2026-09-28 | Author revision of v2.0 after a full BRD-001 v5.2 coverage check: 30 ACs, 50 unit tests, 15 spec decisions (SD-01–SD-15), stakeholder contract (§8). Every BR-01–BR-28 has an AC; every AC has a test except AC21 (verified at Gate 2). Next: Shamik approves or requests changes. Plan, tasks and test cases wait for spec approval. |
 
 ## Active Specs
 | Spec ID | Title | Status | Owner | Last Updated | Notes |
@@ -202,3 +202,16 @@ _Last updated: 2026-09-28_
 - `specs/employee-internal-transfer.spec.md` rewritten as **v2.0** from BRD-001 v5.2 only (v1.5 kept as `employee-internal-transfer.spec-v1.5-backup-2026-09-28.md`): 7 request statuses, 6 steps with 6 step states, triggers table, consumed contract for sign-in/profile/reference lists (D-01–D-03), 6 local operations (OP01–OP06, incl. `submissionId` idempotency and per-employee scoping), 26 ACs, 32 unit tests, 9 spec decisions (SD-01–SD-09), BRD → spec traceability, and a v1.5 → v2.0 change table.
 - `specs/employee-registration-login.spec.md` marked **Not followed** (its BRD-002 is version control only).
 - **Spec v2.0 submitted for Gate 1 — not yet approved.** Plan, tasks and test cases wait for spec approval. Development remains blocked.
+
+### 2026-09-28 (cont'd) — Spec v2.1: full coverage of the approved BRD-001 v5.2
+- v2.0 (written in the reviewer's commit `03a3182`) kept as `specs/employee-internal-transfer.spec-v2.0-backup-2026-09-28.md`. **v2.1 is the Author's revision** (Indrajit Bhandari), so the Gate 1 review of the spec is independent.
+- Rule-by-rule check of BRD-001 v5.2 against the spec found 14 gaps; all fixed in v2.1:
+  - stakeholder contract per step (BRD-001 §8; the requirement document's "define API contracts");
+  - status and step display labels; actors (§2); D-04 and assumptions A-01–A-07 in Context;
+  - AC27 not signed in (BR-26), AC28 demo/test-data indicator (BR-25), AC29 stakeholder task content (§8), AC30 own request list (BR-23, BR-27);
+  - AC17: no retry/undo offered; retention/deletion/subject-access added to Out of Scope;
+  - reason length limit and no maximum effective date;
+  - UT33–UT50 (remaining trigger combinations, HR blank reason, widget tests);
+  - SD-10–SD-15 for the reviewer to confirm.
+- Result: 30 ACs, 50 unit tests, 15 spec decisions. Every BR-01–BR-28 has at least one AC; every AC has a unit test except AC21 (no notifications), verified at Gate 2 code review. A new "BRD-001 coverage check" section maps §1–§13.
+- **Gate 1 status: spec v2.1 submitted — not yet approved.** Plan, tasks and test cases wait for spec approval.

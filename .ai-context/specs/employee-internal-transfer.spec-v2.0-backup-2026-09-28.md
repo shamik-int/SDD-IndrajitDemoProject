@@ -4,7 +4,7 @@
 employee-internal-transfer
 
 ## Status
-**v2.1 — Submitted for Gate 1 review. Not yet approved.**
+**v2.0 — Submitted for Gate 1 review. Not yet approved.**
 Plan, tasks and test cases must not be written from this spec until the
 Gate 1 reviewer (Shamik Bhattacharya) approves it.
 
@@ -14,15 +14,7 @@ Gate 1 reviewer (Shamik Bhattacharya) approves it.
 | Gate 1 reviewer | Shamik Bhattacharya |
 | Updated | 2026-09-28 |
 | Linked BRD | `.ai-context/BRD.md#BRD-001`, **v5.2, Gate 1 Approved 2026-09-28** |
-| Previous version | `employee-internal-transfer.spec-v2.0-backup-2026-09-28.md` (v2.0), itself following `employee-internal-transfer.spec-v1.5-backup-2026-09-28.md` |
-
-**How v2.1 was written.** v2.1 is the Author's revision of v2.0, after a
-rule-by-rule check of BRD-001 v5.2 against the spec, so that nothing in
-the approved BRD is missed. It adds the stakeholder contract (BRD-001 §8),
-status display labels, actors (§2), D-04, acceptance criteria AC27–AC30,
-unit tests UT33–UT50, spec decisions SD-10 to SD-15, and the BR-25
-retention items under Out of Scope. See "Changes in v2.1" and the BRD-001
-coverage check. No v2.0 acceptance criterion was removed or renumbered.
+| Previous version | `employee-internal-transfer.spec-v1.5-backup-2026-09-28.md` |
 
 **How v2.0 was written.** v2.0 is rebuilt from **BRD-001 v5.2 only**
 (review comment #16). It does not carry anything over from spec v1.5,
@@ -61,16 +53,6 @@ outcome.
     department, location, role and current manager (BR-03, BR-10).
   - **D-03 reference lists:** departments/business units, locations and
     roles (BR-02; A-02, A-03). Demo lists in V1.
-  - **D-04 manager conversation:** journey step 1 happens before the
-    employee uses the portal. It is not captured or verified; the manager's
-    approval (AC10) is the recorded confirmation. Nothing in this spec
-    depends on it.
-- Inherited BRD-001 assumptions: A-01 (portal, sign-in and profile exist;
-  demo-level in V1), A-02 (department/business unit is one selection),
-  A-03 (reference lists available; demo lists in V1), A-06 (trigger rules
-  confirmed by the Sponsor before production), A-07 (downstream steps are
-  independent and can complete in any order, AC15). A-04 and A-05 (Sponsor,
-  priority) do not affect the spec.
 - The Plan decides how D-01 to D-03 are provided in V1 (for example, by the
   existing demo sign-in). This spec defines only what it needs from them
   (Consumed contract, below).
@@ -84,29 +66,16 @@ interface.
 
 ## Definitions
 
-### Actors (BRD-001 §2)
-| Actor | In this spec |
-|---|---|
-| Employee (primary user) | Signed-in user (D-01). Submits and views only their own requests (OP01–OP05, BR-23) |
-| Current manager | Records `MANAGER_APPROVAL` (simulated in V1, OP06) |
-| HR | Records `HR_ELIGIBILITY` and `ORG_RECORD_UPDATE` (simulated) |
-| Payroll | Records `PAYROLL_UPDATE` (simulated) |
-| IT | Records `IT_ACCESS_CHANGE` (simulated) |
-| Facilities | Records `FACILITIES_WORKSPACE` (simulated) |
-
-The history `actor` of each stakeholder outcome is the actor that owns the
-step, never the employee (BR-24).
-
 ### Request status (BR-06, BR-11 to BR-17)
-| Status | Final? | Label shown to the employee (SD-14) | Meaning |
-|---|---|---|---|
-| `PENDING_MANAGER_APPROVAL` | No | Pending manager approval | Submitted; waiting for the current manager |
-| `PENDING_HR_ELIGIBILITY` | No | Pending HR eligibility check | Manager approved; waiting for HR |
-| `IN_PROGRESS` | No | In progress | HR approved; downstream steps running |
-| `COMPLETED` | Yes | Completed | Org record update and every required step completed (BR-15) |
-| `REJECTED_BY_MANAGER` | Yes | Rejected by Manager | Manager rejected, with reason (BR-11, BR-28) |
-| `REJECTED_BY_HR` | Yes | Rejected by HR | HR rejected, with reason (BR-12, BR-28) |
-| `FAILED` | Yes | Failed | A required downstream step failed (BR-16) |
+| Status | Final? | Meaning |
+|---|---|---|
+| `PENDING_MANAGER_APPROVAL` | No | Submitted; waiting for the current manager |
+| `PENDING_HR_ELIGIBILITY` | No | Manager approved; waiting for HR |
+| `IN_PROGRESS` | No | HR approved; downstream steps running |
+| `COMPLETED` | Yes | Org record update and every required step completed (BR-15) |
+| `REJECTED_BY_MANAGER` | Yes | Manager rejected, with reason (BR-11, BR-28) |
+| `REJECTED_BY_HR` | Yes | HR rejected, with reason (BR-12, BR-28) |
+| `FAILED` | Yes | A required downstream step failed (BR-16) |
 
 A request is **in progress** when its status is not final (BR-07, BR-17).
 
@@ -121,10 +90,8 @@ A request is **in progress** when its status is not final (BR-07, BR-17).
 | `FACILITIES_WORKSPACE` | Facilities | Facilities: workspace at the new location | Location changes (§5) |
 
 ### Step state (BR-19)
-`PENDING`, `COMPLETED`, `REJECTED`, `FAILED`, `STOPPED`, `NOT_REQUIRED`,
-shown as "Pending", "Completed", "Rejected", "Failed", "Stopped" and "Not
-required". An approved manager or HR step is shown as "Completed
-(Approved)". No other state is used (spec decision SD-01).
+`PENDING`, `COMPLETED`, `REJECTED`, `FAILED`, `STOPPED`, `NOT_REQUIRED`.
+No other state is used (spec decision SD-01).
 
 - An approval by the manager or HR records that step as `COMPLETED` with
   decision `APPROVED` (SD-02).
@@ -192,7 +159,7 @@ is signed in, every operation returns `Result.error("Please sign in.")`.
   locationId: String,
   roleId: String,
   effectiveDate: DateTime,  // date only
-  reason: String?,          // optional free text, at most 500 characters (SD-10)
+  reason: String?,          // optional free text
 }
 ```
 **Success:** `Result.success(TransferRequest)`. The new request:
@@ -216,11 +183,8 @@ created:
 | 3 | Effective date is today or earlier (device local date) | "Effective date must be in the future." |
 | 4 | Department, location and role all equal the current values | "Change at least one of department, location or role." |
 | 5 | The employee already has a request in progress | "You already have a transfer request in progress." |
-| 6 | Reason longer than 500 characters | "Reason must be 500 characters or fewer." |
 
-A reason that is empty or only spaces is stored as no reason. There is no
-maximum effective date (SD-11). The request and its `SUBMITTED` history
-entry are saved together or not at all.
+A reason that is empty or only spaces is stored as no reason.
 
 ### employee-internal-transfer.OP02 — getMyActiveTransferRequest
 **Input:** none.
@@ -256,7 +220,7 @@ _Backs the demo-only simulation (AC24–AC26). Not a stakeholder interface
   stepId: MANAGER_APPROVAL | HR_ELIGIBILITY | ORG_RECORD_UPDATE
         | PAYROLL_UPDATE | IT_ACCESS_CHANGE | FACILITIES_WORKSPACE,
   outcome: APPROVED | REJECTED | COMPLETED | FAILED,
-  reason: String?,   // mandatory when outcome == REJECTED (BR-28); at most 500 characters (SD-10)
+  reason: String?,   // mandatory when outcome == REJECTED (BR-28)
 }
 ```
 
@@ -285,42 +249,6 @@ saved together or not at all):
 | The step is not `PENDING` (not reached, already recorded, `STOPPED` or `NOT_REQUIRED`) | "This step is not pending." |
 | Outcome not valid for the step | "This outcome is not valid for this step." |
 | `REJECTED` with no reason, or a reason of only spaces | "A rejection reason is required." |
-| Reason longer than 500 characters | "Reason must be 500 characters or fewer." |
-
-### Stakeholder contract (BRD-001 §8)
-What the portal sends to each stakeholder when its step becomes `PENDING`,
-and what it needs back. In V1 there is no real integration (ADR-0004): the
-task is created locally, **shown in the demo-only simulation control**
-(AC29), and answered through OP06. The same shapes are the contract for a
-future real integration. The task content is fixed when the step becomes
-`PENDING` (SD-15).
-
-```dart
-StakeholderTask {
-  taskId, requestId, stepId, stakeholder,
-  employeeId, employeeName,
-  effectiveDate,
-  payload,          // per step, below
-  createdAt,
-}
-StakeholderResponse {
-  taskId, outcome, reason?,   // reason mandatory for REJECTED (BR-28)
-}
-```
-
-| Step | Payload sent (§8 "Portal sends") | Response needed (§8 "Portal needs back") |
-|---|---|---|
-| `MANAGER_APPROVAL` | current and proposed department, location, role; effective date; employee's reason | `APPROVED` / `REJECTED` + reason |
-| `HR_ELIGIBILITY` | same as manager | `APPROVED` / `REJECTED` + reason |
-| `ORG_RECORD_UPDATE` | new department, location, role; effective date | `COMPLETED` / `FAILED` |
-| `PAYROLL_UPDATE` | new role and new location; effective date | `COMPLETED` / `FAILED` |
-| `IT_ACCESS_CHANGE` | **provision**: new department and role; **remove**: current department and role; effective date | `COMPLETED` / `FAILED` |
-| `FACILITIES_WORKSPACE` | new location; effective date | `COMPLETED` / `FAILED` |
-
-**Idempotency:** one task per step per request. A second response to a
-task whose step is no longer `PENDING` is refused ("This step is not
-pending."), so a repeated response never changes the request twice.
-**Errors:** OP06's error table applies to every response.
 
 ### Data shapes
 ```dart
@@ -332,7 +260,7 @@ TransferRequest {
   status: RequestStatus,
   steps: List<Step>,   // only steps that have been reached (SD-01)
 }
-Step { stepId, stakeholder, state: StepState, decision?, reason?, recordedAt?, task?: StakeholderTask }
+Step { stepId, stakeholder, state: StepState, decision?, reason?, recordedAt? }
 HistoryEntry {
   sequence, recordedAt,
   actor: EMPLOYEE | MANAGER | HR | PAYROLL | IT | FACILITIES,
@@ -414,8 +342,7 @@ HistoryEntry {
 17. **employee-internal-transfer.AC17** — Given `IN_PROGRESS`, when any
     required step fails, then that step is `FAILED`, every other pending
     step is `STOPPED`, completed steps stay `COMPLETED`, status becomes
-    `FAILED`, and stopped steps accept no further outcome. No retry, undo
-    or compensation action is offered. *(BR-16)*
+    `FAILED`, and stopped steps accept no further outcome. *(BR-16)*
 18. **employee-internal-transfer.AC18** — Given a request in any final
     outcome, then no step accepts an outcome, and the employee can submit a
     new request. *(BR-17)*
@@ -470,27 +397,6 @@ HistoryEntry {
     is refused with the matching OP06 error and nothing changes. *(BR-17,
     BR-24)*
 
-### Access, demo posture, stakeholder tasks and request list (added in v2.1)
-27. **employee-internal-transfer.AC27** — Given nobody is signed in, when
-    the transfer feature is opened, then the employee is asked to sign in,
-    no request data is shown, and every operation returns "Please sign in."
-    *(BR-26, D-01)*
-28. **employee-internal-transfer.AC28** — Given the V1 app, then the
-    transfer form, the request screen and the simulation control show a
-    visible "Demo — test data only" indicator, so no one mistakes V1 for a
-    production system holding real employee records. *(BR-25, §9; SD-12)*
-29. **employee-internal-transfer.AC29** — Given a step becomes `PENDING`,
-    then a stakeholder task is created with exactly the payload in the
-    Stakeholder contract for that step, and the simulation control shows
-    it before an outcome is recorded. For `IT_ACCESS_CHANGE` the task lists
-    both the access to provision and the access to remove. *(§8, BR-13,
-    BR-24)*
-30. **employee-internal-transfer.AC30** — Given an employee with one or more
-    requests, when they open their request list, then they see only their
-    own requests, newest first, each with its submitted date and status
-    label, and can open any of them and its history. *(BR-23, BR-27;
-    SD-08)*
-
 ## Unit Test Cases (spec-derived)
 | Test ID | AC | Scenario | Expected |
 |---|---|---|---|
@@ -526,28 +432,6 @@ HistoryEntry {
 | UT30 | AC23 | Full journey to `COMPLETED` | History has submission, each outcome and each status change, in order |
 | UT31 | AC23 | Outcome that fails validation | No history entry added |
 | UT32 | AC20 | Confirmation content for each of the 4 final outcomes | Matches §7 of BRD-001 |
-| UT33 | AC13 | HR approves; department and location changed | All four downstream steps `PENDING` |
-| UT34 | AC13 | HR approves; department and role changed | Org, Payroll, IT `PENDING`; Facilities `NOT_REQUIRED` |
-| UT35 | AC13 | HR approves; location and role changed | All four downstream steps `PENDING` |
-| UT36 | AC25 | HR rejects with blank reason | Error "A rejection reason is required."; nothing changes |
-| UT37 | AC08 | Widget: tap submit, then tap again while processing | Submit disabled while processing; one request |
-| UT38 | AC09 | Widget: open a submitted request | No edit or withdraw action shown |
-| UT39 | AC19 | Widget: each of the six steps when `PENDING`; a rejected step | Pending action label matches the Steps table; rejected step shows its reason; states use the defined labels |
-| UT40 | AC01 | Widget: open the form; submit without a reason | Lists come from D-03; submission succeeds with no reason |
-| UT41 | AC24 | Widget: simulation control on each status | Only pending steps offered, only their valid outcomes; labelled "Demo only" |
-| UT42 | AC27 | Widget: open the feature with nobody signed in | Sign-in prompt; no request data shown |
-| UT43 | AC28 | Widget: form, request screen, simulation control | "Demo — test data only" indicator visible on each |
-| UT44 | AC29 | Each of the six steps becomes `PENDING` | Task payload matches the Stakeholder contract; IT lists provision and remove |
-| UT45 | AC30 | Employee with three requests; another employee with one | Own three, newest first; other employee's not listed |
-| UT46 | OP01, OP06 | Reason of 501 characters on submit; rejection reason of 501 characters | "Reason must be 500 characters or fewer."; nothing saved |
-| UT47 | AC05 | Effective date 5 years ahead | Accepted (no maximum, SD-11) |
-| UT48 | AC16 | Org record completed; new request submitted before the effective date | Snapshot uses the old values (SD-06) |
-| UT49 | AC17 | Widget: request `FAILED` | No retry, undo or compensation action shown |
-| UT50 | AC29 | Second response to a task whose step is no longer pending | "This step is not pending."; request unchanged |
-
-AC21 (no email, push, SLA timer, reminder or escalation) has no runtime
-behaviour to test; it is verified at code review (Gate 2) by confirming no
-notification or scheduling code exists.
 
 ## Explicitly Out of Scope (BRD-001 §12)
 - International or cross-legal-entity transfers.
@@ -567,9 +451,6 @@ notification or scheduling code exists.
   this spec.
 - A production-grade interface for each stakeholder role.
 - Payroll, IT and Facilities' own internal workflows.
-- Retention periods, deletion of requests or history, and subject-access
-  handling for employee personal data (BR-25; future production
-  requirements).
 
 ## Non-Functional Constraints
 - **Demo posture (BR-24 to BR-26, §9):** V1 is a demo. It uses test/demo
@@ -588,10 +469,6 @@ notification or scheduling code exists.
   saving.
 - **Performance:** local reads and writes complete in under 500 ms on a
   mid-range device.
-- **Demo-only control (BR-24; SD-13):** the simulation control is part of
-  every V1 build and is visually separate from the employee's own actions.
-  It must be removed, or replaced by real stakeholder integrations, before
-  any production release.
 
 ## Spec decisions for Gate 1
 Details BRD-001 leaves open that the spec has to settle. Please confirm or
@@ -608,12 +485,6 @@ reject each.
 | SD-07 | Idempotency uses a `submissionId` generated once per submit action. | Makes BR-08 testable at the repository, not only in the UI. |
 | SD-08 | The employee can list all their requests (OP03), not only the latest. | BR-27 says the employee can view the history; after a new request, the old request's history would otherwise be unreachable. |
 | SD-09 | A downstream failure carries no reason. | §8 needs back only "Completed / Failed". BR-28 requires a reason only for manager and HR rejections. |
-| SD-10 | The employee's reason and a rejection reason are each at most 500 characters. | BRD-001 gives no limit; a limit makes the fields testable and keeps the history readable. |
-| SD-11 | There is no maximum effective date. | BR-05 sets only "future date"; adding a maximum would be a new business rule. |
-| SD-12 | V1 screens show a "Demo — test data only" indicator (AC28). | Makes BR-25's "test/demo data only" visible and testable. |
-| SD-13 | The simulation control is in every V1 build and must be removed before production. | V1 has no real integration (ADR-0004), so the journey cannot progress without it; BR-24 requires that it is never taken for a real interface. |
-| SD-14 | Status labels shown to the employee are as in the Request status table. | BR-06 names "Pending manager approval"; the other labels follow BRD-001 wording (§3, BR-11 to BR-17). |
-| SD-15 | A stakeholder task's content is fixed when its step becomes `PENDING`. | Keeps the task stable while pending; matches the snapshot rule SD-03. |
 
 ## Traceability: BRD-001 → spec
 | BRD-001 | Spec |
@@ -641,50 +512,9 @@ reject each.
 | BR-25, BR-26 | Non-Functional Constraints, Out of Scope, Consumed contract |
 | BR-27 | AC23, OP05, SD-08 |
 | BR-28 | AC11, AC12, AC20, AC25 |
-| §8 integration needs | Stakeholder contract, AC29, OP06 valid outcomes and effects, SD-15 |
-| §11 D-01 to D-03 | Consumed contract, AC27 |
-| §11 D-04 | Context (D-04) |
+| §8 integration needs | OP06 valid outcomes and effects; Consumed contract |
+| §11 D-01 to D-03 | Consumed contract |
 | §12 | Explicitly Out of Scope |
-
-**v2.1 additions to the rows above:** BR-02 → SD-10, UT40, UT46; BR-05 →
-SD-11, UT47; BR-08 → UT37; BR-09 → UT38; BR-13 → UT33–UT35, UT48; BR-16 →
-UT49; BR-18, BR-19 → status and step labels, SD-14, UT39; BR-23 → AC30,
-UT45; BR-24 → AC29, SD-13, UT41, UT44, UT50; BR-25 → AC28, SD-12, UT43,
-Out of Scope (retention); BR-26 → AC27, UT42; BR-27 → AC30; BR-28 → UT36.
-
-## BRD-001 coverage check (v2.1)
-Every item of the approved BRD-001 v5.2, and where the spec covers it.
-
-| BRD-001 | Covered by | |
-|---|---|---|
-| §1 objective, success measure | Intent; AC19 (status and pending action visible without contacting anyone) | ✅ |
-| §2 primary users | Definitions: Actors | ✅ |
-| §3 journey steps 1–8 | Step 1: Context D-04 · Steps 2–7: Steps table, AC10–AC17 · Step 8: AC20 | ✅ |
-| BR-01 to BR-28 | Traceability table above; every BR has at least one AC | ✅ |
-| §5 downstream triggers | Triggers table (all 7 combinations); UT15–UT18, UT33–UT35 | ✅ |
-| §6 pending actions | Steps table; AC19; UT39 | ✅ |
-| §7 employee confirmation | AC20; UT32 | ✅ |
-| §8 integration needs | Stakeholder contract; AC29; UT44, UT50 | ✅ |
-| §9 business vs technical | Context (ADRs); Non-Functional Constraints; plan decides storage | ✅ |
-| §10 assumptions A-01 to A-07 | Context (inherited assumptions) | ✅ |
-| §11 dependencies D-01 to D-04 | Context; Consumed contract; AC27 | ✅ |
-| §12 out of scope (14 items) | Explicitly Out of Scope (all 14, plus BR-25 retention items) | ✅ |
-| §13 open questions: none | Spec decisions SD-01 to SD-15 settle spec-level details only; none adds a business rule | ✅ |
-
-## Changes in v2.1 (from v2.0)
-| Area | Added |
-|---|---|
-| BRD-001 §8 | Stakeholder contract (task payload and response per step), AC29, UT44, UT50, SD-15 |
-| BRD-001 §2 | Actors table |
-| BRD-001 D-04, A-01 to A-07 | Listed in Context |
-| BR-18, BR-19 | Status and step display labels (SD-14) |
-| BR-25 | AC28 demo indicator (SD-12); retention/deletion/subject-access in Out of Scope |
-| BR-26 | AC27 not signed in |
-| BR-24 | SD-13 simulation control removed before production |
-| BR-23, BR-27 | AC30 own request list |
-| BR-02, BR-05 | Reason length limit (SD-10); no maximum effective date (SD-11) |
-| BR-16 | AC17: no retry, undo or compensation offered |
-| Tests | UT33–UT50: remaining trigger combinations, HR blank reason, widget tests for AC01, AC08, AC09, AC19, AC24, AC27, AC28, AC30 |
 
 ## Changes from v1.5
 | Area | v1.5 | v2.0 (from BRD-001 v5.2) |

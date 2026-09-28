@@ -78,8 +78,9 @@ recreated from it; the existing ones are paused._
 - [x] **Gate 1 approval of BRD v5.2 by Shamik Bhattacharya** (2026-09-28)
 - [ ] Sponsor confirms the V1 downstream trigger rules (before any production commitment)
 - [x] Spec `employee-internal-transfer` v2.0 rewritten from BRD-001 v5.2 (v1.5 backed up); registration-login spec marked Not followed
-- [ ] **Gate 1 approval of spec v2.0 by Shamik Bhattacharya** (incl. SD-01 to SD-09)
-- [ ] After spec approval: recreate plan, tasks and test cases from spec v2.0 (comment #16)
+- [x] Spec v2.1 (Author revision): full BRD-001 v5.2 coverage — 30 ACs, 50 UTs, SD-01–SD-15, stakeholder contract (§8); v2.0 backed up
+- [ ] **Gate 1 approval of spec v2.1 by Shamik Bhattacharya**
+- [ ] After spec approval: recreate plan, tasks and test cases from the approved spec (comment #16)
 
 ## 4. Plan & Tasks — Deliverables 4–7 (Milestone 3)
 - [x] Deliverable 4 — `.ai-context/plans/employee-internal-transfer.plan.md`: Architecture Approach, Data Model, Constitution Check, Explicitly Deferred, Sequencing (revised to **4 steps**, all Flutter-only — the original 8-step version had 4 backend steps that no longer exist)

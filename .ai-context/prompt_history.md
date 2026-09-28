@@ -241,3 +241,10 @@ completed task per `.agent/rules/auto-log.md`._
 - **Process note:** as with BRD v5.1 (N-07), the spec revision was made at the Gate 1 reviewer's instruction, not by the Author. The Author should confirm the v2.0 content.
 - **Files touched:** `.ai-context/BRD.md`, `.ai-context/reviews/BRD-v5.0.gate1-review.md`, `.ai-context/specs/employee-internal-transfer.spec.md`, `.ai-context/specs/employee-internal-transfer.spec-v1.5-backup-2026-09-28.md` (new), `.ai-context/specs/employee-registration-login.spec.md`, `.ai-context/specs/README.md`, `.ai-context/status.md`, `PROJECT_CHECKLIST.md`, `Project_Status.html`
 - **Outcome:** BRD-001 v5.2 Approved (Gate 1). Spec v2.0 submitted for Gate 1, not yet approved. No code changed.
+
+### 2026-09-28 — Spec v2.1: full coverage of the approved BRD-001 v5.2
+- **Actor:** Indrajit Bhandari (Author), with Claude Code
+- **Task:** Prepare the spec for the approved BRD without missing anything.
+- **Prompt summary:** Checked spec v2.0 rule by rule against BRD-001 v5.2 (§1–§13, BR-01–BR-28, A-01–A-07, D-01–D-04). Fixed 14 gaps in v2.1: stakeholder contract (§8), status/step labels, actors, D-04, AC27–AC30, UT33–UT50, SD-10–SD-15, BR-25 retention items in Out of Scope. Added a BRD-001 coverage check section. v2.0 kept as a backup.
+- **Files touched:** `specs/employee-internal-transfer.spec.md`, `specs/employee-internal-transfer.spec-v2.0-backup-2026-09-28.md` (new), `specs/README.md`, `status.md`, `prompt_history.md`, `PROJECT_CHECKLIST.md`, `Project_Status.html`
+- **Outcome:** Spec v2.1 submitted for Gate 1, not yet approved. 28/28 BRs have an AC; 29/30 ACs have a unit test (AC21 verified at Gate 2).
