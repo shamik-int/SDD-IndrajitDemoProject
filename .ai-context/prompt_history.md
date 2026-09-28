@@ -226,3 +226,10 @@ completed task per `.agent/rules/auto-log.md`._
 - **Prompt summary:** Copied the prior BRD unchanged to `.ai-context/BRD-v1-backup-2026-09-18.md`. Updated the canonical `.ai-context/BRD.md` to v2.0 with explicit review status and the 30 P0 / Mandatory Gate 1 decisions, without inventing resolutions.
 - **Files touched:** `.ai-context/BRD.md`, `.ai-context/BRD-v1-backup-2026-09-18.md`, `.ai-context/status.md`
 - **Outcome:** BRD v2.0 is In Peer Review — Changes Requested. Gate 1 remains unapproved and development remains blocked.
+
+### 2026-09-28 — BRD v4.0 released with v3 backup (Gate 1 review comments)
+- **Actor:** Shamik Bhattacharya (Gate 1 reviewer)
+- **Task:** Incorporate 16 Gate 1 review comments into the BRD and release a new version, keeping the prior version as a backup. Explicitly: do not change plan or tasks.
+- **Prompt summary:** Copied BRD v3.0 unchanged to `.ai-context/BRD-v3-backup-2026-09-28.md`. Rewrote `.ai-context/BRD.md` as v4.0: added a V1 Posture section; converted all BRD-001/BRD-002 open items into explicit V1 decisions or V1 Out-of-Scope items, consistent with the specs; added the duplicate-submission rule, the FAILED no-rollback clarification, no minimum lead time, and no lockout / no email verification-OTP statements; marked `managerName` demo/reference only; reassigned the BRD-002 owner; reclassified G1-01/04/16/18/21/27 and corrected the tally; added a comment-by-comment trace table, a Downstream Alignment Required list and a Revision History.
+- **Files touched:** `.ai-context/BRD.md`, `.ai-context/BRD-v3-backup-2026-09-28.md` (new), `.ai-context/status.md`, `.ai-context/prompt_history.md`
+- **Outcome:** BRD v4.0 has no open items but is **pending Gate 1 final approval — not yet approved; development remains blocked** until final approval after the joint BRD/Spec/Plan/Test-case alignment review. Spec, plan, tasks and test cases are unchanged in this pass.

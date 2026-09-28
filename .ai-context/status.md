@@ -139,3 +139,9 @@ _Last updated: 2026-09-18_
 ### 2026-09-18 (cont'd) — BRD v2.0 generated
 - Preserved the prior `.ai-context/BRD.md` as `.ai-context/BRD-v1-backup-2026-09-18.md`.
 - Updated `.ai-context/BRD.md` to version 2.0 with the dated Gate 1 mandatory decision register (G1-01 through G1-30). Status remains **In Peer Review — Changes Requested**; no unresolved decision was treated as approved.
+
+### 2026-09-28 — BRD v4.0 released (Gate 1 review comments incorporated)
+- Preserved the prior `.ai-context/BRD.md` (v3.0) unchanged as `.ai-context/BRD-v3-backup-2026-09-28.md`.
+- Updated `.ai-context/BRD.md` to version 4.0 per Shamik Bhattacharya's Gate 1 review comments (2026-09-28): added a cross-cutting **V1 Posture** section (local demo, test/demo data only, local/demo authentication only, not production-ready auth, future integration retry/rollback/compensation/reconciliation); closed every former "Open at BRD stage" item in BRD-001/BRD-002 as an explicit V1 decision or V1 Out-of-Scope item (HR eligibility not implemented, FAILED with no rollback, no minimum lead time, duplicate-submission rule, `managerName` demo/reference only, no lockout, no email verification/OTP); reassigned the BRD-002 Business Owner to the One-Point Portal HR Product Owner; corrected the Gate 1 tally (6 Fixed · 12 Resolved in spec · 6 Resolved via ADR · 4 Decided for V1 · 2 Out of Scope for V1 = 30, 0 open).
+- **By instruction, BRD only** — spec, plan, tasks and test cases were not changed. BRD v4.0 lists the resulting alignment items under "Downstream Alignment Required" for the joint BRD/Spec/Plan/Test-case review.
+- **Gate 1 status: not yet finally approved.** BRD v4.0 is pending Gate 1 final approval by Shamik Bhattacharya; development remains blocked until then.
