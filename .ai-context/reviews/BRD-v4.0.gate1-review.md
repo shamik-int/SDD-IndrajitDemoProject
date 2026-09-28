@@ -213,15 +213,20 @@ specs are recreated, all of these references stop pointing at anything.
 
 ## Approval checklist for the next BRD version
 
-- [ ] B-01: journey steps 1 and 4 defined
-- [ ] B-02: confirmation defined for every final outcome
-- [ ] B-03: downstream condition recorded as a business decision
-- [ ] B-04: integration-needs table per stakeholder
-- [ ] B-05: orchestration intent vs V1 simulation stated consistently
-- [ ] B-06: business decisions separated from technical constraints
-- [ ] B-07: users, journey stages and numbered business rules
-- [ ] B-08: no references to specs, plan, tasks, test cases or ADR IDs as sources
-- [ ] N-01: decision on BRD-002 recorded
+- [x] B-01: journey steps 1 and 4 defined
+- [x] B-02: confirmation defined for every final outcome
+- [x] B-03: downstream condition recorded as a business decision
+- [x] B-04: integration-needs table per stakeholder
+- [x] B-05: orchestration intent vs V1 simulation stated consistently
+- [x] B-06: business decisions separated from technical constraints
+- [x] B-07: users, journey stages and numbered business rules
+- [x] B-08: no references to specs, plan, tasks, test cases or ADR IDs as sources
+- [x] N-01: decision on BRD-002 recorded
+
+> **Checked by the reviewer against BRD v5.0 (2026-09-28):** all items above
+> are covered. N-03 (rejection reason) is **not** covered and is raised to
+> blocking as F-01 in `reviews/BRD-v5.0.gate1-review.md`, together with
+> F-02 to F-04. Approval follows once those are resolved.
 
 When all blocking items are checked, the BRD can be marked **Approved
 (Gate 1)**. The specs, plan, tasks and test cases are then recreated from

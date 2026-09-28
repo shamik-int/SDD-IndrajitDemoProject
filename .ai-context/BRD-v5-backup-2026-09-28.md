@@ -1,6 +1,6 @@
 # Business Requirements Document (BRD)
 
-**Version:** 5.1  
+**Version:** 5.0  
 **Status:** **Submitted for Gate 1 Re-Review. Not yet approved;
 development remains blocked** until the Gate 1 reviewer (Shamik
 Bhattacharya) approves this BRD.  
@@ -8,9 +8,9 @@ Bhattacharya) approves this BRD.
 **Gate 1 reviewer:** Shamik Bhattacharya  
 **Updated:** 2026-09-28  
 **Source document:** `Requirement for SDD (2).pdf` (the business scope document)  
-**Previous version:** `BRD-v5-backup-2026-09-28.md`, itself following
-`BRD-v4-backup-2026-09-28.md` → `BRD-v3-backup-2026-09-28.md` →
-`BRD-v2-backup-2026-09-21.md` → `BRD-v1-backup-2026-09-18.md`
+**Previous version:** `BRD-v4-backup-2026-09-28.md`, itself following
+`BRD-v3-backup-2026-09-28.md` → `BRD-v2-backup-2026-09-21.md` →
+`BRD-v1-backup-2026-09-18.md`
 
 **How to read this document:**
 - **BRD-001** is the requirement under Gate 1 review. It depends **only**
@@ -64,9 +64,9 @@ the action pending with each stakeholder, without contacting any team.
 | Step | Source §2 | Handling in the portal | Rules |
 |---|---|---|---|
 | 1 | Employee discusses the transfer with the manager | **Precondition, outside the portal.** Not captured or verified. The manager's approval in step 2 is the recorded confirmation. | D-04 |
-| 2 | Manager confirms the transfer | The employee's current manager approves or rejects. A rejection must give a reason. | BR-10, BR-11, BR-28 |
-| 3 | HR validates eligibility | HR approves or rejects. A rejection must give a reason. | BR-12, BR-28 |
-| 4 | Employee's organisational information is updated | **Organisational record update** by HR. **Always required** once HR approves. The new values take effect from the effective date. | BR-13 |
+| 2 | Manager confirms the transfer | The employee's current manager approves or rejects. | BR-10, BR-11 |
+| 3 | HR validates eligibility | HR approves or rejects. | BR-12 |
+| 4 | Employee's organisational information is updated | **Organisational record update** by HR. **Always required** once HR approves. | BR-13 |
 | 5 | Payroll may need to be updated | Payroll: **only when required**. | BR-13 |
 | 6 | IT may need to provision or remove access | IT: **only when required**. Covers both provisioning new access and removing old access. | BR-13 |
 | 7 | Facilities may need to arrange the new location | Facilities: **only when required**. | BR-13 |
@@ -118,32 +118,16 @@ settle something the source document leaves open.
   verified against any organisation structure and grants no authority
   outside this request. *(V1 decision)*
 - **BR-11:** If the manager **rejects**, the request ends as **Rejected by
-  Manager**, with the manager's rejection reason (BR-28). If the manager
-  **approves**, the request moves to HR.
+  Manager**. If the manager **approves**, the request moves to HR.
 - **BR-12:** HR validates eligibility and approves or rejects:
   - Eligibility rules belong to HR. The portal **must not introduce its own
     eligibility rules** unless HR or Product provides them.
   - In V1 the HR decision is simulated.
-  - If HR rejects, the request ends as **Rejected by HR**, with HR's
-    rejection reason (BR-28).
-- **BR-28:** **Rejection reason.** When the current manager or HR
-  **rejects**, a **rejection reason is mandatory**. A rejection without a
-  reason cannot be recorded. *(Added in v5.1; source §2 steps 2, 3 and 8,
-  §3 "single view of progress")*
-  - The employee sees the reason in the rejected step (BR-19) and in the
-    Rejected by Manager / Rejected by HR confirmation (§7).
-  - The reason is recorded in the append-only history (BR-27), with the
-    stakeholder who rejected and when.
-  - In V1 the reason is entered through the demo-only simulation, like the
-    decision itself (BR-24).
+  - If HR rejects, the request ends as **Rejected by HR**.
 - **BR-13:** When HR approves, these steps start together:
   - the **organisational record update** always starts;
   - Payroll, IT and Facilities start **only when required**, per the
     Downstream triggers table (§5). *(V1 decision; source §2 "may need")*
-  - **When the change takes effect:** the organisational record update
-    records the new department, location and role, which **take effect
-    from the effective date** (BR-05). Until that date the employee's
-    portal profile keeps showing the current values. *(V1 decision)*
 - **BR-14:** A stakeholder that is not required is shown as **Not
   required** and never becomes pending.
 - **BR-15:** The request is **Completed** when the organisational record
@@ -166,8 +150,7 @@ settle something the source document leaves open.
   - its state: Pending, Completed, Rejected, Failed, Stopped or Not
     required;
   - for each pending step, the **pending action**, named as in the Pending
-    actions table (§6);
-  - for a rejected step, the **rejection reason** (BR-28).
+    actions table (§6).
 - **BR-20:** On a final outcome, the employee sees a **confirmation** in the
   portal, per the Employee confirmation table (§7).
 - **BR-21:** **Notifications** are in-portal only. There is no email or
@@ -202,8 +185,7 @@ settle something the source document leaves open.
     the portal sign-in and are **out of scope** for this BRD.
 - **BR-27:** **Audit.** Every status change and stakeholder outcome is
   recorded in an **append-only history** (what changed, which stakeholder,
-  when, and the reason for any rejection) that is never edited or deleted.
-  The employee can view it.
+  when) that is never edited or deleted. The employee can view it.
 
 #### 5. Downstream triggers (source §2 steps 4–7)
 
@@ -235,9 +217,9 @@ them before any production commitment (A-06).
 
 | Final outcome | What the employee is shown |
 |---|---|
-| **Completed** | Transfer confirmed, with the new department, location and role, the date they take effect from (the effective date, BR-13), and the list of completed steps |
-| **Rejected by Manager** | The request was not approved by the manager, **the manager's rejection reason** (BR-28), and that no further steps were taken |
-| **Rejected by HR** | The request was not approved by HR, **HR's rejection reason** (BR-28), and that no further steps were taken |
+| **Completed** | Transfer confirmed, with the new department, location and role, the effective date, and the list of completed steps |
+| **Rejected by Manager** | The request was not approved by the manager, and no further steps were taken |
+| **Rejected by HR** | The request was not approved by HR, and no further steps were taken |
 | **Failed** | Which step failed, which steps had already completed (these are not undone), and which steps were stopped |
 
 Every confirmation tells the employee that they may submit a new request
@@ -250,8 +232,8 @@ statement; the specs will define the contracts.
 
 | Stakeholder | Triggered when | Portal sends | Portal needs back | Outcome |
 |---|---|---|---|---|
-| Current manager | On submission | Employee, current and proposed department/location/role, effective date, reason | Approved / Rejected **with reason** | Approved → HR. Rejected → **Rejected by Manager**, reason shown to the employee |
-| HR: eligibility | Manager approves | Same request details | Approved / Rejected **with reason** | Approved → steps 4–7. Rejected → **Rejected by HR**, reason shown to the employee |
+| Current manager | On submission | Employee, current and proposed department/location/role, effective date, reason | Approved / Rejected | Approved → HR. Rejected → **Rejected by Manager** |
+| HR: eligibility | Manager approves | Same request details | Approved / Rejected | Approved → steps 4–7. Rejected → **Rejected by HR** |
 | HR: organisational record update | HR approves (always) | Employee, new department/location/role, effective date | Completed / Failed | Required for Completed. Failed → **Failed** |
 | Payroll | HR approves and role or location changes | Employee, new role/location, effective date | Completed / Failed | Required for Completed. Failed → **Failed** |
 | IT | HR approves and department or role changes | Employee, access to **provision** (new) and to **remove** (old), effective date | Completed / Failed | Required for Completed. Failed → **Failed** |
@@ -261,7 +243,7 @@ statement; the specs will define the contracts.
 
 | Business decisions (owned by the Sponsor; in this BRD) | Technical constraints on V1 (decided in the Plan, not here) |
 |---|---|
-| Journey, approver, outcomes, final states and rejection reason (BR-10 to BR-17, BR-28) | V1 is a **demo**, not a production system |
+| Journey, approver, outcomes and final states (BR-10 to BR-17) | V1 is a **demo**, not a production system |
 | Downstream trigger rules (§5) | **No real integration** with HR, Payroll, IT, Facilities or any org-chart system. Stakeholder outcomes are **simulated** (BR-24) |
 | One request in progress, no amend/withdraw, effective date rule (BR-05, BR-07, BR-09) | Sign-in and employee profile are **demo-level** (BR-26) |
 | Pending actions and confirmations shown (BR-19, BR-20) | **Test/demo data only** (BR-25) |
@@ -331,11 +313,11 @@ as a business rule (marked *V1 decision*) or listed as out of scope.
 |---|---|
 | §2: the organisation has a One-Point Employee Portal | A-01, D-01, D-02 |
 | §2 step 1: discusses with the manager | Journey step 1, D-04 |
-| §2 step 2: manager confirms | BR-10, BR-11, BR-28 |
-| §2 step 3: HR validates eligibility | BR-12, BR-28 |
-| §2 step 4: organisational information updated | BR-13 (incl. when the change takes effect), §5 |
+| §2 step 2: manager confirms | BR-10, BR-11 |
+| §2 step 3: HR validates eligibility | BR-12 |
+| §2 step 4: organisational information updated | BR-13, §5 |
 | §2 steps 5–7: Payroll / IT (provision or remove) / Facilities "may need" | BR-13, BR-14, §5, §8 |
-| §2 step 8: employee receives confirmation | BR-20, BR-28, §7 |
+| §2 step 8: employee receives confirmation | BR-20, §7 |
 | §2: single digital journey | §1, §3 |
 | §3: select department/BU, location, role | BR-02, BR-03, A-02, A-03 |
 | §3: effective date | BR-05 |
@@ -343,7 +325,7 @@ as a business rule (marked *V1 decision*) or listed as out of scope.
 | §3: submit the request | BR-06, BR-07, BR-08 |
 | §3: view current status | BR-18 |
 | §3: view actions pending with other stakeholders | BR-19, §6 |
-| §3: portal orchestrates downstream; single view of progress | BR-13 to BR-17, BR-19, BR-28, §8 |
+| §3: portal orchestrates downstream; single view of progress | BR-13 to BR-17, §8 |
 | §1: handle integration, security and failure scenarios | §8, BR-16, BR-23 to BR-27 |
 | §1: maintain traceability | This table; every rule cites the source document |
 | §4 Deliverable 1: users, stages, rules, decisions, open questions, assumptions, dependencies, out of scope, business vs technical | §2, §3, §4, §9, §10, §11, §12, §13 |
@@ -375,31 +357,18 @@ as a business rule (marked *V1 decision*) or listed as out of scope.
 
 **Submitted by:** Indrajit Bhandari (Author)  
 **For:** Shamik Bhattacharya (Gate 1 reviewer)  
-**Document:** BRD v5.1, **BRD-001 only**  
+**Document:** BRD v5.0, **BRD-001 only**  
 **Gate 1 status:** **Submitted for Re-Review. Not yet approved.**
 
 | Review item | Total | Done | Deferred | Open |
 |---|---|---|---|---|
-| BRD v5.0 review feedback (F-01 to F-04, `reviews/BRD-v5.0.gate1-review.md`) | 4 | 4 | 0 | **0** |
 | Source document requirements (§1–§4), traced in BRD-001 §14 | 18 rows | 18 | 0 | **0** |
 | Requirement-trace gaps (T-01 to T-04, `reviews/BRD-v5.0.requirement-trace.md`) | 4 | 4 | 0 | **0** |
 | BRD review blocking comments against the source document (B-01 to B-05) | 5 | 5 | 0 | **0** |
 | Gate 1 review comments of 2026-09-28 (#1 to #16) | 16 | 15 | 1 (#16, after approval) | **0** |
 | Gate 1 Mandatory Decision Register (G1-01 to G1-30) | 30 | 30 | 0 | **0** |
 
-**BRD v5.0 review feedback, fixed in v5.1:**
-- **F-01** rejection reason (was N-03): new **BR-28**, mandatory reason for
-  manager and HR rejections; reflected in BR-11, BR-12, BR-19, BR-27, §3,
-  §7, §8, §9 and §14.
-- **F-02** history note on B-06 / B-07 / B-08 corrected ("BRD Gate 1
-  Review", under Review history).
-- **F-03** history tables and the G1 register now point at v5.1 section
-  and rule numbers.
-- **F-04** when the organisational record update takes effect: from the
-  effective date (BR-13, §3 step 4, §7 Completed). This is option (a) from
-  the review.
-
-**Requirement-trace gaps, fixed in v5.0:**
+**Requirement-trace gaps, fixed in this version:**
 - **T-01** pending actions: BR-19, §6.
 - **T-02** security: BR-23 to BR-26.
 - **T-03** traceability: BRD-001 cites only the source document and its
@@ -427,8 +396,6 @@ as a business rule (marked *V1 decision*) or listed as out of scope.
    Sponsor confirms before production.
 2. The organisational record update is always required (BR-13).
 3. The new security rules (BR-23 to BR-26).
-4. The rejection reason rule (BR-28) and the effective timing of the
-   organisational record update (BR-13).
 
 **Known and accepted, not blocking approval:** the Sponsor's name is to be
 confirmed (A-04).
@@ -558,9 +525,6 @@ un-silent correction ADR-0004 itself models.
 only" at v3.0 are now closed as explicit V1 decisions or V1 Out-of-Scope
 items, per the Gate 1 review comments of 2026-09-28.
 
-> **v5.1 note:** resolution cells that cited the removed "V1 Posture" or
-> old BRD-001 section names now cite the BRD-001 rule numbers (F-03).
->
 > **v5.0 note: BRD-002 is not followed.** Some resolutions below cite
 > BRD-002 registration/login (G1-01, 02, 03, 04, 05, 07, 18, 29). For
 > BRD-001 they now read as follows. Employee identity, sign-in, password
@@ -591,33 +555,33 @@ ADRs, and/or security documentation.
 
 | ID | Area | Required decision | Resolution | Comment |
 |---|---|---|---|---|
-| G1-01 | Employee identity | Define `employeeId` and how it is verified. | **Decided for V1 (BRD v4.0)** | Account is keyed by case-insensitive email (ADR-0005). V1 uses local/demo authentication only: it validates the registered email and password but does not independently verify that the user is the actual employee. Real identity verification requires server-side authentication and is a production precondition (BRD-001 BR-26). |
+| G1-01 | Employee identity | Define `employeeId` and how it is verified. | **Decided for V1 (BRD v4.0)** | Account is keyed by case-insensitive email (ADR-0005). V1 uses local/demo authentication only: it validates the registered email and password but does not independently verify that the user is the actual employee. Real identity verification requires server-side authentication and is a production precondition (BRD V1 Posture, BRD-002). |
 | G1-02 | Registration | Define the employee-verification mechanism that prevents registration using another employee's details. | Resolved via ADR | ADR-0005 names this limitation explicitly: nothing stops registering with someone else's name/dept/role under your own email. No real HRIS to check against (ADR-0004). Documented limitation, now also stated in BRD-002. |
 | G1-03 | Email | Define email ownership verification, including email verification or OTP. | Resolved via ADR | No email service exists (ADR-0004/0005), so email verification/OTP is not available in V1. Now an explicit BRD-002 Out-of-Scope item. |
 | G1-04 | Password | Define password complexity, hashing, reset, and lockout policy. | **Out of Scope for V1 (BRD v4.0)** — lockout; remainder decided | Hashing (salted SHA-256) is defined. Complexity (≥8 chars, letter + number) is accepted as the V1 demo-level rule. Reset is out of scope (no email service). **Account lockout/brute-force protection is explicitly out of scope for the local demo** and mandatory for production (BRD-002). |
-| G1-05 | Authorization | Define RBAC and resource-level authorization. | Resolved via ADR | Only one actor type (employee) exists; Manager/HR/Payroll/IT/Facilities are simulated, not real roles. BRD-001 BR-24 and BR-26 now state that production requires proper server-side authorization. |
+| G1-05 | Authorization | Define RBAC and resource-level authorization. | Resolved via ADR | Only one actor type (employee) exists; Manager/HR/Payroll/IT/Facilities are simulated, not real roles. The BRD V1 Posture now states that production requires proper server-side authorization. |
 | G1-06 | Current employee data | Decide whether department, location, and role are authoritative or user-entered. | Resolved in spec (pre-existing) | `employee-registration-login.OP01`: user-entered at registration, not authoritative, no HRIS integration (ADR-0004). |
 | G1-07 | Manager identification | Define the source and timing of the manager relationship. | **Fixed (v1.2/v1.5)** | `managerName` (mandatory free text) is captured at registration and displayed as the pending approver. It is **demo/reference information only**: not verified against any employee/HR master or org structure, not proof of the actual manager, and it confers no approval authority (BRD-002). |
 | G1-08 | Receiving manager | Decide whether receiving-manager approval is mandatory. | Resolved in spec (pre-existing) | Spec Assumption 1: only the current manager approves; the receiving-department manager is not consulted in V1. |
 | G1-09 | HR eligibility | Define explicit HR eligibility rules. | Resolved in spec (pre-existing) | HR eligibility rules are **not implemented in V1**. The HR decision is simulated, and the application must not introduce its own eligibility rules unless HR/Product explicitly provides them (BRD-001). |
 | G1-10 | Workflow | Define the canonical workflow state machine, including every state and transition. | Resolved in spec (pre-existing) | `plans/employee-internal-transfer.plan.md` gives the full state machine; the spec's Status Definitions lists terminal and non-terminal states, including `FAILED`. |
-| G1-11 | Conditional tasks | Define the Payroll/IT/Facilities decision matrix. | **Decided in BRD v5.0** | BRD-001 §5 and BR-13: the organisational record update is always required; Payroll when role or location changes; IT when department or role changes; Facilities when location changes. This replaces v4.0's "all three always trigger", which contradicted the requirement's "may need". |
-| G1-12 | Failure handling | Define retry, timeout, escalation, and compensation behaviour for integration failures. | **Fixed (v1.5)** | Any downstream rejection moves the request to terminal `FAILED`. V1 has no retry, timeout, escalation or compensation. These are future requirements once real integrations exist (BRD-001 BR-16). |
+| G1-11 | Conditional tasks | Define the Payroll/IT/Facilities decision matrix. | **Decided in BRD v5.0** | BRD-001 "Downstream triggers": the organisational record update is always required; Payroll when role or location changes; IT when department or role changes; Facilities when location changes. This replaces v4.0's "all three always trigger", which contradicted the requirement's "may need". |
+| G1-12 | Failure handling | Define retry, timeout, escalation, and compensation behaviour for integration failures. | **Fixed (v1.5)** | Any downstream rejection moves the request to terminal `FAILED`. V1 has no retry, timeout, escalation or compensation. These are future requirements once real integrations exist (BRD V1 Posture). |
 | G1-13 | Amend request | Define whether and how amendment is allowed. | Resolved in spec (pre-existing) | Spec Assumption 5: no amendment in V1. |
 | G1-14 | Withdrawal | Define withdrawal rules and downstream cancellation behaviour. | Resolved in spec (pre-existing) | Same decision as G1-13: no withdrawal in V1. |
 | G1-15 | Multiple requests | Define allowed concurrent-request states and conflict rules. | Resolved in spec (pre-existing) | Spec Assumption 4: exactly one non-terminal request per employee. |
 | G1-16 | Effective date | Define past/future validation and minimum lead-time rules. | **Decided for V1 (BRD v4.0)** | The effective date must be in the future (AC5). **There is no minimum transfer lead time in V1.** Any future date, including tomorrow, is acceptable unless Product defines another rule (BRD-001). |
 | G1-17 | Audit | Require an immutable audit trail for decision history. | **Fixed (v1.5)** | Append-only Decision History plus `OP05.getDecisionHistory` (spec AC17). |
-| G1-18 | Security | Define authentication, authorization, session, API, and PII controls. | **Decided for V1 (BRD v4.0)** | Session handling, no PII in logs and password hashing are defined (ADR-0005). API controls are N/A (no API, ADR-0004). V1 authentication/authorization is **local/demo only and must not be treated as production-ready**. A proper server-side mechanism is required for any production implementation (BRD-001 BR-23 to BR-26). |
+| G1-18 | Security | Define authentication, authorization, session, API, and PII controls. | **Decided for V1 (BRD v4.0)** | Session handling, no PII in logs and password hashing are defined (ADR-0005). API controls are N/A (no API, ADR-0004). V1 authentication/authorization is **local/demo only and must not be treated as production-ready**. A proper server-side mechanism is required for any production implementation (BRD V1 Posture). |
 | G1-19 | Notifications | Define the notification matrix, channels, and triggering events. | Resolved in spec (pre-existing) | Spec Assumption 7: in-portal status only in V1. |
 | G1-20 | SLA | Define an SLA per workflow task or explicitly exclude SLA from V1. | Resolved in spec (pre-existing) | Spec Assumption 6: SLA explicitly excluded from V1. |
 | G1-21 | Integration contracts | Define request/response schemas, errors, and idempotency for each API/event contract. | **Decided for V1 (BRD v4.0)** | The Local Data Contract (OP01–OP05) specifies shapes and errors. External contracts are N/A (ADR-0004). **Duplicate-submission rule now explicit in BRD-001:** one submit action creates at most one request, and repeated or double submission never creates a second request or a duplicate history entry. Idempotency for real integrations is a future requirement. |
 | G1-22 | Data ownership | Define field-level ownership for current and proposed employee data. | **Fixed (v1.5)** | Spec Assumption 11: employee-submitted fields are owned by the employee (OP01); stakeholder-decision fields are owned by the Simulate Decision control (OP04). |
-| G1-23 | Effective transfer completion | Define the final success condition for a completed transfer. | **Decided in BRD v5.0** | BRD-001 BR-15: `COMPLETED` when the organisational record update and every *required* downstream step have completed. The employee then sees the Completed confirmation (BRD-001 §7). |
+| G1-23 | Effective transfer completion | Define the final success condition for a completed transfer. | **Decided in BRD v5.0** | BRD-001 "Journey": `COMPLETED` when the organisational record update and every *required* downstream step have completed. The employee then sees the Completed confirmation (BRD-001 "Employee confirmation"). |
 | G1-24 | Partial completion | Define recovery and/or compensation when HR approves but IT or another downstream step fails. | **Fixed (v1.5)** | If one downstream action has already completed and another stakeholder rejects, the request becomes `FAILED`. **Previously completed actions are not rolled back in V1.** Remaining pending steps are no longer pending, and the employee may submit a new request (BRD-001). |
-| G1-25 | Reconciliation | Define reconciliation for downstream data mismatches. | Resolved via ADR | No real downstream system exists (ADR-0004), so V1 has nothing to reconcile. Reconciliation is a documented future requirement once real integrations are introduced (BRD-001 BR-16, §12). |
+| G1-25 | Reconciliation | Define reconciliation for downstream data mismatches. | Resolved via ADR | No real downstream system exists (ADR-0004), so V1 has nothing to reconcile. Reconciliation is a documented future requirement once real integrations are introduced (BRD V1 Posture). |
 | G1-26 | Admin/support | Define operational visibility and support intervention capabilities. | Resolved via ADR | No admin/support console in V1: there is no server-side state (ADR-0004). The Simulate Decision control is a demo/test stand-in, not an ops tool. |
-| G1-27 | Regulatory/privacy | Define PII retention, deletion, access, and audit requirements. | **Out of Scope for V1 (BRD v4.0)** | No PII in logs is defined (constitution.md, both specs). Retention periods, account deletion and subject-access handling are **explicitly out of scope for V1**, acceptable only because V1 uses test/demo employee data only. They are mandatory future requirements for production (BRD-001 BR-25). |
+| G1-27 | Regulatory/privacy | Define PII retention, deletion, access, and audit requirements. | **Out of Scope for V1 (BRD v4.0)** | No PII in logs is defined (constitution.md, both specs). Retention periods, account deletion and subject-access handling are **explicitly out of scope for V1**, acceptable only because V1 uses test/demo employee data only. They are mandatory future requirements for production (BRD V1 Posture, BRD-002). |
 | G1-28 | Registration lifecycle | Define behaviour for inactive or terminated employees. | **Fixed (v1.5)** | Spec Assumption 12: explicitly out of scope; no HRIS/termination feed exists (ADR-0004). |
 | G1-29 | Duplicate accounts | Define employee-identity uniqueness beyond email uniqueness. | Resolved via ADR | Case-insensitive email uniqueness is defined and tested. Uniqueness beyond email is the same accepted limitation as G1-02 (ADR-0005). |
 | G1-30 | V1 boundaries | Explicitly mark all V1 decisions and prevent unresolved items from expanding scope. | Resolved in spec (pre-existing) — closed at BRD v4.0 | Both specs and ADR-0004/0005 carry explicit Out-of-Scope/Deferred sections. At v4.0, no open items remain in the BRD: every former open item is now a V1 decision or V1 Out-of-Scope item. |
@@ -672,24 +636,22 @@ pass); release a new BRD version and keep the previous one as a backup.
 ## BRD Gate 1 Review — 2026-09-28 (against the requirement document)
 
 **Review:** `reviews/BRD-v4.0.gate1-review.md`. BRD v4.0 was reviewed only
-against `Requirement for SDD (2).pdf`. All 8 blocking comments are
-addressed in BRD-001 (v5.0, cells updated to v5.1 section and rule
-numbers):
+against `Requirement for SDD (2).pdf`. Of its 8 blocking comments, the 5
+that come directly from the requirement document are addressed in v5.0:
 
-| Comment | Requirement document | Where addressed |
+| Comment | Requirement document | Where addressed in v5.0 |
 |---|---|---|
-| B-01: journey steps 1 and 4 | §2 step 1 "discusses the transfer with the manager"; step 4 "organisational information is updated" | §3 steps 1 and 4; BR-13, BR-15; D-04; §12 (step 1 not captured) |
-| B-02: employee confirmation | §2 step 8 "Employee receives confirmation" | BR-20, §7 |
-| B-03: conditional downstream | §2 steps 5–7 "may need" | §5; BR-13, BR-14; A-06; G1-11 |
-| B-04: integration needs, IT provision/remove | §1 "Define API contracts", "Handle integration… and failure scenarios"; §2 step 6 "provision or remove access" | §8 |
-| B-05: orchestration vs no integration | §3 "portal to orchestrate the downstream activities" | §1 (business intent); §9 and BR-24 (V1 simulation) |
-| B-06: business vs technical decisions | §4 "business decision vs technical decision" | §9 |
-| B-07: users, journey stages, business rules | §4 Deliverable 1 | §2, §3, §4 (BR-01 to BR-28) |
-| B-08: no dependence on discarded artefacts | §1 "Maintain traceability" | §14; BRD-001 cites only the source document and its own rules |
+| B-01: journey steps 1 and 4 | §2 step 1 "discusses the transfer with the manager"; step 4 "organisational information is updated" | BRD-001 "Journey" (steps 1 and 4); Out of Scope (step 1 not captured) |
+| B-02: employee confirmation | §2 step 8 "Employee receives confirmation" | BRD-001 "Employee confirmation" |
+| B-03: conditional downstream | §2 steps 5–7 "may need" | BRD-001 "Downstream triggers"; Downstream fan-out; G1-11 |
+| B-04: integration needs, IT provision/remove | §1 "Define API contracts", "Handle integration… and failure scenarios"; §2 step 6 "provision or remove access" | BRD-001 "Integration needs per stakeholder" |
+| B-05: orchestration vs no integration | §3 "portal to orchestrate the downstream activities" | BRD-001 "Decided": Business intent vs V1 delivery |
 
-The v4.0 review downgraded B-06, B-07 and B-08 to non-blocking, because
-they are Deliverable 1 items or come from the decision to recreate the
-specs. They are nevertheless covered in BRD-001, as shown above.
+B-06, B-07 and B-08 are **not BRD requirements in the requirement
+document**. B-06 and B-07 are Deliverable 1 (Discovery) items, already
+covered in `discovery/employee-internal-transfer.discovery.md`. B-08 comes
+from the decision to recreate the specs, not from the requirement
+document. They are not changed in this pass.
 
 ## Downstream Alignment Required — superseded
 
@@ -749,5 +711,4 @@ BRD-001/BRD-002.
 | 2.0 | 2026-09-18 | Gate 1 mandatory decision register (G1-01…G1-30) added — Changes Requested | `BRD-v2-backup-2026-09-21.md` |
 | 3.0 | 2026-09-21 | Author remediation: resolutions recorded against G1 items; 6 left "Open — comment only"; submitted for Gate 1 re-review | `BRD-v3-backup-2026-09-28.md` |
 | 4.0 | 2026-09-28 | Gate 1 review comments incorporated: all open items closed as V1 decisions or V1 Out of Scope; V1 Posture added; BRD-002 owner reassigned; tally corrected. **Pending Gate 1 final approval — not yet approved** | `BRD-v4-backup-2026-09-28.md` |
-| 5.0 | 2026-09-28 | BRD-001 reviewed against the requirement document and rebuilt to depend **only** on it. Blocking comments B-01 to B-05 incorporated: journey steps 1–8, organisational record update, employee confirmation, conditional downstream triggers, integration needs per stakeholder, orchestration intent vs V1 simulation. Requirement-trace gaps T-01 to T-04 fixed: pending actions, security rules, no references to earlier specs/tests/ADRs, Deliverable 1 items. Numbered business rules BR-01 to BR-27, with primary users, assumptions, dependencies, source → BRD traceability, and coverage of all 16 review comments (15 done, #16 deferred) and G1-01 to G1-30. BRD-002 kept for version control only; V1 Posture folded into BRD-001; historical sections moved under "Review history and version control". **Submitted for Gate 1 Re-Review — not yet approved** | `BRD-v5-backup-2026-09-28.md` |
-| 5.1 | 2026-09-28 | BRD v5.0 review feedback (`reviews/BRD-v5.0.gate1-review.md`) incorporated. F-01: new BR-28, mandatory rejection reason for manager and HR, shown to the employee (BR-19, §7) and recorded in history (BR-27); §8 updated. F-02: history note on B-06/B-07/B-08 corrected. F-03: history tables and G1 register repointed to v5.1 section and rule numbers. F-04: the organisational record update takes effect from the effective date (BR-13, §3, §7). **Submitted for Gate 1 Re-Review — not yet approved** | — (current) |
+| 5.0 | 2026-09-28 | BRD-001 reviewed against the requirement document and rebuilt to depend **only** on it. Blocking comments B-01 to B-05 incorporated: journey steps 1–8, organisational record update, employee confirmation, conditional downstream triggers, integration needs per stakeholder, orchestration intent vs V1 simulation. Requirement-trace gaps T-01 to T-04 fixed: pending actions, security rules, no references to earlier specs/tests/ADRs, Deliverable 1 items. Numbered business rules BR-01 to BR-27, with primary users, assumptions, dependencies, source → BRD traceability, and coverage of all 16 review comments (15 done, #16 deferred) and G1-01 to G1-30. BRD-002 kept for version control only; V1 Posture folded into BRD-001; historical sections moved under "Review history and version control". **Submitted for Gate 1 Re-Review — not yet approved** | — (current) |
