@@ -108,3 +108,37 @@ also listed for confirmation in the spec.
 **Awaiting the Gate 1 reviewer's decision** (Approved / Changes Requested).
 Once CL-01 and CL-02 are agreed and recorded in BRD-001 v5.3, the spec is
 marked **Gate 1 Approved**.
+
+## Author response — spec v2.4 (Indrajit Bhandari, 2026-09-29)
+
+v2.3 is kept as `specs/employee-internal-transfer.spec-v2.3-backup-2026-09-29.md`.
+v2.4 keeps every v2.3 answer above, for items 1–11 and S1–S8, without
+changing any behaviour.
+
+**BRD-001 v5.2 is not changed.** The Author has decided not to raise a BRD
+v5.3. CL-01 (items 1, 6) and CL-02 (item 2) stay in the spec, because this
+review asks for them. They are recorded as **points not in BRD 5.2**, not
+as BRD clarifications. Every review item, spec decision and acceptance
+criterion that BRD 5.2 does not mention is marked "Not mentioned in BRD
+5.2" in the spec. All of them are listed in
+`reviews/employee-internal-transfer.spec-v2.4.not-in-BRD-5.2.md`.
+
+| Item | In BRD 5.2? |
+|---|---|
+| 1 | Differs (CL-01: BR-13, BR-16) |
+| 2 | Differs (CL-02: BR-07, BR-17) |
+| 3 | Partly (BR-23, BR-24; `TESTER` role not mentioned) |
+| 4 | Partly (BR-27; `SYSTEM` actor not mentioned) |
+| 5 | Not mentioned |
+| 6 | Yes (BR-13), with scheduling timing as CL-01 |
+| 7 | Not mentioned |
+| 8 | Partly (BR-23; sign-out clearing not mentioned) |
+| 9 | Yes (BR-26) |
+| 10, 11 | Not mentioned (document and scenario structure) |
+
+**Author's checklist for the reviewer (v2.4):**
+- [x] 1 · [x] 2 · [x] 3 · [x] 4 · [x] 5 · [x] 6 · [x] 7 · [x] 8 · [x] 9 · [x] 10 · [x] 11
+- [x] S1–S8 covered by XF01–XF08; item 11 example by XF09
+- [x] Points not in BRD 5.2 recorded; BRD 5.2 unchanged
+
+**Awaiting the Gate 1 reviewer's decision** (Approved / Changes Requested).

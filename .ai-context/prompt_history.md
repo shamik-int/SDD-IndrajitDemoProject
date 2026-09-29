@@ -248,3 +248,10 @@ completed task per `.agent/rules/auto-log.md`._
 - **Prompt summary:** Checked spec v2.0 rule by rule against BRD-001 v5.2 (§1–§13, BR-01–BR-28, A-01–A-07, D-01–D-04). Fixed 14 gaps in v2.1: stakeholder contract (§8), status/step labels, actors, D-04, AC27–AC30, UT33–UT50, SD-10–SD-15, BR-25 retention items in Out of Scope. Added a BRD-001 coverage check section. v2.0 kept as a backup.
 - **Files touched:** `specs/employee-internal-transfer.spec.md`, `specs/employee-internal-transfer.spec-v2.0-backup-2026-09-28.md` (new), `specs/README.md`, `status.md`, `prompt_history.md`, `PROJECT_CHECKLIST.md`, `Project_Status.html`
 - **Outcome:** Spec v2.1 submitted for Gate 1, not yet approved. 28/28 BRs have an AC; 29/30 ACs have a unit test (AC21 verified at Gate 2).
+
+### 2026-09-29 — Spec v2.4: reviewer feedback cross-checked with BRD 5.2
+- **Actor:** Indrajit Bhandari (Author), with Claude Code
+- **Task:** Check the Gate 1 reviewer's spec review, fix all spec issues, cross-verify with BRD 5.2, add a note for anything not in BRD 5.2, and do not change the approved BRD.
+- **Prompt summary:** Read the reviewer's v2.1 review (11 items, 8 scenarios) and the reviewer-committed spec v2.3. Confirmed v2.3 answers all items (35 ACs, UT01–UT70, XF01–XF09). Released v2.4: removed the BRD v5.3 dependency, kept CL-01 and CL-02 as points not in BRD 5.2, added "In BRD 5.2?" columns and inline notes, and wrote the reference note. v2.3 kept as a backup.
+- **Files touched:** `specs/employee-internal-transfer.spec.md`, `specs/employee-internal-transfer.spec-v2.3-backup-2026-09-29.md` (new), `reviews/employee-internal-transfer.spec-v2.4.not-in-BRD-5.2.md` (new), `reviews/employee-internal-transfer.spec-v2.1.gate1-review.md` (Author response), `specs/README.md`, `status.md`, `prompt_history.md`, `PROJECT_CHECKLIST.md`, `Project_Status.html`
+- **Outcome:** Spec v2.4 resubmitted for Gate 1, not yet approved. BRD-001 v5.2 unchanged.

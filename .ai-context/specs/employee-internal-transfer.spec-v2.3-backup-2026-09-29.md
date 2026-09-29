@@ -4,7 +4,7 @@
 employee-internal-transfer
 
 ## Status
-**v2.4 — Resubmitted for Gate 1 review. Not yet approved.**
+**v2.3 — Resubmitted for Gate 1 review. Not yet approved.**
 Plan, tasks and the implementation test cases
 (`.ai-context/test_cases/employee-internal-transfer.test_cases.md`) must
 not be written from this spec until the Gate 1 reviewer (Shamik
@@ -18,22 +18,8 @@ XF01–XF09) are part of the spec itself, not implementation test cases; see
 | Gate 1 reviewer | Shamik Bhattacharya |
 | Updated | 2026-09-29 |
 | Linked BRD | `.ai-context/BRD.md#BRD-001`, **v5.2, Gate 1 Approved 2026-09-28** |
-| Previous versions | `employee-internal-transfer.spec-v2.3-backup-2026-09-29.md` (v2.3), `employee-internal-transfer.spec-v2.2-draft-backup-2026-09-29.md` (v2.2 draft, incomplete), `…spec-v2.1-backup-2026-09-28.md` (v2.1), `…spec-v2.0-backup-2026-09-28.md`, `…spec-v1.5-backup-2026-09-28.md` |
+| Previous versions | `employee-internal-transfer.spec-v2.2-draft-backup-2026-09-29.md` (v2.2 draft, incomplete), `…spec-v2.1-backup-2026-09-28.md` (v2.1), `…spec-v2.0-backup-2026-09-28.md`, `…spec-v1.5-backup-2026-09-28.md` |
 | Gate 1 review answered | `.ai-context/reviews/employee-internal-transfer.spec-v2.1.gate1-review.md`: 11 mandatory items and 8 scenarios (Shamik Bhattacharya). See "Gate 1 review response" |
-| Points not in BRD 5.2 | `reviews/employee-internal-transfer.spec-v2.4.not-in-BRD-5.2.md` (reference note; BRD 5.2 is not changed) |
-
-**How v2.4 was written.** v2.4 is the Author's (Indrajit Bhandari)
-revision of v2.3. It keeps every v2.3 answer to the reviewer's 11 items and
-8 scenarios, cross-checks the spec against the approved BRD-001 v5.2, and:
-- **leaves BRD-001 v5.2 unchanged**: the two points that go beyond it
-  (CL-01, CL-02) are kept in the spec because the reviewer's items 1, 2
-  and 6 ask for them, and are recorded as **points not in BRD 5.2**; no BRD
-  change is requested;
-- marks every review item, spec decision and acceptance criterion that
-  BRD 5.2 does not mention with **"Not mentioned in BRD 5.2"**;
-- lists all of them in the reference note `reviews/employee-internal-transfer.spec-v2.4.not-in-BRD-5.2.md`.
-
-No behaviour, AC, scenario or ID from v2.3 is removed or renumbered.
 
 **How v2.3 was written.** v2.3 answers every one of the Gate 1 reviewer's
 11 mandatory items and 8 scenarios. The v2.2 draft started this work but
@@ -59,10 +45,10 @@ reference only and must not be reviewed or built from.
   protection only.
 - Cross-flow scenarios XF01–XF09 are added.
 
-**BRD-001 v5.2 is not changed.** CL-01 and CL-02 read or narrow BRD 5.2
-rules (BR-07, BR-13, BR-15, BR-16, BR-17). They follow the reviewer's items
-1, 2 and 6 and are recorded as **points not in BRD 5.2** (see "Points not in
-BRD 5.2" and the reference note), not as a BRD change.
+**Two items need a BRD-001 clarification before approval** (CL-01, CL-02;
+see "BRD-001 clarifications needed"). They affect business rules, so the
+spec cannot settle them alone. Every other v2.3 change stays within BRD-001
+v5.2.
 
 **Earlier versions.** v2.1 added the stakeholder contract, actors, status
 labels, AC27–AC30, UT33–UT50 and SD-10 to SD-15 after a rule-by-rule check of
@@ -78,19 +64,19 @@ has been changed.
 ## Gate 1 review response
 Every reviewer item, and where v2.3 answers it.
 
-| # | Priority | Reviewer item | Spec answer | Where | In BRD 5.2? |
-|---|---|---|---|---|---|
-| 1 | 🔴 Critical | Downstream step fails after the org change is scheduled | The change is scheduled only when the request becomes `COMPLETED`, which means every required step has completed. A `FAILED` request never has a scheduled change, and the profile never changes. Point not in BRD 5.2 (CL-01) | Three moments; OP06 effects; AC16, AC17, AC20; SD-16; XF01, XF08 | 💬 **Not mentioned in BRD 5.2.** Differs from BR-13/BR-16 (CL-01) |
-| 2 | 🔴 Critical | Conflicting future transfers | Blocked. A new request cannot be submitted while a `COMPLETED` transfer has not yet taken effect. The contract also refuses a second schedule for the same employee. Point not in BRD 5.2 (CL-02) | OP01 error 6; AC18, AC34; SD-17, SD-20; XF02, XF09 | 💬 **Not mentioned in BRD 5.2.** Differs from BR-07/BR-17 (CL-02) |
-| 3 | 🔴 Critical | Restrict the simulation controls | The simulation is available only to a demo account with the `TESTER` role. An `EMPLOYEE` never sees it, and OP06/OP07 refuse them. A tester cannot own or submit a request | Actors; Access rules; OP06, OP07; AC24, AC32; SD-18; XF03 | ⚠️ Partly: BR-23, BR-24. 💬 **The `TESTER` role is not mentioned in BRD 5.2.** |
-| 4 | 🔴 Critical | Audit actor for system changes | `SYSTEM` actor. Every status change, every step the portal starts, stops or marks not required, and the schedule entry are recorded by `SYSTEM` | Data shapes (history entry and "Which actor records which entry" table); OP06 effects; AC23; SD-19; UT30, UT55–UT57; XF04 | ⚠️ Partly: BR-27. 💬 **The `SYSTEM` actor is not mentioned in BRD 5.2.** |
-| 5 | 🟠 High | Effective date passed, workflow still pending | The request carries on and the effective date never changes. The employee sees a "date has passed" note. If the request completes, the new values show from the day it completes | Request status (effective date passed); AC33; SD-05; XF05 | 💬 **Not mentioned in BRD 5.2.** BR-05 covers the check at submission only |
-| 6 | 🟠 High | Meaning of `ORG_RECORD_UPDATE` = `COMPLETED` | "Recorded": HR confirmed the new values for the date. It is not "scheduled" and not "effective". Three moments are defined | Three moments; AC16 | ✅ BR-13 (recorded, effective from the effective date); scheduling only on `COMPLETED` is CL-01 |
-| 7 | 🟠 High | `scheduleOrganisationalChange()` called twice | The unique key is `requestId`. A repeat call with the same values returns the existing change. A call with different values, or for another request while a change is pending, is refused | Consumed contract (SD-20); AC35; XF06 | 💬 **Not mentioned in BRD 5.2.** |
-| 8 | 🟠 High | Negative tests: employee A vs B; logout/login | Scenarios for listing, opening, history and operating on another employee's request. A sign-out clears all shown and held request data | Access rules; AC22, AC31, AC32; UT28, UT52, UT67, UT68; XF07 | ⚠️ Partly: BR-23. 💬 **Sign-out clearing is not mentioned in BRD 5.2.** |
-| 9 | 🟠 High | Separate demo security from production | Security boundary section: V1 protection is application-level only and is not production-grade authorization | Security boundary; Non-Functional Constraints | ✅ BR-26 (not production-ready; server-side needed for production) |
-| 10 | 🟡 Medium | Test-case statement vs UT01–UT50 | UT and XF are **acceptance scenarios**, part of the spec. Implementation test cases are written after Gate 1 and must cover every one | Status; Acceptance scenarios | 💬 **Not mentioned in BRD 5.2.** Document structure |
-| 11 | 🟡 Medium | Cross-flow scenarios | XF01–XF09, covering the reviewer's 8 scenarios plus the "future date + failure + new request" example | Cross-flow scenarios | 💬 **Not mentioned in BRD 5.2.** Scenario structure |
+| # | Priority | Reviewer item | v2.3 answer | Where |
+|---|---|---|---|---|
+| 1 | 🔴 Critical | Downstream step fails after the org change is scheduled | The change is scheduled only when the request becomes `COMPLETED`, which means every required step has completed. A `FAILED` request never has a scheduled change, and the profile never changes. **Needs CL-01** | Three moments; OP06 effects; AC16, AC17, AC20; SD-16; XF01, XF08 |
+| 2 | 🔴 Critical | Conflicting future transfers | Blocked. A new request cannot be submitted while a `COMPLETED` transfer has not yet taken effect. The contract also refuses a second schedule for the same employee. **Needs CL-02** | OP01 error 6; AC18, AC34; SD-17, SD-20; XF02, XF09 |
+| 3 | 🔴 Critical | Restrict the simulation controls | The simulation is available only to a demo account with the `TESTER` role. An `EMPLOYEE` never sees it, and OP06/OP07 refuse them. A tester cannot own or submit a request | Actors; Access rules; OP06, OP07; AC24, AC32; SD-18; XF03 |
+| 4 | 🔴 Critical | Audit actor for system changes | `SYSTEM` actor. Every status change, every step the portal starts, stops or marks not required, and the schedule entry are recorded by `SYSTEM` | History entries; AC23; SD-19; XF04 |
+| 5 | 🟠 High | Effective date passed, workflow still pending | The request carries on and the effective date never changes. The employee sees a "date has passed" note. If the request completes, the new values show from the day it completes | Request status (effective date passed); AC33; SD-05; XF05 |
+| 6 | 🟠 High | Meaning of `ORG_RECORD_UPDATE` = `COMPLETED` | "Recorded": HR confirmed the new values for the date. It is not "scheduled" and not "effective". Three moments are defined | Three moments; AC16 |
+| 7 | 🟠 High | `scheduleOrganisationalChange()` called twice | The unique key is `requestId`. A repeat call with the same values returns the existing change. A call with different values, or for another request while a change is pending, is refused | Consumed contract (SD-20); AC35; XF06 |
+| 8 | 🟠 High | Negative tests: employee A vs B; logout/login | Scenarios for listing, opening, history and operating on another employee's request. A sign-out clears all shown and held request data | AC22, AC31; UT28, UT66–UT68; XF07 |
+| 9 | 🟠 High | Separate demo security from production | Security boundary section: V1 protection is application-level only and is not production-grade authorization | Security boundary; Non-Functional Constraints |
+| 10 | 🟡 Medium | Test-case statement vs UT01–UT50 | UT and XF are **acceptance scenarios**, part of the spec. Implementation test cases are written after Gate 1 and must cover every one | Status; Acceptance scenarios |
+| 11 | 🟡 Medium | Cross-flow scenarios | XF01–XF09, covering the reviewer's 8 scenarios plus the "future date + failure + new request" example | Cross-flow scenarios |
 
 | Reviewer scenario | Covered by |
 |---|---|
@@ -231,8 +217,6 @@ scheduled and the profile never changes. This keeps BR-16: the completed
 request and the history. There is nothing to roll back, because the change
 is applied only when the whole transfer succeeds. This reading of BR-13 and
 BR-16 is **CL-01**.
-> 💬 **Not mentioned in BRD 5.2** (CL-01). BRD 5.2 is not changed; see the
-> reference note.
 
 ### Steps (BRD-001 §3, §6)
 | Step ID | Stakeholder | Pending action shown (§6) | Required |
@@ -305,11 +289,7 @@ List<ReferenceItem> roles();
 ```
 
 `getCurrentValues` returns the scheduled values only when `asOf` is on or
-after **both** `effectiveFrom` and the date of `scheduledAt`. Before that it
-returns the previous values (BR-13). So a change completed after its
-effective date (SD-05) shows from the completion day and never
-retroactively: a read for an earlier date still returns the previous
-values.
+after `effectiveFrom`. Before that it returns the previous values (BR-13).
 `pendingScheduledChange` returns a change only while `asOf` is before its
 `effectiveFrom`. `managerName` is demo data, not verified, and grants no
 authority outside the request (BR-10).
@@ -614,7 +594,6 @@ HistoryEntry {
     is scheduled with the proposed values from the effective date. Before
     that date the profile shows the current values; from that date it shows
     the new values. *(BR-13, BR-15; SD-16; CL-01)*
-    > 💬 Scheduling only on `COMPLETED` is **not mentioned in BRD 5.2** (CL-01).
 17. **employee-internal-transfer.AC17** — Given `IN_PROGRESS`, when any
     required step fails, then that step is `FAILED`, every other pending
     step is `STOPPED`, completed steps (including a completed
@@ -622,13 +601,11 @@ HistoryEntry {
     no organisational change is scheduled, the profile never shows the
     proposed values, and stopped steps accept no further outcome. No retry,
     undo or compensation action is offered. *(BR-16; SD-16; CL-01)*
-    > 💬 "Nothing scheduled on `FAILED`" is **not mentioned in BRD 5.2** (CL-01).
 18. **employee-internal-transfer.AC18** — Given a request in any final
     outcome, then no step accepts an outcome. The employee can submit a new
     request straight away after `REJECTED_BY_MANAGER`, `REJECTED_BY_HR` or
     `FAILED`, and after `COMPLETED` from the effective date (AC34).
     *(BR-17; SD-17; CL-02)*
-    > 💬 Waiting for the effective date after `COMPLETED` is **not mentioned in BRD 5.2** (CL-02).
 
 ### Visibility and confirmation
 19. **employee-internal-transfer.AC19** — Given a request, when the employee
@@ -685,7 +662,6 @@ HistoryEntry {
     Fail for downstream steps). It is never presented as a real stakeholder
     interface. Given a user signed in as `EMPLOYEE`, the screen and every
     entry point to it are not shown. *(BR-24, §9; SD-18)*
-    > 💬 The `TESTER` role is **not mentioned in BRD 5.2** (SD-18). The rest is BR-24.
 25. **employee-internal-transfer.AC25** — Given the tester chooses Reject,
     then a reason is required: the rejection cannot be recorded while the
     reason is empty or only spaces. *(BR-28)*
@@ -703,7 +679,6 @@ HistoryEntry {
     transfer form, the request screen and the simulation screen show a
     visible "Demo — test data only" indicator, so no one mistakes V1 for a
     production system holding real employee records. *(BR-25, §9; SD-12)*
-    > 💬 The visible indicator is **not mentioned in BRD 5.2** (SD-12). "Test/demo data only" is BR-25.
 29. **employee-internal-transfer.AC29** — Given a step becomes `PENDING`,
     then a stakeholder task is created with exactly the payload in the
     Stakeholder contract for that step, and the simulation screen shows it
@@ -715,7 +690,6 @@ HistoryEntry {
     own requests, newest first, each with its submitted date and status
     label, and can open any of them and its history. *(BR-23, BR-27;
     SD-08)*
-    > 💬 A list of all the employee's requests is **not mentioned in BRD 5.2** (SD-08).
 
 ### Review items (added in v2.3)
 31. **employee-internal-transfer.AC31** — Given employee A is signed in and
@@ -726,14 +700,12 @@ HistoryEntry {
     operations return only B's data, and A's request IDs give B "No request
     found." After sign-out and before any sign-in, every operation returns
     "Please sign in." *(BR-23, BR-25, BR-26)*
-    > 💬 Sign-out clearing is **not mentioned in BRD 5.2**. Not seeing another employee's data is BR-23 (reviewer item 8).
 32. **employee-internal-transfer.AC32** — Given a user signed in as
     `TESTER`, then OP01–OP05 return "This action is for employees only.",
     no transfer form is offered, and the tester owns no request. Given a
     user signed in as `EMPLOYEE`, OP06 and OP07 return "Only a demo tester
     can record stakeholder outcomes." and nothing changes. *(BR-23, BR-24;
     SD-18)*
-    > 💬 The `TESTER` role is **not mentioned in BRD 5.2** (SD-18; reviewer item 3).
 33. **employee-internal-transfer.AC33** — Given a request in progress whose
     effective date is today or has passed, then its status and effective
     date are unchanged, the request screen shows the "effective date passed"
@@ -742,7 +714,6 @@ HistoryEntry {
     completes, the change is scheduled with the original effective date and
     the profile shows the new values from that day. *(BR-05, BR-12, BR-13;
     SD-05)*
-    > 💬 Behaviour after the effective date passes is **not mentioned in BRD 5.2** (SD-05; reviewer item 5).
 34. **employee-internal-transfer.AC34** — Given the employee has a
     `COMPLETED` request awaiting effect, when they open the form or submit,
     then submission is blocked with "Your previous transfer takes effect on
@@ -750,13 +721,11 @@ HistoryEntry {
     request is created. From the effective date, submission is accepted
     and its current values snapshot holds the new values. *(BR-07, BR-13,
     BR-17; SD-17; CL-02)*
-    > 💬 **Not mentioned in BRD 5.2**; differs from BR-07/BR-17 (CL-02; reviewer item 2).
 35. **employee-internal-transfer.AC35** — Given one request, however many
     times the completion of its last step or `scheduleOrganisationalChange`
     is triggered, then at most one scheduled change and one
     `CHANGE_SCHEDULED` history entry exist for it, with the results given in
     the SD-20 table. *(BR-08, BR-13; SD-20)*
-    > 💬 Schedule idempotency is **not mentioned in BRD 5.2** (SD-20; reviewer item 7). BR-08 covers submission only.
 
 ## Acceptance scenarios
 **What these are.** The UT and XF scenarios are **acceptance scenarios**:
@@ -846,10 +815,6 @@ Each scenario runs several rules together and states the full end state.
 Dates are device local dates in 2026.
 
 **XF01 — Org record recorded, then Payroll fails** (reviewer scenario 1)
-*Answer to S1:* under SD-16 a transfer is scheduled only when **every**
-required step has completed, so "scheduled, then Payroll fails" cannot
-happen. The nearest real case is below: the organisational record update is
-recorded, and then Payroll fails before the request completes.
 Request: department and location change, effective 15 Oct. HR approves (all
 four downstream steps `PENDING`). Org record `COMPLETED`, IT `COMPLETED`,
 then Payroll `FAILED` while Facilities is `PENDING`.
@@ -941,9 +906,7 @@ required). Org, Payroll and Facilities `COMPLETED`; IT `FAILED` last.
 | Org, Payroll, Facilities steps | Stay `COMPLETED` in the request and the history; shown as completed (not undone) |
 | IT step | `FAILED` |
 | Stopped steps | None (nothing was pending); no `STEP_SET` `STOPPED` entry |
-| Scheduled organisational change | None; never created, so nothing needs cancelling |
-| What remains | The three completed steps (as a record) and the `FAILED` status; the employee's profile is unchanged |
-| What is cancelled | Nothing is cancelled, because no change was ever scheduled. Any step still `PENDING` at the failure would be `STOPPED` (see XF01, where Facilities is stopped) |
+| Scheduled organisational change | None; never created |
 | Employee profile | Unchanged, before and after the effective date |
 | Outside the portal (future real integrations) | The portal does not undo what Payroll or Facilities did. Compensation is out of scope in V1 (BR-16, §12). In V1 these steps are simulated, so nothing outside the app changed |
 | New request | Can be submitted straight away |
@@ -1026,58 +989,43 @@ notification or scheduling code exists.
 
 ## Spec decisions for Gate 1
 Details BRD-001 leaves open that the spec has to settle. Please confirm or
-reject each. The last column says whether BRD 5.2 mentions the decision.
-Where it does not, the point carries "Not mentioned in BRD 5.2" and is
-listed in the reference note. BRD 5.2 is not changed.
+reject each. SD-16 and SD-17 also need the BRD-001 clarifications CL-01 and
+CL-02.
 
-| ID | Decision | Why | In BRD 5.2? |
-|---|---|---|---|
-| SD-01 | Only steps that have been reached are shown. HR appears after the manager approves; the four downstream steps appear when HR approves. There is no "Not started" state. | BR-19 lists six states and no "not started" state. Showing unreached steps would need a seventh. | 💬 **Not mentioned in BRD 5.2.** BR-19 lists six states only |
-| SD-02 | A manager or HR approval shows the step as `COMPLETED` (Approved). | BR-19 has no "Approved" state; Completed is the closest. | 💬 **Not mentioned in BRD 5.2.** BR-19 has no "Approved" state |
-| SD-03 | Triggers use the current values snapshot taken at submission, not the profile at HR approval time. | The employee confirmed the change against those values (BR-03). The snapshot keeps the decision stable. | 💬 **Not mentioned in BRD 5.2.** §5 compares with current values (BR-03), not when |
-| SD-04 | Another employee's request gives the same "No request found." as a missing one. | Avoids telling one employee that another's request exists (BR-23, BR-25). | 💬 **Not mentioned in BRD 5.2.** BR-23 is in BRD 5.2; the wording is not |
-| SD-05 | **Revised in v2.3.** The effective date is checked only at submission and never changes. A request still in progress on or after its effective date carries on. The employee sees an "effective date passed" note, and the tester's task is marked. If it completes, the change is scheduled with the original date and shows in the profile from the completion day. The confirmation says so. The portal does not reject or re-date the request; HR may reject it (BR-12). | BRD-001 has no rule for this case. Auto-rejecting or re-dating would add a business rule. The note answers review item 5. | 💬 **Not mentioned in BRD 5.2.** BR-05 covers submission only (reviewer item 5) |
-| SD-06 | **Superseded by SD-17 in v2.3.** A new request can no longer be submitted before a completed transfer's effective date, so its snapshot is always taken on or after that date and holds the new values. | v2.1 allowed submission before the effective date with old values, which caused review item 2. | Superseded by SD-17 |
-| SD-07 | Idempotency uses a `submissionId` generated once per submit action. | Makes BR-08 testable at the repository, not only in the UI. | 💬 **Not mentioned in BRD 5.2.** BR-08 is in BRD 5.2; `submissionId` is not |
-| SD-08 | The employee can list all their requests (OP03), not only the latest. | BR-27 says the employee can view the history; after a new request, the old request's history would otherwise be unreachable. | 💬 **Not mentioned in BRD 5.2.** BR-27 covers viewing history, not a list |
-| SD-09 | A downstream failure carries no reason. | §8 needs back only "Completed / Failed". BR-28 requires a reason only for manager and HR rejections. | ✅ §8 ("Completed / Failed"), BR-28 |
-| SD-10 | The employee's reason and a rejection reason are each at most 500 characters. | BRD-001 gives no limit; a limit makes the fields testable and keeps the history readable. | 💬 **Not mentioned in BRD 5.2.** No limit in BRD 5.2 |
-| SD-11 | There is no maximum effective date. | BR-05 sets only "future date"; adding a maximum would be a new business rule. | 💬 **Not mentioned in BRD 5.2.** BR-05 says only "future date" |
-| SD-12 | V1 screens show a "Demo — test data only" indicator (AC28). | Makes BR-25's "test/demo data only" visible and testable. | 💬 **Not mentioned in BRD 5.2.** BR-25 says test/demo data only |
-| SD-13 | The simulation screen is in every V1 build and must be removed before production. | V1 has no real integration (ADR-0004), so the journey cannot progress without it; BR-24 requires that it is never taken for a real interface. | 💬 **Not mentioned in BRD 5.2.** BR-24 says demo-only |
-| SD-14 | Status labels shown to the employee are as in the Request status table. | BR-06 names "Pending manager approval"; the other labels follow BRD-001 wording (§3, BR-11 to BR-17). | ⚠️ Partly: BR-06, §7 name most labels; "Pending HR eligibility check" and "In progress" are not |
-| SD-15 | A stakeholder task's content is fixed when its step becomes `PENDING`. | Keeps the task stable while pending; matches the snapshot rule SD-03. | 💬 **Not mentioned in BRD 5.2.** §8 lists content, not timing |
-| SD-16 | **New.** `ORG_RECORD_UPDATE` = `COMPLETED` means "recorded", not "scheduled" or "effective". The organisational change is scheduled only when the whole request becomes `COMPLETED`. A `FAILED` request never schedules a change. **CL-01.** | Review items 1 and 6. Otherwise a failed transfer could still take effect later. BR-15 treats the transfer as a whole. | ⚠️ Partly: recorded/effective are BR-13. 💬 **Scheduling only on `COMPLETED` is not mentioned in BRD 5.2.** (CL-01) |
-| SD-17 | **New.** While a `COMPLETED` request is awaiting effect, a new request is blocked (OP01 error 6). **CL-02.** | Review item 2. Prevents two future transfers for one employee and keeps each snapshot correct. The simplest rule that needs no ordering or cancellation logic. | 💬 **Not mentioned in BRD 5.2.** Differs from BR-07/BR-17 (CL-02) |
-| SD-18 | **New.** The simulation (OP06, OP07) is available only to a demo account with role `TESTER`. A tester has no profile, cannot submit or view as an employee, and its role is set in demo data. An employee never sees the simulation. | Review item 3. BR-24: only the owning stakeholder records an outcome; an employee must never approve their own request through the app. | 💬 **Not mentioned in BRD 5.2.** `TESTER` role (applies BR-23, BR-24) |
-| SD-19 | **New.** The history `actor` includes `SYSTEM`. Status changes, `STEP_SET` (pending, not required, stopped) and `CHANGE_SCHEDULED` entries are recorded by `SYSTEM`; stakeholder outcomes by the owning stakeholder, with `simulatedBy`; the submission by `EMPLOYEE`. | Review item 4. BR-27 requires every status change in the history; these are made by the portal, not by a person. | 💬 **Not mentioned in BRD 5.2.** `SYSTEM` actor (BR-27 is in BRD 5.2) |
-| SD-20 | **New.** `scheduleOrganisationalChange` is idempotent by `requestId`, with the results in the Consumed contract table. The schedule is saved in the same save as the last outcome and the status change. | Review item 7. A repeated trigger can never create a duplicate or conflicting change. | 💬 **Not mentioned in BRD 5.2.** Schedule idempotency |
+| ID | Decision | Why |
+|---|---|---|
+| SD-01 | Only steps that have been reached are shown. HR appears after the manager approves; the four downstream steps appear when HR approves. There is no "Not started" state. | BR-19 lists six states and no "not started" state. Showing unreached steps would need a seventh. |
+| SD-02 | A manager or HR approval shows the step as `COMPLETED` (Approved). | BR-19 has no "Approved" state; Completed is the closest. |
+| SD-03 | Triggers use the current values snapshot taken at submission, not the profile at HR approval time. | The employee confirmed the change against those values (BR-03). The snapshot keeps the decision stable. |
+| SD-04 | Another employee's request gives the same "No request found." as a missing one. | Avoids telling one employee that another's request exists (BR-23, BR-25). |
+| SD-05 | **Revised in v2.3.** The effective date is checked only at submission and never changes. A request still in progress on or after its effective date carries on. The employee sees an "effective date passed" note, and the tester's task is marked. If it completes, the change is scheduled with the original date and shows in the profile from the completion day. The confirmation says so. The portal does not reject or re-date the request; HR may reject it (BR-12). | BRD-001 has no rule for this case. Auto-rejecting or re-dating would add a business rule. The note answers review item 5. |
+| SD-06 | **Superseded by SD-17 in v2.3.** A new request can no longer be submitted before a completed transfer's effective date, so its snapshot is always taken on or after that date and holds the new values. | v2.1 allowed submission before the effective date with old values, which caused review item 2. |
+| SD-07 | Idempotency uses a `submissionId` generated once per submit action. | Makes BR-08 testable at the repository, not only in the UI. |
+| SD-08 | The employee can list all their requests (OP03), not only the latest. | BR-27 says the employee can view the history; after a new request, the old request's history would otherwise be unreachable. |
+| SD-09 | A downstream failure carries no reason. | §8 needs back only "Completed / Failed". BR-28 requires a reason only for manager and HR rejections. |
+| SD-10 | The employee's reason and a rejection reason are each at most 500 characters. | BRD-001 gives no limit; a limit makes the fields testable and keeps the history readable. |
+| SD-11 | There is no maximum effective date. | BR-05 sets only "future date"; adding a maximum would be a new business rule. |
+| SD-12 | V1 screens show a "Demo — test data only" indicator (AC28). | Makes BR-25's "test/demo data only" visible and testable. |
+| SD-13 | The simulation screen is in every V1 build and must be removed before production. | V1 has no real integration (ADR-0004), so the journey cannot progress without it; BR-24 requires that it is never taken for a real interface. |
+| SD-14 | Status labels shown to the employee are as in the Request status table. | BR-06 names "Pending manager approval"; the other labels follow BRD-001 wording (§3, BR-11 to BR-17). |
+| SD-15 | A stakeholder task's content is fixed when its step becomes `PENDING`. | Keeps the task stable while pending; matches the snapshot rule SD-03. |
+| SD-16 | **New.** `ORG_RECORD_UPDATE` = `COMPLETED` means "recorded", not "scheduled" or "effective". The organisational change is scheduled only when the whole request becomes `COMPLETED`. A `FAILED` request never schedules a change. **CL-01.** | Review items 1 and 6. Otherwise a failed transfer could still take effect later. BR-15 treats the transfer as a whole. |
+| SD-17 | **New.** While a `COMPLETED` request is awaiting effect, a new request is blocked (OP01 error 6). **CL-02.** | Review item 2. Prevents two future transfers for one employee and keeps each snapshot correct. The simplest rule that needs no ordering or cancellation logic. |
+| SD-18 | **New.** The simulation (OP06, OP07) is available only to a demo account with role `TESTER`. A tester has no profile, cannot submit or view as an employee, and its role is set in demo data. An employee never sees the simulation. | Review item 3. BR-24: only the owning stakeholder records an outcome; an employee must never approve their own request through the app. |
+| SD-19 | **New.** The history `actor` includes `SYSTEM`. Status changes, `STEP_SET` (pending, not required, stopped) and `CHANGE_SCHEDULED` entries are recorded by `SYSTEM`; stakeholder outcomes by the owning stakeholder, with `simulatedBy`; the submission by `EMPLOYEE`. | Review item 4. BR-27 requires every status change in the history; these are made by the portal, not by a person. |
+| SD-20 | **New.** `scheduleOrganisationalChange` is idempotent by `requestId`, with the results in the Consumed contract table. The schedule is saved in the same save as the last outcome and the status change. | Review item 7. A repeated trigger can never create a duplicate or conflicting change. |
 
-## Points not in BRD 5.2 (CL-01, CL-02)
-These two spec decisions read or narrow a BRD 5.2 business rule. They
-answer the reviewer's items 1, 2 and 6 and are kept in the spec.
-**BRD-001 v5.2 is not changed**: both are recorded for reference in
-`reviews/employee-internal-transfer.spec-v2.4.not-in-BRD-5.2.md`, together with every other point BRD 5.2 does not mention.
+## BRD-001 clarifications needed
+These two spec decisions read or narrow a business rule. BRD-001 is
+approved at v5.2, so each needs a BRD-001 v5.3 clarification approved by
+the Gate 1 reviewer. The spec does not change the approved BRD on its own.
+If either is rejected, the linked ACs and scenarios are revised before
+approval.
 
-| ID | BRD-001 v5.2 rule | What the spec does (not in BRD 5.2) | Spec items that depend on it |
+| ID | BRD-001 rule | Clarification proposed | Spec items that depend on it |
 |---|---|---|---|
 | CL-01 | BR-13, BR-15, BR-16 | "The organisational record update records the new values, which are applied (to take effect from the effective date) only when the request is Completed. If the request Fails, the new values are never applied; the completed step is not rolled back but has no effect on the profile." | SD-16; AC16, AC17, AC20; UT58, UT59, UT69; XF01, XF08, XF09 |
 | CL-02 | BR-07, BR-17 | "After a Completed request, a new request can be submitted from its effective date. Before that date, submission is rejected with a message giving the date." | SD-17; OP01 error 6; AC18, AC34; UT24, UT48, UT64; XF02 |
-
-**Why the spec follows the review rather than the literal BRD wording.**
-- **CL-01:** review item 1 says a failed request must not leave a transfer
-  that "may still happen". Reading BR-13 and BR-16 literally would allow
-  exactly that. CL-01 is the smallest reading that meets item 1, and it
-  keeps BR-16's "not rolled back" for the step record.
-- **CL-02:** review item 2 allows either "block a new request until the
-  previous transfer becomes effective" or "define how multiple future
-  transfers are handled". The spec takes the first option, which the review
-  lists first. The second would need ordering and cancellation rules that
-  BRD 5.2 also does not define.
-
-**Reviewer confirmation requested at Gate 1:** accept CL-01 and CL-02 as
-the spec's reading of BRD 5.2 for items 1 and 2, with BRD-001 v5.2 left as
-approved and both recorded in the reference note.
 
 ## Traceability: BRD-001 → spec
 | BRD-001 | Spec |
@@ -1128,16 +1076,7 @@ Every item of the approved BRD-001 v5.2, and where the spec covers it.
 | §10 assumptions A-01 to A-07 | Context (inherited assumptions) | ✅ |
 | §11 dependencies D-01 to D-04 | Context; Consumed contract; AC27 | ✅ |
 | §12 out of scope (14 items) | Explicitly Out of Scope (all 14, plus BR-25 retention, production authorization and retroactive changes) | ✅ |
-| §13 open questions: none | SD-01 to SD-20 settle spec-level details. SD-16 and SD-17 read or narrow business rules; recorded as CL-01 and CL-02 (not in BRD 5.2) | ✅ Points not in BRD 5.2 recorded in the reference note |
-
-## Changes in v2.4 (from v2.3)
-| Area | Change |
-|---|---|
-| BRD 5.2 | Not changed. The dependency on a BRD clarification is removed; CL-01 and CL-02 are recorded as points not in BRD 5.2 |
-| Notes | "In BRD 5.2?" column on the review-response and spec-decision tables; "Not mentioned in BRD 5.2" comments on AC16, AC17, AC18, AC24, AC28, AC30–AC35 and the three moments |
-| Reference note | `reviews/employee-internal-transfer.spec-v2.4.not-in-BRD-5.2.md` lists every point not in BRD 5.2 |
-| Behaviour | None changed. Every v2.3 answer to review items 1–11 and scenarios S1–S8 is kept |
-| Double-check fixes | Item 4 and item 8 "Where" references corrected; XF01 states why "scheduled, then fails" cannot happen (S1); XF08 states what remains and what is cancelled (S8); `getCurrentValues` never shows a late-completed change retroactively (SD-05) |
+| §13 open questions: none | SD-01 to SD-20 settle spec-level details. SD-16 and SD-17 read or narrow business rules and are raised as CL-01 and CL-02 | ⚠️ Pending CL-01, CL-02 |
 
 ## Changes in v2.3 (from v2.1; replaces the incomplete v2.2 draft)
 | Review item | Change |
@@ -1188,11 +1127,10 @@ AC22–AC24 were revised; AC31–AC35 were added.
 | History | Decisions only | Submission, outcomes and status changes, with reasons (BR-27) |
 
 ## Next
-1. Gate 1 reviewer confirms or rejects SD-16 to SD-20, the revised SD-05
-   and SD-06, and CL-01 and CL-02, using the reference note for the points
-   not in BRD 5.2.
-2. On approval the spec is marked **Gate 1 Approved**. BRD-001 v5.2 stays
-   as approved.
+1. Gate 1 reviewer confirms or rejects SD-16 to SD-20 and the revised SD-05
+   and SD-06, and decides CL-01 and CL-02.
+2. If CL-01 and CL-02 are agreed, BRD-001 v5.3 records them. The spec is
+   then marked **Gate 1 Approved**.
 3. After approval: write the plan (with Constitution Check), then tasks,
    then the test cases covering UT01–UT70 and XF01–XF09, each for review in
    turn.

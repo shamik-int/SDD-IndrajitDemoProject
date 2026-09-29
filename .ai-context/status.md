@@ -5,7 +5,7 @@ _Last updated: 2026-09-28_
 | Item | Status | Owner | Last Updated | Notes |
 |---|---|---|---|---|
 | **BRD v5.2 (BRD-001)** | **Approved (Gate 1), 2026-09-28** | Indrajit Bhandari (Author); Shamik Bhattacharya (Gate 1) | 2026-09-28 | Approved by Shamik Bhattacharya. BRD-002 kept for version control only. |
-| **Spec v2.1 (employee-internal-transfer)** | **Submitted for Gate 1 review — not yet approved** | Indrajit Bhandari (Author); Shamik Bhattacharya (Gate 1) | 2026-09-28 | Author revision of v2.0 after a full BRD-001 v5.2 coverage check: 30 ACs, 50 unit tests, 15 spec decisions (SD-01–SD-15), stakeholder contract (§8). Every BR-01–BR-28 has an AC; every AC has a test except AC21 (verified at Gate 2). Next: Shamik approves or requests changes. Plan, tasks and test cases wait for spec approval. |
+| **Spec v2.4 (employee-internal-transfer)** | **Resubmitted for Gate 1 review — not yet approved** | Indrajit Bhandari (Author); Shamik Bhattacharya (Gate 1) | 2026-09-29 | Answers the reviewer's 11 items and 8 scenarios (v2.1 review). 35 ACs, UT01–UT70, XF01–XF09, SD-01–SD-20, OP01–OP07. Every BR-01–BR-28 has an AC. Points not in BRD 5.2 (CL-01, CL-02 and others) listed in `reviews/employee-internal-transfer.spec-v2.4.not-in-BRD-5.2.md`. **BRD 5.2 unchanged.** Next: Shamik reviews. |
 
 ## Active Specs
 | Spec ID | Title | Status | Owner | Last Updated | Notes |
@@ -215,3 +215,12 @@ _Last updated: 2026-09-28_
   - SD-10–SD-15 for the reviewer to confirm.
 - Result: 30 ACs, 50 unit tests, 15 spec decisions. Every BR-01–BR-28 has at least one AC; every AC has a unit test except AC21 (no notifications), verified at Gate 2 code review. A new "BRD-001 coverage check" section maps §1–§13.
 - **Gate 1 status: spec v2.1 submitted — not yet approved.** Plan, tasks and test cases wait for spec approval.
+
+### 2026-09-29 — Spec v2.1 Gate 1 review; spec v2.3 → v2.4
+- Shamik Bhattacharya's Gate 1 review of spec v2.1 committed (`9004c0c`): **Changes Requested**, 11 mandatory items (1–4 critical) and 8 scenarios S1–S8 (`reviews/employee-internal-transfer.spec-v2.1.gate1-review.md`). The same commit holds spec v2.3, which answers all 11 items and S1–S8 (XF01–XF08, plus XF09), and asked for a BRD v5.3 clarification (CL-01, CL-02).
+- Note: the Author's uncommitted local changes of 2026-09-29 morning (a v2.2 completion and a "not in BRD 5.2" note) were not kept when the branch was updated; v2.4 redoes the note on top of v2.3.
+- **Spec v2.4 (Author):** cross-checked against BRD-001 v5.2. **BRD 5.2 is not changed**: the BRD v5.3 dependency is removed, and CL-01 (schedule the org change only on COMPLETED) and CL-02 (no new request until a completed transfer takes effect) are kept as reviewer-requested points **not in BRD 5.2**. Added an "In BRD 5.2?" column to the review-response and spec-decision tables, plus "Not mentioned in BRD 5.2" comments on AC16–AC18, AC24, AC28, AC30–AC35 and the three moments. v2.3 kept as `specs/employee-internal-transfer.spec-v2.3-backup-2026-09-29.md`.
+- New reference note `reviews/employee-internal-transfer.spec-v2.4.not-in-BRD-5.2.md`: 2 points differ from BRD 5.2 (CL-01, CL-02); review items 3, 4, 5, 7, 8, 10, 11 and 15 spec decisions are not mentioned or only partly mentioned in BRD 5.2.
+- Coverage: 35 ACs (every BR has one), 70 unit + 9 cross-flow scenarios; every AC has a scenario except AC21 (Gate 2). Author response added to the review file.
+- **Gate 1 status: spec v2.4 resubmitted — not yet approved.**
+- **Double-check of v2.4 (same day):** every referenced AC/UT/XF/SD/OP ID resolves. Five fixes made: item 4 and item 8 "Where" references corrected (no "History entries" section; UT66 belonged to item 5); XF01 now states why "scheduled, then Payroll fails" cannot happen (S1); XF08 states what remains and what is cancelled (S8); `getCurrentValues` never shows a late-completed change retroactively (SD-05). Added the rationale for CL-01/CL-02 and a request for the reviewer to confirm them at Gate 1. Items 1–11 and S1–S8 all mapped.
