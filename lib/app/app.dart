@@ -11,7 +11,10 @@ import 'routes/app_pages.dart';
 /// design reference; tablet layout decisions are made per-widget via
 /// `core/responsive/ResponsiveUtil`, not by changing the design size here.
 class App extends StatelessWidget {
-  const App({super.key});
+  /// Replaced only by tests (in-memory store, fixed clock).
+  final Bindings? initialBinding;
+
+  const App({super.key, this.initialBinding});
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +27,7 @@ class App extends StatelessWidget {
         theme: AppTheme.light,
         darkTheme: AppTheme.dark,
         themeMode: ThemeMode.system,
-        initialBinding: InitialBinding(),
+        initialBinding: initialBinding ?? InitialBinding(),
         initialRoute: AppPages.initial,
         getPages: AppPages.pages,
       ),

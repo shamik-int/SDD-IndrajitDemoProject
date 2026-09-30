@@ -192,3 +192,25 @@ that there was previously no way to reach the status screen after
 submitting, short of restarting the app).
 - **Files touched:** `integration_test/employee_internal_transfer_test.dart` (new), `lib/presentation/pages/transfer_request_status_page.dart` (bug fix), `lib/presentation/pages/transfer_request_submission_page.dart` (View Status buttons), `pubspec.yaml` (+integration_test), `macos/` (new platform folder), `.ai-context/tasks/employee-internal-transfer.tasks.md`, `.ai-context/prompts/employee-internal-transfer.prompts.md`, `.ai-context/status.md`, `PROJECT_CHECKLIST.md`
 - **Outcome:** All 3 integration tests pass on macOS desktop (`flutter test integration_test/employee_internal_transfer_test.dart -d macos`). Full `flutter test` suite re-verified at 91/91 passing, `flutter analyze` clean, after the fix. Milestone 4's implementation phase (T01–T06) is complete; Gate 2 code review and the Security Assessment are still outstanding.
+
+---
+
+# Spec v2.4 / plan v4.0 build (2026-09-30)
+
+**Prompt (session user, 2026-09-30):** "Complete plan task and full app then,
+Gate 2 review, Gate 1 approval is complete. Now after completing app gate 2
+will review plan, test case, task and the app."
+
+Tasks T01–T08 were implemented in one session, in order, each test-first
+(tests written and run RED, then code, then GREEN). Per-task record:
+
+| Task | Tests written first | RED | GREEN | Notes |
+|---|---|---|---|---|
+| T01 core | `test/core/{time,concurrency,local_db}`, `demo_banner_test` | 4 files failed to compile | 12/12 | — |
+| T03 domain (done before T02, which depends on its types) | `schedule_book_test`, `transfer_workflow_test` | 2 files failed to compile | 55/55 | Usecase delegation test written after the usecases |
+| T02 portal | `demo_portal_test` | Failed to compile | Passing | Demo password hashed; plaintext not committed (PD-01a) |
+| T04 data | `transfer_request_repository_impl_test` | Failed to compile | 32/32 with T02 | Ledger round-trip test written after the model |
+| T05–T07 screens | `employee_screens_test`, `confirmation_builder_test`, `tester_screen_test`, `roles_and_session_test` | 4 files failed to compile | 33/33 | Two failures fixed on the way: a fixture bug in the UT41 test, and a real gap (no sign-out on the form and detail screens, AC31) |
+| T08 cross-flow | `test/integration/cross_flow_test.dart`, `integration_test/transfer_journey_test.dart` | Written after the code; passed first run | 12/12; IT01 on macOS | Verification, not test-driven |
+| T09 clean-up | — | — | — | Partly done: deleting the v1.5 files was blocked by the session's permission rules |
+

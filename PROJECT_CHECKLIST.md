@@ -83,7 +83,15 @@ recreated from it; the existing ones are paused._
 - [x] Spec v2.3/v2.4 answers all 11 items and S1–S8 (XF01–XF09); 35 ACs, 70 UTs, SD-01–SD-20
 - [x] Spec v2.4 cross-checked with BRD 5.2; points not in BRD 5.2 recorded in the reference note; BRD 5.2 unchanged
 - [x] **Gate 1 approval of spec v2.4 by Shamik Bhattacharya** (2026-09-30; CL-01 and CL-02 accepted)
-- [ ] After spec approval: recreate plan, tasks and test cases from the approved spec (comment #16)
+- [x] After spec approval: recreate plan, tasks and test cases from the approved spec (comment #16)
+  - [x] Plan v4.0 drafted from spec v2.4 (2026-09-30): PD-01–PD-11, F-01–F-05, Constitution Check, 9-step sequencing, all 35 ACs mapped; ADR-0006 Proposed; v3 backed up
+  - [~] **Gate 1 plan review by Shamik Bhattacharya** — reported complete by the session user (2026-09-30); Shamik's own sign-off still to be attached
+  - [x] Tasks from plan v4.0 (`tasks/employee-internal-transfer.tasks.md`): T01–T09
+  - [x] Test cases covering UT01–UT70 and XF01–XF09 (`test_cases/employee-internal-transfer.test_cases.md`)
+  - [x] v2.4 app built: T01–T08 done (test-first T01–T07), 293/293 tests, IT01 on macOS, analyze clean, coverage 93.6% / 98.8% / 96.1%
+  - [ ] T09: delete the v1.5 files (blocked in session; list in `reviews/employee-internal-transfer.gate2-evidence.md`)
+  - [ ] **Gate 2 review by Subhajit Mukherjee** of plan, tasks, test cases and app (`reviews/employee-internal-transfer.gate2-evidence.md`)
+  - [ ] Before any release build: real freeRASP config; constitution v1.3 caveat (plan F-04)
 
 ## 4. Plan & Tasks — Deliverables 4–7 (Milestone 3)
 - [x] Deliverable 4 — `.ai-context/plans/employee-internal-transfer.plan.md`: Architecture Approach, Data Model, Constitution Check, Explicitly Deferred, Sequencing (revised to **4 steps**, all Flutter-only — the original 8-step version had 4 backend steps that no longer exist)

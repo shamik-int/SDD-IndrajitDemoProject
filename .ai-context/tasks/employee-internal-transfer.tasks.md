@@ -1,58 +1,90 @@
 # Tasks: Employee Internal Transfer
 
 ## Derived From
-`.ai-context/plans/employee-internal-transfer.plan.md` (v2 — no backend, per ADR-0004)
+`.ai-context/plans/employee-internal-transfer.plan.md` **v4.0** (from spec
+v2.4, Gate 1 Approved 2026-09-30). One task per Sequencing step of the plan.
+The v1.5 task list is kept as `employee-internal-transfer.tasks-v1.5-backup-2026-09-30.md`.
+
+**Review route.** At the session user's direction (2026-09-30), these tasks,
+the test cases and the implementation are reviewed together at Gate 2
+(Subhajit Mukherjee), rather than the tasks getting a separate Gate 1 pass
+first. Recorded in `status.md`.
+
+Every task is test-first: tests written and run RED, then implementation,
+then GREEN with `flutter analyze` clean. Test IDs refer to
+`test_cases/employee-internal-transfer.test_cases.md`.
 
 ## Sequence
-- [x] **employee-internal-transfer.T01** — Domain layer: `TransferRequest`
-  entity (incl. per-stakeholder status map), `Stakeholder`/`StakeholderDecision`
-  enums matching the spec's Status Definitions, abstract repository contract,
-  and usecases (`SubmitTransferRequest`, `GetActiveTransferRequestStatus`,
-  `GetTransferRequestById`, `RecordStakeholderDecision`). Usecases are
-  unit-testable against a `mocktail`-mocked repository before T02 exists.
-  — Acceptance: supports AC1, AC3, AC6, AC14 (foundational — no behavior of
-  its own beyond correct delegation to the repository contract)
+- [x] **employee-internal-transfer.T01** — Core support: `Clock` /
+  `AdjustableClock` and local-date helpers (`yyyy-MM-dd`, `d MMM yyyy`),
+  `AsyncLock`, `TransferMessages` (every spec message verbatim),
+  `DemoBanner`, in-memory `LocalDbService` for widget tests, and
+  `readAll`/`clearBox` on `LocalDbService`.
+  — Plan: PD-04, PD-05, PD-10 — ACs: supports all; AC28 (banner)
 
-- [x] **employee-internal-transfer.T02** — Data layer: Hive-backed local
-  datasource (`transfer_requests` + `app_state` boxes per the plan's Data
-  Model) and the repository implementation — field validation, the
-  single-in-flight-request check, and the full state-machine transition
-  logic (manager → HR → parallel downstream fan-out → Completed, plus both
-  rejection branches). This is where most of the spec's actual business
-  rules live.
-  — Acceptance: AC2, AC3, AC4, AC5, AC7, AC8, AC9, AC10, AC11, AC12, AC13, AC14
-  — Test cases: UT01–UT14, QA01–QA14 (`test_cases/employee-internal-transfer.test_cases.md`)
+- [x] **employee-internal-transfer.T02** — Portal adapters (D-01..D-03) and
+  start-up: seeded demo accounts with `EMPLOYEE`/`TESTER` roles (hash + salt
+  only), `DemoAuthService` (sign in, sign out, `currentUser()`), `SessionState`,
+  `DemoProfileService` (`getCurrentValues`, `pendingScheduledChange`,
+  `scheduleOrganisationalChange`), `StaticReferenceLists`, `DemoDataSeeder`
+  (PD-06 clean-up of v1.5/BRD-002 boxes, `schemaVersion` 2).
+  — Plan: PD-01, PD-01a, PD-02, PD-03, PD-06 — ACs: AC02, AC16, AC27, AC35
+  — Tests: UT21, UT60–UT62 (public schedule API), seeding tests
 
-- [x] **employee-internal-transfer.T03** — Presentation: submission screen +
-  `GetxController`. Department/location/role selection, effective date
-  picker, optional reason field, validators wired to
-  `core/utils/validators.dart`, submit action calling
-  `SubmitTransferRequest`, and the "already in progress" blocking message.
-  — Acceptance: AC1, AC2, AC3, AC4, AC5
+- [x] **employee-internal-transfer.T03** — Domain: entities and enums;
+  `TransferWorkflow` (submit validation, outcome transitions, triggers table,
+  stakeholder tasks, history entries with actors); `ScheduleBook` (SD-20);
+  repository contract; usecases for OP01–OP07.
+  — ACs: AC03–AC06, AC10–AC18, AC23, AC25, AC26, AC29, AC35
+  — Tests: UT01, UT03–UT08, UT11–UT20, UT22, UT23, UT25–UT27, UT30, UT31,
+  UT33–UT36, UT44, UT46, UT47, UT55–UT57, UT60–UT62 (pure)
 
-- [x] **employee-internal-transfer.T04** — Presentation: status screen +
-  `GetxController`. Shows overall status, submitted field values, and the
-  current `pendingStakeholders` list, reactive to state changes.
-  — Acceptance: AC6, AC7, AC9, AC10, AC11, AC12, AC13
+- [x] **employee-internal-transfer.T04** — Data: `TransferLedgerModel`
+  (round trip), `TransferLedgerLocalDataSource`, `TransferRequestRepositoryImpl`
+  with the access rules (signed in → role → ownership), idempotent submit,
+  lock-serialised read-modify-write and one `put` per operation (outcome,
+  history, status and schedule together).
+  — ACs: AC02, AC03, AC07, AC08, AC13, AC16, AC18, AC22, AC23, AC27, AC30,
+  AC32, AC34, AC35
+  — Tests: UT02, UT09, UT10, UT24, UT28, UT29, UT45, UT48, UT50,
+  UT52–UT54, UT58, UT59, UT63, UT64, UT70, append-only and timing checks
 
-- [x] **employee-internal-transfer.T05** — Presentation: Simulate Decision
-  control — a visually distinct section (not styled as a real
-  stakeholder-facing feature, per the plan's explicit QA/Gate 2 check item),
-  letting a tester pick a stakeholder + decision and call
-  `RecordStakeholderDecision`.
-  — Acceptance: AC14
+- [x] **employee-internal-transfer.T05** — Employee screens: Sign in, My
+  transfer requests, New transfer request form, Request detail (steps,
+  history, confirmation, "effective date passed" note), `ConfirmationBuilder`.
+  — ACs: AC01–AC09, AC19–AC21, AC23, AC27, AC28, AC30, AC33, AC34
+  — Tests: UT32, UT37–UT40, UT42, UT43, UT45 (widget), UT49, UT64 (form),
+  UT65 (note), UT66, UT69
 
-- [x] **employee-internal-transfer.T06** — Integration test: full journey
-  (submit → simulate manager approve → simulate HR approve → simulate
-  Payroll/IT/Facilities complete → Completed) plus both rejection branches
-  (manager reject, HR reject), per `test_cases/_integration.md`.
-  — Acceptance: AC3, AC8, AC9, AC10, AC11, AC12, AC13, AC14 (end-to-end)
+- [x] **employee-internal-transfer.T06** — Tester screen: "Demo only:
+  simulate stakeholder outcome" with open tasks (OP07), only valid outcomes
+  for pending steps, mandatory rejection reason, busy-state disable,
+  "Effective date passed" mark.
+  — ACs: AC24–AC26, AC29, AC33
+  — Tests: UT41, UT43, UT65 (task mark), reject-reason widget test
 
-## Notes
-- One task, one prompt (Blueprint §16) — implement and get T0N reviewed
-  before starting T0N+1. Reference tasks by ID, not description.
-- Test-first per constitution.md: for each task, write and confirm RED
-  before writing implementation code.
-- T01/T02 carry almost all the real logic and test coverage; T03–T05 are
-  thin UI wiring over already-tested usecases; T06 is the AC-spanning proof
-  that they compose correctly.
+- [x] **employee-internal-transfer.T07** — Roles, routing and sign-out:
+  role-based start-up routing (PD-07), role middleware on every feature
+  route, `Get.offAllNamed` sign-out, no permanent feature controllers,
+  PD-08 detection response (warn in UAT, block in PROD).
+  — ACs: AC24, AC27, AC31, AC32
+  — Tests: UT51, UT67, UT68, entry-routing tests
+
+- [x] **employee-internal-transfer.T08** — Cross-flow tests: XF01–XF09 over
+  the real repository, real Hive and an adjustable clock; one UI journey in
+  `integration_test/` on macOS desktop.
+  — ACs: AC15–AC18, AC22, AC23, AC31, AC33–AC35
+  — Tests: XF01–XF09, UT20 and UT24 end to end, IT01
+
+- [ ] **employee-internal-transfer.T09** — Clean-up: remove the v1.5
+  transfer code and tests and the BRD-002 Register feature; update
+  `architecture.md` and READMEs.
+  — Plan: "Existing code: keep, change, remove"
+  — **Partly done (2026-09-30):** the v1.5 code is unwired from routes and
+  bindings (Register route removed); `architecture.md` and READMEs updated.
+  **Deleting the v1.5 files was blocked by the session's permission rules**;
+  the file list is in `reviews/employee-internal-transfer.gate2-evidence.md`.
+  — **Partly done (2026-09-30):** v1.5 code unwired from routes and
+  bindings (Register route removed); `architecture.md` and READMEs updated.
+  **Deleting the v1.5 files was blocked by the session's permission rules**;
+  the file list is in `reviews/employee-internal-transfer.gate2-evidence.md`.

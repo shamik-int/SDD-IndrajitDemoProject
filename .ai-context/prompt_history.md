@@ -262,3 +262,19 @@ completed task per `.agent/rules/auto-log.md`._
 - **Prompt summary:** Verified reviewer identity against the Review Authority table (name + email match). Recorded the Gate 1 decision for spec v2.4, including acceptance of CL-01 and CL-02; BRD-001 v5.2 unchanged.
 - **Files touched:** `specs/employee-internal-transfer.spec.md` (Status only), `reviews/employee-internal-transfer.spec-v2.1.gate1-review.md`, `reviews/employee-internal-transfer.spec-v2.4.not-in-BRD-5.2.md`, `specs/README.md`, `status.md`, `prompt_history.md`, `PROJECT_CHECKLIST.md`, `Project_Status.html`
 - **Outcome:** Spec v2.4 **Gate 1 Approved**. Next: plan, tasks and test cases from the approved spec.
+
+### 2026-09-30 (cont'd) — Plan v4.0 from the approved spec v2.4
+- **Actor:** Session account Subhajit Mukherjee (subhajit.mukherjee@intglobal.com), with Claude Code. Plan drafted on the Author's (Indrajit Bhandari) behalf; the Author should confirm the content. Plan approval is a Gate 1 item for Shamik Bhattacharya, not for this session's account.
+- **Task:** "Start next task with approve spec v2.4" — the next step after the spec v2.4 Gate 1 approval: write the plan from it (`.agent/workflows/generate-plan.md`).
+- **Prompt summary:** Read spec v2.4, constitution v1.2, ADR-0001–0005, the v3 plan and the existing code. Backed up plan v3; wrote plan v4.0 (architecture, 11 plan decisions, data model, keep/change/remove table for the v1.5 code, line-by-line Constitution Check, 5 flags, 9-step sequencing, AC-to-step map). Drafted ADR-0006 (Proposed). Tasks and test cases deliberately not written in the same pass.
+- **Files touched:** `plans/employee-internal-transfer.plan.md`, `plans/employee-internal-transfer.plan-v3-backup-2026-09-30.md` (new), `plans/README.md`, `decisions/ADR-0006-v1-demo-identity-and-transfer-ledger.md` (new), `decisions/README.md`, `status.md`, `prompt_history.md`, `PROJECT_CHECKLIST.md`, `Project_Status.html`
+- **Outcome:** Plan v4.0 drafted, **awaiting Gate 1 plan review**. No code changed.
+
+### 2026-09-30 (cont'd) — Tasks, test cases and full app from plan v4.0
+- **Actor:** Session account Subhajit Mukherjee (subhajit.mukherjee@intglobal.com), with Claude Code.
+- **Task IDs:** employee-internal-transfer.T01–T09
+- **Task:** "Complete plan task and full app then, Gate 2 review, Gate 1 approval is complete. Now after completing app gate 2 will review plan, test case, task and the app."
+- **Prompt summary:** Recorded the plan's Gate 1 status as reported by the session user; Shamik's own sign-off was not captured. Wrote tasks T01–T09; implemented T01–T08 test-first (T08 tests after the code); wrote the test-case mapping for UT01–UT70 and XF01–XF09; prepared the Gate 2 pack. Deleting the v1.5 files was refused by the permission classifier, so T09 is partly done.
+- **Files touched:** `lib/main.dart`, `lib/app/**`, `lib/core/{time,concurrency,security/threat_response.dart,constants/transfer_messages.dart,local_db/*,utils/validators.dart}`, `lib/domain/transfer/**`, `lib/data/transfer/**`, `lib/presentation/transfer/**`, `lib/presentation/widgets/demo_banner.dart`, `test/**` (new v2.4 suites), `integration_test/transfer_journey_test.dart`, `macos/*` (build side effect), `.ai-context/{tasks,test_cases,plans,decisions,reviews,prompts}/…`, `architecture.md`, `status.md`, `prompt_history.md`, `PROJECT_CHECKLIST.md`, `Project_Status.html`
+- **Outcome:** **In Gate 2 review.** 293/293 tests, IT01 passing, analyze clean, coverage 93.6% / 98.8% / 96.1%. Not committed.
+

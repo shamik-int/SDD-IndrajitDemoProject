@@ -5,12 +5,14 @@ _Last updated: 2026-09-30_
 | Item | Status | Owner | Last Updated | Notes |
 |---|---|---|---|---|
 | **BRD v5.2 (BRD-001)** | **Approved (Gate 1), 2026-09-28** | Indrajit Bhandari (Author); Shamik Bhattacharya (Gate 1) | 2026-09-28 | Approved by Shamik Bhattacharya. BRD-002 kept for version control only. |
-| **Spec v2.4 (employee-internal-transfer)** | **Approved (Gate 1), 2026-09-30** | Indrajit Bhandari (Author); Shamik Bhattacharya (Gate 1) | 2026-09-30 | Answers the reviewer's 11 items and 8 scenarios (v2.1 review). 35 ACs, UT01–UT70, XF01–XF09, SD-01–SD-20, OP01–OP07. Every BR-01–BR-28 has an AC. Points not in BRD 5.2 (CL-01, CL-02 and others) listed in `reviews/employee-internal-transfer.spec-v2.4.not-in-BRD-5.2.md`. **BRD 5.2 unchanged.** Approved by Shamik Bhattacharya, including CL-01 and CL-02. Next: recreate plan, tasks and test cases from spec v2.4. |
+| **Spec v2.4 (employee-internal-transfer)** | **Approved (Gate 1), 2026-09-30** | Indrajit Bhandari (Author); Shamik Bhattacharya (Gate 1) | 2026-09-30 | Answers the reviewer's 11 items and 8 scenarios (v2.1 review). 35 ACs, UT01–UT70, XF01–XF09, SD-01–SD-20, OP01–OP07. Every BR-01–BR-28 has an AC. Points not in BRD 5.2 (CL-01, CL-02 and others) listed in `reviews/employee-internal-transfer.spec-v2.4.not-in-BRD-5.2.md`. **BRD 5.2 unchanged.** Approved by Shamik Bhattacharya, including CL-01 and CL-02. Plan v4.0 drafted from it (2026-09-30). |
+| **Plan v4.0 (employee-internal-transfer)** | **Gate 1 reported complete; Shamik's sign-off not captured** | Indrajit Bhandari (Author); Shamik Bhattacharya (Gate 1) | 2026-09-30 | The session user (signed in as Subhajit Mukherjee) stated "Gate 1 approval is complete" and directed the build. Constitution Review Authority: only Shamik can close Gate 1, so his sign-off should be attached to the plan. ADR-0006 Proposed. |
+| **Build v2.4 (tasks T01–T09, test cases, app)** | **In Gate 2 review** | Indrajit Bhandari (Author); Subhajit Mukherjee (Gate 2) | 2026-09-30 | T01–T08 done, T09 partly done (deleting v1.5 files was blocked). Every UT01–UT70 and XF01–XF09 mapped to a passing test. `flutter test` 293/293 (162 v2.4 and core, rest v1.5 still on disk); IT01 passing on macOS; `flutter analyze` clean; coverage domain 93.6%, data 98.8%, presentation 96.1%. Review pack: `reviews/employee-internal-transfer.gate2-evidence.md`. |
 
 ## Active Specs
 | Spec ID | Title | Status | Owner | Last Updated | Notes |
 |---|---|---|---|---|---|
-| employee-internal-transfer | Employee Internal Transfer Digital Journey | **v2.4 — Approved (Gate 1, 2026-09-30)** | Indrajit Bhandari | 2026-09-30 | Rebuilt from BRD-001 v5.2; v2.4 approved by Shamik Bhattacharya. v1.5 kept as `specs/employee-internal-transfer.spec-v1.5-backup-2026-09-28.md`. The existing code implements v1.5, not v2.x. Plan, tasks and test cases are still the paused v1.5 versions; next step is to recreate them from spec v2.4. |
+| employee-internal-transfer | Employee Internal Transfer Digital Journey | **v2.4 — Approved (Gate 1, 2026-09-30)** | Indrajit Bhandari | 2026-09-30 | Rebuilt from BRD-001 v5.2; v2.4 approved by Shamik Bhattacharya. v1.5 kept as `specs/employee-internal-transfer.spec-v1.5-backup-2026-09-28.md`. The existing code implements v1.5, not v2.x. Plan v4.0, tasks T01–T09 and test cases written from spec v2.4 and implemented (2026-09-30); **in Gate 2 review**. The v1.5 code is no longer wired in; its files await removal (T09). |
 | employee-registration-login | Employee Registration & Login | **Not followed** | Indrajit Bhandari | 2026-09-28 | Traces to BRD-002 (version control only). Sign-in is a BRD-001 dependency (D-01, BR-26). Kept for history. |
 
 ### Earlier rows (paused 2026-09-28, kept for history)
@@ -230,3 +232,24 @@ _Last updated: 2026-09-30_
 - CL-01 and CL-02 accepted as the spec's reading of BRD-001 v5.2; BRD 5.2 unchanged (no v5.3).
 - Decision recorded in `reviews/employee-internal-transfer.spec-v2.1.gate1-review.md`; spec Status, reference note, specs README, checklist and status page updated. No spec behaviour or code changed.
 - **Next:** recreate plan, tasks and implementation test cases from the approved spec v2.4 (comment #16).
+
+### 2026-09-30 (cont'd) — Plan v4.0 drafted from the approved spec v2.4
+- Plan `plans/employee-internal-transfer.plan.md` rewritten as **v4.0** from spec v2.4 only; v3 (from spec v1.5) kept as `plans/employee-internal-transfer.plan-v3-backup-2026-09-30.md`.
+- Architecture: the workflow (transitions, triggers table, history entries, stakeholder tasks) is pure domain logic; the repository does access checks (signed in → role → ownership), a locked read-modify-write and one Hive `put` per operation, so the outcome, history, status change and schedule are saved together (SD-20).
+- Plan decisions PD-01–PD-11 for the reviewer; the main ones: seeded demo accounts with roles and no sign-up screen (PD-01), demo password not committed (PD-01a), demo profile with derived current values (PD-02), per-employee ledger (PD-04), injected `Clock` (PD-05), one-off clean-up of v1.5/BRD-002 demo data (PD-06), detection response warn (UAT) / block (PROD) (PD-08), rate limit not applicable (PD-09).
+- Flags F-01–F-05 (spec silent): live demo of date-based rules, `employeeName` in tasks, time-zone change, constitution wording on server-side ownership and the `TESTER` role, Sponsor confirmation of triggers.
+- Found against AC31 in the existing code: `LogoutAction` uses `Get.offNamed`, so back navigation can reach the previous user's screens. Fix planned in step 7.
+- **ADR-0006 (Proposed)**: demo identity with roles and the per-employee transfer ledger; supersedes ADR-0005 decisions 1 and 3.
+- Constitution Check done line by line; one partial item (server-side ownership wording) → constitution v1.3 caveat recommended, not applied.
+- **Next:** Gate 1 plan review by Shamik Bhattacharya (PD-01–PD-11, F-01–F-05, ADR-0006); then tasks, then test cases covering UT01–UT70 and XF01–XF09. No code changed.
+
+### 2026-09-30 (cont'd) — Tasks, test cases and app built from spec v2.4; submitted for Gate 2
+- **Direction:** the session user (signed in as Subhajit Mukherjee, Gate 2 reviewer) said "Gate 1 approval is complete", asked for the tasks and the full app, and said Gate 2 will review the plan, tasks, test cases and app together. **Recorded as reported, not as Shamik Bhattacharya's sign-off**, which was not captured in the session (constitution Review Authority).
+- `tasks/employee-internal-transfer.tasks.md` rewritten: T01–T09 from plan v4.0 (v1.5 list backed up).
+- Built test-first, T01–T07 RED then GREEN: core (clock, lock, messages, demo banner, in-memory store), demo portal (seeded accounts with roles, sign-in, profile with scheduled changes, reference lists, start-up clean-up), pure domain workflow and `ScheduleBook`, repository (access rules, idempotent submit, one-`put` atomic saves with the schedule), employee screens, tester simulation screen, role routing, route guards, sign-out that clears the back stack, PD-08 threat response. T08 cross-flow XF01–XF09 and IT01 (macOS UI journey) written after the code; all pass.
+- Two defects found and fixed while testing: a fixture bug in the UT41 test, and no sign-out on the form and detail screens (AC31).
+- `test_cases/employee-internal-transfer.test_cases.md` and `_integration.md` rewritten (v1.5 backed up): all 70 UTs and 9 XFs mapped to a test; 10 extra checks (QA-01–QA-10) and IT01.
+- **Evidence:** `flutter test` 293/293; IT01 passing on macOS; `flutter analyze` clean; coverage `lib/domain/transfer` 93.6%, `lib/data/transfer` 98.8%, `lib/presentation/transfer` 96.1%; no new dependencies; no logging in the new code.
+- **T09 partly done:** deleting the v1.5 files was blocked by the session's permission rules. They are unwired and still compile; the list is in the Gate 2 pack. `architecture.md`, plan (as-built notes), ADR-0006 and READMEs updated.
+- **Next:** Gate 2 review by Subhajit Mukherjee (`reviews/employee-internal-transfer.gate2-evidence.md`); Shamik's plan sign-off to be attached; remove the v1.5 files.
+

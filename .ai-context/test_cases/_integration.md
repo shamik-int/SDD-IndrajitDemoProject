@@ -1,23 +1,14 @@
-# Integration & Cross-Feature Test Cases
+# Integration / Cross-Flow Test Index
 
-Reserved for cross-feature and system-level scenarios that don't map cleanly to a
-single spec (Blueprint §19.1). Per-feature spec-derived cases live in
-`<feature-slug>.test_cases.md` alongside each spec.
+## employee-internal-transfer (spec v2.4, plan v4.0)
+| ID | Scenario | Test |
+|---|---|---|
+| XF01–XF09 | Cross-flow scenarios from spec v2.4, over the real repository, demo portal adapters and real Hive, with an adjustable clock | `test/integration/cross_flow_test.dart` (`flutter test`) |
+| IT01 | Full journey through the real UI and real Hive: employee submits, tester records every outcome, employee sees the COMPLETED confirmation | `integration_test/transfer_journey_test.dart` (`flutter test integration_test -d macos`) |
 
-## Employee Internal Transfer — End-to-End Journey
-_Per-feature spec-derived cases now live in
-`test_cases/employee-internal-transfer.test_cases.md`. This section holds only
-the full-journey and cross-feature scenarios._
+Scenario details and the UT mapping: `employee-internal-transfer.test_cases.md`.
+The v1.5 index is kept as `_integration-v1.5-backup-2026-09-30.md`.
 
-- Full journey (revised at spec v1.2, ADR-0004 — no backend, all via the
-  Simulate Decision control): submit request (AC3) → simulate manager approve
-  (AC8/AC14) → simulate HR approve (AC10/AC14) → simulate Payroll/IT/
-  Facilities complete in any order (AC12/AC14) → employee sees status resolve
-  to `COMPLETED` with no pending stakeholder. Also exercise both rejection
-  branches (manager reject → AC9; HR reject → AC11) end-to-end in the same
-  integration test file.
-- Regression: submitting a second request while one is already in flight is
-  now **resolved** (not open) — single in-flight request per employee, per
-  `employee-internal-transfer.spec.md`'s "Assumptions Requiring Gate 1
-  Confirmation" §4 and AC2/UT05. Re-test this scenario if Gate 1 changes that
-  decision.
+## employee-registration-login
+Not followed (BRD-002 is version control only). Its Register screen is not
+part of the V1 app (plan v4.0 PD-01).

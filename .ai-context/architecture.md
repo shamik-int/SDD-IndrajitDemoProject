@@ -1,13 +1,13 @@
 # Architecture — One-Point Employee Portal (Employee Transfer Project)
 
-_Last updated: 2026-09-17. Keep current or don't trust it (Blueprint §17) — a stale
+_Last updated: 2026-09-30 (spec v2.4 / plan v4.0 implemented). Keep current or don't trust it (Blueprint §17) — a stale
 version of this file actively misleads the next agent session._
 
 ## Features in this project
 | Slug | Spec | Status |
 |---|---|---|
-| `employee-internal-transfer` | BRD-001 | Approved (v1.4) |
-| `employee-registration-login` | BRD-002 | In Peer Review (v1.0) |
+| `employee-internal-transfer` | BRD-001 v5.2 | Spec v2.4 Approved; plan v4.0 implemented; in Gate 2 review |
+| `employee-registration-login` | BRD-002 | Not followed (version control only); Register screen removed from the V1 app |
 
 ## System Overview
 - **Client:** Flutter app (mobile + web), Clean Architecture (domain/data/presentation
@@ -18,9 +18,14 @@ version of this file actively misleads the next agent session._
   `employee-internal-transfer` feature.
 - **Downstream systems** (Manager, HR, Payroll, IT, Facilities) are not
   integrated with at all — there is no backend to integrate through. Their
-  decisions are recorded via an **in-app Simulate Decision control**
-  (ADR-0004, spec AC14), a clearly-labeled, non-production stand-in — not a
-  simulation of any specific system's real API.
+  outcomes are recorded on the **"Demo only: simulate stakeholder outcome"**
+  screen (spec v2.4 AC24), available only to a seeded `TESTER` demo account
+  (SD-18, ADR-0006). It is not a stakeholder interface and must be removed
+  before production (SD-13).
+- **Portal dependencies (D-01..D-03)** are demo adapters in
+  `lib/data/transfer/portal/`: seeded demo accounts with roles and sign-in
+  (D-01), a demo profile with scheduled organisational changes (D-02), and
+  static reference lists (D-03). Plan v4.0 PD-01–PD-03.
 
 ## Client Architecture (Flutter) — see ADR-0001 for full rationale
 ```
@@ -35,6 +40,15 @@ lib/
 ```
 Dependency rule: `presentation` → `domain` ← `data`; `domain` has no dependency on
 either. `core/` is importable by all three, depends on none of them.
+
+`employee-internal-transfer` (v2.4) lives in `lib/domain/transfer/`,
+`lib/data/transfer/` and `lib/presentation/transfer/`. The journey's rules
+are pure functions in `lib/domain/transfer/workflow/` (`TransferWorkflow`,
+`ScheduleBook`); the repository applies the access rules (signed in → role →
+ownership), serialises writes with an `AsyncLock`, and saves each operation
+with one Hive `put`. Dates come from an injected `Clock` (`lib/core/time/`).
+The v1.5 files in the plain `domain/`, `data/` and `presentation/` folders
+are no longer wired in and are due for removal (tasks T09).
 
 - **State management:** GetX (`GetxController`, `Get.put`/`Get.find`, `GetPage`).
 - **Persistence:** local-only. `LocalDbService` (Hive) is the system of record
@@ -68,16 +82,15 @@ either. `core/` is importable by all three, depends on none of them.
 | Facilities | None — simulated in-app | New location/seat arrangement | No real integration; Simulate Decision control | ADR-0004 |
 
 ## Data Model
-- **`employee-internal-transfer`** (ADR-0004): two local Hive boxes,
-  `transfer_requests` (one record per request) and `app_state` (tracks the
-  single active request). **Pending change:** once `employee-registration-login`
-  ships, `transfer_requests` gets an `employeeId` field and the
-  single-in-flight-request rule becomes per-employee, not per-device — see
-  that feature's Cross-Feature Impact section and this file's Features table.
-- **`employee-registration-login`** (ADR-0005): two local Hive boxes,
-  `employees` (keyed by email, password stored hashed only — never
-  plaintext) and `session` (single `currentEmployeeEmail` key, mirroring the
-  `app_state` pattern).
+- **`employee-internal-transfer`** (ADR-0006, plan v4.0): Hive boxes
+  `demo_accounts` (keyed by `userId`; role, password hash + salt, baseline
+  profile for employees), `session` (`currentUserId`), `transfer_ledgers`
+  (one record per employee: requests with steps, stakeholder tasks and
+  append-only history, plus scheduled organisational changes) and
+  `app_meta` (`schemaVersion` 2). The v1.5 boxes (`transfer_requests`,
+  `app_state`) and BRD-002's `employees` box are cleared once at start-up.
+- **`employee-registration-login`**: not followed; its boxes are cleared by
+  the start-up step above.
 
 The shared `Result<T>` contract (ADR-0001 §4) wraps every read/write for
 both features.
@@ -89,4 +102,5 @@ both features.
 | ADR-0002 | Mobile Runtime Security Hardening & Memory Hygiene | Mandatory root/jailbreak/Frida detection; memory hygiene as a separate dev-time discipline |
 | ~~ADR-0003~~ | ~~Backend Orchestration Stack & Datastore~~ | **Superseded by ADR-0004** — no backend is built |
 | ADR-0004 | No Backend — Local DB as System of Record | Hive is the system of record (not a cache); Manager/HR/Payroll/IT/Facilities decisions are simulated via an in-app control, not a real integration |
-| ADR-0005 | Local-Only Employee Authentication | Hashed (not real-security-grade) local credential store; access gate only, not server-verified auth; `employeeId` added back to `employee-internal-transfer` |
+| ADR-0005 | Local-Only Employee Authentication | Hashed (not real-security-grade) local credential store; access gate only, not server-verified auth. Decisions 1 and 3 superseded by ADR-0006 |
+| ADR-0006 | V1 Demo Identity (Roles) and the Per-Employee Transfer Ledger | **Proposed.** Seeded demo accounts with `EMPLOYEE`/`TESTER` roles, no sign-up; one ledger record per employee saved with a single `put` |
