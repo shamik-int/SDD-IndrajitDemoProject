@@ -1,16 +1,16 @@
 # Project Status Board
-_Last updated: 2026-09-28_
+_Last updated: 2026-09-30_
 
 ## Current Gate
 | Item | Status | Owner | Last Updated | Notes |
 |---|---|---|---|---|
 | **BRD v5.2 (BRD-001)** | **Approved (Gate 1), 2026-09-28** | Indrajit Bhandari (Author); Shamik Bhattacharya (Gate 1) | 2026-09-28 | Approved by Shamik Bhattacharya. BRD-002 kept for version control only. |
-| **Spec v2.4 (employee-internal-transfer)** | **Resubmitted for Gate 1 review — not yet approved** | Indrajit Bhandari (Author); Shamik Bhattacharya (Gate 1) | 2026-09-29 | Answers the reviewer's 11 items and 8 scenarios (v2.1 review). 35 ACs, UT01–UT70, XF01–XF09, SD-01–SD-20, OP01–OP07. Every BR-01–BR-28 has an AC. Points not in BRD 5.2 (CL-01, CL-02 and others) listed in `reviews/employee-internal-transfer.spec-v2.4.not-in-BRD-5.2.md`. **BRD 5.2 unchanged.** Next: Shamik reviews. |
+| **Spec v2.4 (employee-internal-transfer)** | **Approved (Gate 1), 2026-09-30** | Indrajit Bhandari (Author); Shamik Bhattacharya (Gate 1) | 2026-09-30 | Answers the reviewer's 11 items and 8 scenarios (v2.1 review). 35 ACs, UT01–UT70, XF01–XF09, SD-01–SD-20, OP01–OP07. Every BR-01–BR-28 has an AC. Points not in BRD 5.2 (CL-01, CL-02 and others) listed in `reviews/employee-internal-transfer.spec-v2.4.not-in-BRD-5.2.md`. **BRD 5.2 unchanged.** Approved by Shamik Bhattacharya, including CL-01 and CL-02. Next: recreate plan, tasks and test cases from spec v2.4. |
 
 ## Active Specs
 | Spec ID | Title | Status | Owner | Last Updated | Notes |
 |---|---|---|---|---|---|
-| employee-internal-transfer | Employee Internal Transfer Digital Journey | **v2.0 — Submitted for Gate 1 review** | Indrajit Bhandari | 2026-09-28 | Rebuilt from BRD-001 v5.2. v1.5 kept as `specs/employee-internal-transfer.spec-v1.5-backup-2026-09-28.md`. The existing code implements v1.5, not v2.0. Plan, tasks and test cases are still the paused v1.5 versions and will be recreated after spec approval. |
+| employee-internal-transfer | Employee Internal Transfer Digital Journey | **v2.4 — Approved (Gate 1, 2026-09-30)** | Indrajit Bhandari | 2026-09-30 | Rebuilt from BRD-001 v5.2; v2.4 approved by Shamik Bhattacharya. v1.5 kept as `specs/employee-internal-transfer.spec-v1.5-backup-2026-09-28.md`. The existing code implements v1.5, not v2.x. Plan, tasks and test cases are still the paused v1.5 versions; next step is to recreate them from spec v2.4. |
 | employee-registration-login | Employee Registration & Login | **Not followed** | Indrajit Bhandari | 2026-09-28 | Traces to BRD-002 (version control only). Sign-in is a BRD-001 dependency (D-01, BR-26). Kept for history. |
 
 ### Earlier rows (paused 2026-09-28, kept for history)
@@ -224,3 +224,9 @@ _Last updated: 2026-09-28_
 - Coverage: 35 ACs (every BR has one), 70 unit + 9 cross-flow scenarios; every AC has a scenario except AC21 (Gate 2). Author response added to the review file.
 - **Gate 1 status: spec v2.4 resubmitted — not yet approved.**
 - **Double-check of v2.4 (same day):** every referenced AC/UT/XF/SD/OP ID resolves. Five fixes made: item 4 and item 8 "Where" references corrected (no "History entries" section; UT66 belonged to item 5); XF01 now states why "scheduled, then Payroll fails" cannot happen (S1); XF08 states what remains and what is cancelled (S8); `getCurrentValues` never shows a late-completed change retroactively (SD-05). Added the rationale for CL-01/CL-02 and a request for the reviewer to confirm them at Gate 1. Items 1–11 and S1–S8 all mapped.
+
+### 2026-09-30 — Spec v2.4 approved at Gate 1
+- **Shamik Bhattacharya approved spec v2.4 (Gate 1).** Identity checked against constitution.md Review Authority (shamik.bhattacharya@intglobal.com matches the session account). Comment: "Doc seems good to me. Please mark it as gate 1 approved."
+- CL-01 and CL-02 accepted as the spec's reading of BRD-001 v5.2; BRD 5.2 unchanged (no v5.3).
+- Decision recorded in `reviews/employee-internal-transfer.spec-v2.1.gate1-review.md`; spec Status, reference note, specs README, checklist and status page updated. No spec behaviour or code changed.
+- **Next:** recreate plan, tasks and implementation test cases from the approved spec v2.4 (comment #16).

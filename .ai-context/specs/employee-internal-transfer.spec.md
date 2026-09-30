@@ -4,11 +4,12 @@
 employee-internal-transfer
 
 ## Status
-**v2.4 — Resubmitted for Gate 1 review. Not yet approved.**
-Plan, tasks and the implementation test cases
-(`.ai-context/test_cases/employee-internal-transfer.test_cases.md`) must
-not be written from this spec until the Gate 1 reviewer (Shamik
-Bhattacharya) approves it. The acceptance scenarios in this spec (UT01–UT70,
+**v2.4 — Gate 1 Approved (Shamik Bhattacharya, 2026-09-30).**
+Approved by the named Gate 1 reviewer, including CL-01 and CL-02 as the
+spec's reading of BRD-001 v5.2 (BRD 5.2 unchanged). Plan, tasks and the
+implementation test cases
+(`.ai-context/test_cases/employee-internal-transfer.test_cases.md`) may now
+be written from this spec. The acceptance scenarios in this spec (UT01–UT70,
 XF01–XF09) are part of the spec itself, not implementation test cases; see
 "Acceptance scenarios".
 
@@ -16,7 +17,8 @@ XF01–XF09) are part of the spec itself, not implementation test cases; see
 |---|---|
 | Author | Indrajit Bhandari |
 | Gate 1 reviewer | Shamik Bhattacharya |
-| Updated | 2026-09-29 |
+| Updated | 2026-09-30 |
+| Gate 1 decision | **Approved**, Shamik Bhattacharya (shamik.bhattacharya@intglobal.com), 2026-09-30. Recorded in `.ai-context/reviews/employee-internal-transfer.spec-v2.1.gate1-review.md` |
 | Linked BRD | `.ai-context/BRD.md#BRD-001`, **v5.2, Gate 1 Approved 2026-09-28** |
 | Previous versions | `employee-internal-transfer.spec-v2.3-backup-2026-09-29.md` (v2.3), `employee-internal-transfer.spec-v2.2-draft-backup-2026-09-29.md` (v2.2 draft, incomplete), `…spec-v2.1-backup-2026-09-28.md` (v2.1), `…spec-v2.0-backup-2026-09-28.md`, `…spec-v1.5-backup-2026-09-28.md` |
 | Gate 1 review answered | `.ai-context/reviews/employee-internal-transfer.spec-v2.1.gate1-review.md`: 11 mandatory items and 8 scenarios (Shamik Bhattacharya). See "Gate 1 review response" |
@@ -1078,6 +1080,8 @@ answer the reviewer's items 1, 2 and 6 and are kept in the spec.
 **Reviewer confirmation requested at Gate 1:** accept CL-01 and CL-02 as
 the spec's reading of BRD 5.2 for items 1 and 2, with BRD-001 v5.2 left as
 approved and both recorded in the reference note.
+**Confirmed:** accepted by Shamik Bhattacharya with the Gate 1 approval of
+spec v2.4 (2026-09-30).
 
 ## Traceability: BRD-001 → spec
 | BRD-001 | Spec |

@@ -142,3 +142,19 @@ criterion that BRD 5.2 does not mention is marked "Not mentioned in BRD
 - [x] Points not in BRD 5.2 recorded; BRD 5.2 unchanged
 
 **Awaiting the Gate 1 reviewer's decision** (Approved / Changes Requested).
+
+## Gate 1 decision — spec v2.4 (Shamik Bhattacharya, 2026-09-30)
+
+**Verdict: Approved (Gate 1).** Reviewer identity checked against
+constitution.md Review Authority: Shamik Bhattacharya,
+shamik.bhattacharya@intglobal.com, which matches the session account.
+
+Reviewer comment: "Doc seems good to me. Please mark it as gate 1 approved."
+
+- [x] 1 · [x] 2 · [x] 3 · [x] 4 · [x] 5 · [x] 6 · [x] 7 · [x] 8 · [x] 9 · [x] 10 · [x] 11
+- [x] S1–S8 (XF01–XF08) and XF09 accepted
+- [x] CL-01 accepted as the spec's reading of BR-13, BR-15, BR-16
+- [x] CL-02 accepted as the spec's reading of BR-07, BR-17
+- BRD-001 v5.2 stays as approved; no BRD v5.3.
+- Next: plan, tasks and implementation test cases are recreated from the
+  approved spec v2.4 (comment #16).

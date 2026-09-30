@@ -255,3 +255,10 @@ completed task per `.agent/rules/auto-log.md`._
 - **Prompt summary:** Read the reviewer's v2.1 review (11 items, 8 scenarios) and the reviewer-committed spec v2.3. Confirmed v2.3 answers all items (35 ACs, UT01–UT70, XF01–XF09). Released v2.4: removed the BRD v5.3 dependency, kept CL-01 and CL-02 as points not in BRD 5.2, added "In BRD 5.2?" columns and inline notes, and wrote the reference note. v2.3 kept as a backup.
 - **Files touched:** `specs/employee-internal-transfer.spec.md`, `specs/employee-internal-transfer.spec-v2.3-backup-2026-09-29.md` (new), `reviews/employee-internal-transfer.spec-v2.4.not-in-BRD-5.2.md` (new), `reviews/employee-internal-transfer.spec-v2.1.gate1-review.md` (Author response), `specs/README.md`, `status.md`, `prompt_history.md`, `PROJECT_CHECKLIST.md`, `Project_Status.html`
 - **Outcome:** Spec v2.4 resubmitted for Gate 1, not yet approved. BRD-001 v5.2 unchanged.
+
+### 2026-09-30 — Spec v2.4 Gate 1 approval
+- **Actor:** Shamik Bhattacharya (Gate 1 Reviewer), with Claude Code
+- **Task:** "Doc seems good to me. Please mark it as gate 1 approved."
+- **Prompt summary:** Verified reviewer identity against the Review Authority table (name + email match). Recorded the Gate 1 decision for spec v2.4, including acceptance of CL-01 and CL-02; BRD-001 v5.2 unchanged.
+- **Files touched:** `specs/employee-internal-transfer.spec.md` (Status only), `reviews/employee-internal-transfer.spec-v2.1.gate1-review.md`, `reviews/employee-internal-transfer.spec-v2.4.not-in-BRD-5.2.md`, `specs/README.md`, `status.md`, `prompt_history.md`, `PROJECT_CHECKLIST.md`, `Project_Status.html`
+- **Outcome:** Spec v2.4 **Gate 1 Approved**. Next: plan, tasks and test cases from the approved spec.

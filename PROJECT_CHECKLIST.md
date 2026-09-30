@@ -82,7 +82,7 @@ recreated from it; the existing ones are paused._
 - [x] Shamik's Gate 1 review of spec v2.1: Changes Requested, 11 items + 8 scenarios (`reviews/employee-internal-transfer.spec-v2.1.gate1-review.md`)
 - [x] Spec v2.3/v2.4 answers all 11 items and S1–S8 (XF01–XF09); 35 ACs, 70 UTs, SD-01–SD-20
 - [x] Spec v2.4 cross-checked with BRD 5.2; points not in BRD 5.2 recorded in the reference note; BRD 5.2 unchanged
-- [ ] **Gate 1 approval of spec v2.4 by Shamik Bhattacharya**
+- [x] **Gate 1 approval of spec v2.4 by Shamik Bhattacharya** (2026-09-30; CL-01 and CL-02 accepted)
 - [ ] After spec approval: recreate plan, tasks and test cases from the approved spec (comment #16)
 
 ## 4. Plan & Tasks — Deliverables 4–7 (Milestone 3)

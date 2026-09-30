@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Project Status Report</title>
-<meta name="description" content="SDD Indrajit Demo Project — BRD v5.2 approved; spec v2.4 in Gate 1 review. Updated after every task.">
+<meta name="description" content="SDD Indrajit Demo Project — BRD v5.2 and spec v2.4 approved at Gate 1. Updated after every task.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
 <style>
@@ -109,33 +109,33 @@
 <div class="wrap">
 
   <header>
-    <div class="eyebrow">SDD Demo Project · Employee Internal Transfer · Last updated 28 Sep 2026</div>
+    <div class="eyebrow">SDD Demo Project · Employee Internal Transfer · Last updated 30 Sep 2026</div>
     <h1>Project Status Report</h1>
-    <p class="muted">Built from <code>.ai-context/status.md</code>, <code>BRD.md</code> v5.2, <code>specs/employee-internal-transfer.spec.md</code> v2.0, the Gate 1 review files and <code>PROJECT_CHECKLIST.md</code>. This page is updated after every task; the newest change is at the top of the Update Log below.</p>
+    <p class="muted">Built from <code>.ai-context/status.md</code>, <code>BRD.md</code> v5.2, <code>specs/employee-internal-transfer.spec.md</code> v2.4, the Gate 1 review files and <code>PROJECT_CHECKLIST.md</code>. This page is updated after every task; the newest change is at the top of the Update Log below.</p>
   </header>
 
   <section class="verdict" aria-label="Gate 1 status">
-    <div class="icon" aria-hidden="true">⏳</div>
+    <div class="icon" aria-hidden="true">✅</div>
     <div>
-      <h2>BRD v5.2 approved · Spec v2.4 resubmitted for Gate 1</h2>
-      <p>Shamik Bhattacharya <strong>approved BRD v5.2</strong> on 28 Sep. The spec was not approved and has been rewritten as <strong>v2.0 from BRD-001 only</strong>. <strong>Waiting for Shamik's decision on the spec</strong>; development stays blocked until the spec, plan and tasks are approved.</p>
+      <h2>BRD v5.2 approved · Spec v2.4 approved at Gate 1</h2>
+      <p>Shamik Bhattacharya <strong>approved BRD v5.2</strong> on 28 Sep and <strong>spec v2.4</strong> on 30 Sep, including CL-01 and CL-02 (BRD 5.2 unchanged). <strong>Next: plan, tasks and test cases</strong> from the approved spec; development stays blocked until they are reviewed.</p>
     </div>
   </section>
 
   <div class="grid kpis">
     <div class="card kpi"><div class="label">BRD-001 v5.2</div><div class="value" style="font-size:22px">Approved</div><div class="sub">Gate 1 · Shamik · 28 Sep</div></div>
-    <div class="card kpi"><div class="label">Spec v2.4</div><div class="value" style="font-size:22px">In review</div><div class="sub">11/11 review items · 35 ACs · 70 + 9 scenarios</div></div>
-    <div class="card kpi"><div class="label">Acceptance criteria</div><div class="value">26</div><div class="sub">each cites a BR-xx rule</div></div>
-    <div class="card kpi"><div class="label">Spec-derived unit tests</div><div class="value">32</div><div class="sub">UT01 to UT32</div></div>
-    <div class="card kpi"><div class="label">Spec decisions to confirm</div><div class="value">9</div><div class="sub">SD-01 to SD-09</div></div>
-    <div class="card kpi"><div class="label">Plan · tasks · tests</div><div class="value" style="font-size:22px">Waiting</div><div class="sub">after spec approval</div></div>
+    <div class="card kpi"><div class="label">Spec v2.4</div><div class="value" style="font-size:22px">Approved</div><div class="sub">Gate 1 · Shamik · 30 Sep</div></div>
+    <div class="card kpi"><div class="label">Acceptance criteria</div><div class="value">35</div><div class="sub">each cites a BR-xx rule</div></div>
+    <div class="card kpi"><div class="label">Spec-derived unit tests</div><div class="value">70</div><div class="sub">UT01 to UT70 · plus XF01–XF09</div></div>
+    <div class="card kpi"><div class="label">Spec decisions</div><div class="value">20</div><div class="sub">SD-01 to SD-20 · accepted</div></div>
+    <div class="card kpi"><div class="label">Plan · tasks · tests</div><div class="value" style="font-size:22px">Next</div><div class="sub">from approved spec v2.4</div></div>
   </div>
 
   <h2>Where we are</h2>
   <div class="pipeline">
     <div class="step done"><div class="n">DONE</div><h3>BRD v5.2 approved</h3><p>Gate 1 approved by Shamik Bhattacharya, 28 Sep.</p></div>
-    <div class="step current"><div class="n">CURRENT</div><h3>Spec v2.1 Gate 1</h3><p>Shamik approves the spec, or requests changes.</p></div>
-    <div class="step"><div class="n">NEXT</div><h3>Plan, tasks, tests</h3><p>Written from the approved spec (comment #16).</p></div>
+    <div class="step done"><div class="n">DONE</div><h3>Spec v2.4 approved</h3><p>Gate 1 approved by Shamik Bhattacharya, 30 Sep.</p></div>
+    <div class="step current"><div class="n">CURRENT</div><h3>Plan, tasks, tests</h3><p>Written from the approved spec (comment #16).</p></div>
     <div class="step"><div class="n">THEN</div><h3>Test-first build</h3><p>RED, then GREEN, per task.</p></div>
     <div class="step"><div class="n">LATER</div><h3>Gate 2 + Security</h3><p>Subhajit Mukherjee: code review and security assessment.</p></div>
   </div>
@@ -228,6 +228,7 @@
   <div class="table-wrap"><table>
     <thead><tr><th>Date</th><th>Change</th></tr></thead>
     <tbody>
+      <tr><td class="date">30 Sep</td><td><strong>Shamik approved spec v2.4 (Gate 1).</strong> CL-01 and CL-02 accepted; BRD 5.2 unchanged. Next: plan, tasks and test cases from the approved spec.</td></tr>
       <tr><td class="date">29 Sep</td><td>Double-checked spec v2.4: all 11 items and 8 scenarios are mapped and every ID resolves. 5 fixes made (two wrong references, S1 premise, S8 "cancelled", no retroactive profile values). CL-01 and CL-02 have their rationale and are sent to Shamik for confirmation.</td></tr>
       <tr><td class="date">29 Sep</td><td>Shamik reviewed spec v2.1 (11 items, 8 scenarios). Spec v2.4 answers all of them. It was cross-checked with BRD 5.2: points not in BRD 5.2 (CL-01, CL-02 and others) are recorded in a reference note, and BRD 5.2 is unchanged. Resubmitted for Gate 1.</td></tr>
       <tr><td class="date">28 Sep</td><td>Spec v2.1 (Author revision): full check against the approved BRD-001. Added the stakeholder contract (§8), status labels, actors, AC27–AC30, UT33–UT50 and SD-10 to SD-15. Every BR-01 to BR-28 has an AC. Submitted for Gate 1.</td></tr>
@@ -256,7 +257,7 @@
   </div>
 
   <footer>
-    Sources: <code>.ai-context/status.md</code>, <code>.ai-context/BRD.md</code> v5.2, <code>.ai-context/specs/employee-internal-transfer.spec.md</code> v2.0, <code>.ai-context/reviews/BRD-v5.0.gate1-review.md</code>, <code>PROJECT_CHECKLIST.md</code>. Nothing here is an approval: only the named Gate 1 reviewer can approve the BRD or spec.
+    Sources: <code>.ai-context/status.md</code>, <code>.ai-context/BRD.md</code> v5.2, <code>.ai-context/specs/employee-internal-transfer.spec.md</code> v2.4, <code>.ai-context/reviews/BRD-v5.0.gate1-review.md</code>, <code>.ai-context/reviews/employee-internal-transfer.spec-v2.1.gate1-review.md</code>, <code>PROJECT_CHECKLIST.md</code>. Nothing here is an approval: only the named Gate 1 reviewer can approve the BRD or spec.
   </footer>
 </div>
 

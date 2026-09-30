@@ -71,3 +71,6 @@ spec's reading of BRD 5.2, with the BRD left as approved.
 
 BRD-001 v5.2 remains the approved business requirement. This note does not
 change it.
+
+**Gate 1 outcome (2026-09-30):** spec v2.4 approved by Shamik Bhattacharya.
+CL-01 and CL-02 are accepted as recorded here; BRD-001 v5.2 is not changed.
