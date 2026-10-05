@@ -107,8 +107,8 @@ class DemoAccounts {
       email: 'asha.rao@demo.test',
       displayName: 'Asha Rao (demo)',
       role: UserRole.employee,
-      passwordSalt: 'XuVb5ZFqZ_o2OB2BXmwM-g==',
-      passwordHash: 'd3ed1e28c2f105d3efe853260ac3f137402ef760de7811464c29b45a30468265',
+      passwordSalt: 'GHzIm85ZldLPvO8S8bvkcw==',
+      passwordHash: '85b320facb0d89328ab2e782e4cf705b5f2da245aec3cf4426d66c761751f93f',
       baseline: EmployeeCurrentValues(
         values: OrgValues(departmentId: 'dept-eng', locationId: 'loc-blr', roleId: 'role-swe'),
         managerName: 'Vikram Sen (demo)',
@@ -119,8 +119,8 @@ class DemoAccounts {
       email: 'rahul.verma@demo.test',
       displayName: 'Rahul Verma (demo)',
       role: UserRole.employee,
-      passwordSalt: 'NQPjfbW5F0MC-gWOfzihBg==',
-      passwordHash: 'c6962b68503f490a8fca25d4249dccc17295bf7d4d290df5e42a95c784544979',
+      passwordSalt: 'dfctXhHyXbWoGyToRQJbug==',
+      passwordHash: '640bc740de9427ed1ca4137650ea48f04f32dc37c61733e7ce06d31e14a0b534',
       baseline: EmployeeCurrentValues(
         values: OrgValues(departmentId: 'dept-sales', locationId: 'loc-mum', roleId: 'role-analyst'),
         managerName: 'Neha Kapoor (demo)',
@@ -131,8 +131,8 @@ class DemoAccounts {
       email: 'meera.iyer@demo.test',
       displayName: 'Meera Iyer (demo)',
       role: UserRole.employee,
-      passwordSalt: '90GBHBS_rXDJqmRAb9QWMQ==',
-      passwordHash: 'e73159eb22ee082f7a2e5c8e2e443b37cc29b4c77350eb2794cc6b1db4a10d85',
+      passwordSalt: 'ky1-d7qBjr6z0qjTsEKvXQ==',
+      passwordHash: 'c2e14497b9253c6510645474e6f2a7457549ea57a9149a552a0cf34629499f15',
       baseline: EmployeeCurrentValues(
         values: OrgValues(departmentId: 'dept-fin', locationId: 'loc-pun', roleId: 'role-tl'),
         managerName: 'Arjun Das (demo)',
@@ -143,8 +143,8 @@ class DemoAccounts {
       email: 'tester@demo.test',
       displayName: 'Demo Tester',
       role: UserRole.tester,
-      passwordSalt: 'rYSIvSSPabk_dwfOKkTmWw==',
-      passwordHash: 'a760166fc408af4b4590b9c642b700c833341df553f6f1f1b0028f5bb8de35ca',
+      passwordSalt: 'k0ygHzBy_CPtbWH-g3BPYA==',
+      passwordHash: 'a2787e20a8d11e7cc6373c8448dbc70212813052515f29c6499266df900c3a29',
     ),
   ];
 }

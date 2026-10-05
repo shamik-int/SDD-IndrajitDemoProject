@@ -47,8 +47,8 @@ are pure functions in `lib/domain/transfer/workflow/` (`TransferWorkflow`,
 `ScheduleBook`); the repository applies the access rules (signed in → role →
 ownership), serialises writes with an `AsyncLock`, and saves each operation
 with one Hive `put`. Dates come from an injected `Clock` (`lib/core/time/`).
-The v1.5 files in the plain `domain/`, `data/` and `presentation/` folders
-are no longer wired in and are due for removal (tasks T09).
+The v1.5 transfer code and the BRD-002 Register/Login feature were removed
+on 2026-10-05 (tasks T09, Gate 2 G2-02).
 
 - **State management:** GetX (`GetxController`, `Get.put`/`Get.find`, `GetPage`).
 - **Persistence:** local-only. `LocalDbService` (Hive) is the system of record

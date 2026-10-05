@@ -2,5 +2,7 @@
 
 Shared/reusable widgets used across more than one page.
 
-- `logout_action.dart` — `LogoutAction`, the AppBar logout button shared by
-  every screen a logged-in employee can land on (status, submission).
+- `demo_banner.dart` — `DemoBanner`, the "Demo — test data only" indicator
+  shown on every transfer screen (AC28).
+
+Sign-out is `presentation/transfer/shared/sign_out_action.dart`.

@@ -31,13 +31,26 @@ class SignInPage extends GetView<SignInController> {
               decoration: const InputDecoration(labelText: 'Email'),
             ),
             const SizedBox(height: 16),
-            TextField(
-              key: const Key('sign-in-password'),
-              controller: controller.passwordController,
-              obscureText: true,
-              decoration: const InputDecoration(labelText: 'Password'),
-              onSubmitted: (_) => _submit(),
-            ),
+            Obx(() {
+              final hidden = controller.obscurePassword.value;
+              return TextField(
+                key: const Key('sign-in-password'),
+                controller: controller.passwordController,
+                obscureText: hidden,
+                autocorrect: false,
+                enableSuggestions: false,
+                decoration: InputDecoration(
+                  labelText: 'Password',
+                  suffixIcon: IconButton(
+                    key: const Key('sign-in-password-toggle'),
+                    icon: Icon(hidden ? Icons.visibility : Icons.visibility_off),
+                    tooltip: hidden ? 'Show password' : 'Hide password',
+                    onPressed: controller.togglePasswordVisibility,
+                  ),
+                ),
+                onSubmitted: (_) => _submit(),
+              );
+            }),
             const SizedBox(height: 24),
             Obx(
               () => ElevatedButton(

@@ -76,7 +76,7 @@ then GREEN with `flutter analyze` clean. Test IDs refer to
   — ACs: AC15–AC18, AC22, AC23, AC31, AC33–AC35
   — Tests: XF01–XF09, UT20 and UT24 end to end, IT01
 
-- [ ] **employee-internal-transfer.T09** — Clean-up: remove the v1.5
+- [x] **employee-internal-transfer.T09** — Clean-up: remove the v1.5
   transfer code and tests and the BRD-002 Register feature; update
   `architecture.md` and READMEs.
   — Plan: "Existing code: keep, change, remove"
@@ -84,4 +84,7 @@ then GREEN with `flutter analyze` clean. Test IDs refer to
   bindings (Register route removed); `architecture.md` and READMEs updated.
   **Deleting the v1.5 files was blocked by the session's permission rules**;
   the file list is in `reviews/employee-internal-transfer.gate2-evidence.md`.
-  Blocked again on 2026-10-05 (Gate 2 G2-02); the Author runs the `git rm`.
+  — **Done (2026-10-05, Gate 2 G2-02):** the Author removed the 68 v1.5 and
+  BRD-002 files with `git rm`; the stale route constants and the unused
+  `email`, `phone` and `password` validators (with their tests) were removed;
+  `architecture.md` and the widgets README updated. 177/177 tests pass.

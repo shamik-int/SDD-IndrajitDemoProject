@@ -40,6 +40,25 @@ void main() {
     });
   });
 
+  testWidgets('password is hidden by default; the eye button shows and hides it', (tester) async {
+    await bootApp(tester);
+    bool obscured() => tester
+        .widget<EditableText>(find.descendant(of: find.byKey(const Key('sign-in-password')), matching: find.byType(EditableText)))
+        .obscureText;
+
+    expect(obscured(), isTrue);
+    expect(find.byIcon(Icons.visibility), findsOneWidget);
+
+    await tapKey(tester, 'sign-in-password-toggle');
+    expect(obscured(), isFalse);
+    expect(find.byIcon(Icons.visibility_off), findsOneWidget);
+    expect(find.byTooltip('Hide password'), findsOneWidget);
+
+    await tapKey(tester, 'sign-in-password-toggle');
+    expect(obscured(), isTrue);
+    expect(find.byTooltip('Show password'), findsOneWidget);
+  });
+
   group('form', () {
     testWidgets('AC02, UT40, AC01, AC03: current values read-only; lists from D-03; submit without a reason', (tester) async {
       final env = await bootApp(tester, signedInAs: employeeA.userId);

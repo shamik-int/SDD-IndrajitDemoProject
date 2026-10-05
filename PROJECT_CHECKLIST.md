@@ -89,10 +89,10 @@ recreated from it; the existing ones are paused._
   - [x] Tasks from plan v4.0 (`tasks/employee-internal-transfer.tasks.md`): T01–T09
   - [x] Test cases covering UT01–UT70 and XF01–XF09 (`test_cases/employee-internal-transfer.test_cases.md`)
   - [x] v2.4 app built: T01–T08 done (test-first T01–T07), 293/293 tests, IT01 on macOS, analyze clean, coverage 93.6% / 98.8% / 96.1%
-  - [ ] T09: delete the v1.5 files (blocked in session; list in `reviews/employee-internal-transfer.gate2-evidence.md`)
+  - [x] T09: v1.5 files deleted by the Author (2026-10-05, G2-02); stale route constants and old validators removed
   - [ ] **Gate 2 review by Subhajit Mukherjee** of plan, tasks, test cases and app (`reviews/employee-internal-transfer.gate2-evidence.md`) — Changes Requested 2026-10-05 (G2-01 to G2-18)
     - [x] Code fixes by the Author, test-first (2026-10-05): G2-03, G2-04, G2-07, G2-08 (parts 1, 2, 4), G2-09, G2-12, G2-14, G2-15, G2-16, G2-18; G2-10 answered with evidence (not reproducible). 318/318 tests, analyze clean
-    - [ ] G2-02: `git rm` of the v1.5 files (blocked in session; Author to run), then remove the stale route constants and old validators
+    - [x] G2-02: v1.5 files removed (Author's `git rm`), stale route constants and old validators removed; 177/177 tests (2026-10-05)
     - [x] G2-05 mutation evidence (9/9 XF RED when broken); G2-11 and G2-17 recorded in ADR-0006; Author's response to all 18 findings in the pack (2026-10-05)
     - [ ] Open: G2-01 (fresh squash message at merge), G2-13 (answer on pre-filled dropdowns), G2-06 (Author's position sent to Gate 2: Gate 1 stands; reviewer to accept or ask Shamik); Tech Lead acceptance of ADR-0006 decisions 4–5 and the ADR-0001 amendment
   - [ ] Before any release build: real freeRASP config; constitution v1.3 caveat (plan F-04)

@@ -117,8 +117,8 @@
   <section class="verdict" aria-label="Gate 1 status">
     <div class="icon" aria-hidden="true">⚠️</div>
     <div>
-      <h2>Gate 2: Changes requested · 15 of 18 findings addressed</h2>
-      <p>Shamik Bhattacharya <strong>approved BRD v5.2</strong> on 28 Sep and <strong>spec v2.4</strong> on 30 Sep, including CL-01 and CL-02 (BRD 5.2 unchanged). Plan v4.0, tasks T01–T09, test cases and the app were built from it on 30 Sep. The plan's Gate 1 was reported complete; Shamik's own sign-off still needs attaching. On 5 Oct <strong>Subhajit Mukherjee reviewed the build (Gate 2) and requested changes</strong>: 18 findings, 6 of them blockers. Eleven findings are fixed, test-first where code changed (G2-03, 04, 07, 08, 09, 12, 14, 15, 16, 18), and G2-10 was shown not to happen. G2-05 now has evidence that every cross-flow test catches a broken rule, and G2-11 and G2-17 are recorded in ADR-0006. <strong>Open:</strong> removing the v1.5 files (G2-02), one question (G2-13) and a clean merge message (G2-01). On G2-06 the Author's position is that Gate 1 stands as approved; the Gate 2 reviewer decides whether Shamik's written confirmation is still needed. <strong>Release blocker:</strong> real freeRASP configuration.</p>
+      <h2>Gate 2: Changes requested · 16 of 18 findings addressed</h2>
+      <p>Shamik Bhattacharya <strong>approved BRD v5.2</strong> on 28 Sep and <strong>spec v2.4</strong> on 30 Sep, including CL-01 and CL-02 (BRD 5.2 unchanged). Plan v4.0, tasks T01–T09, test cases and the app were built from it on 30 Sep. The plan's Gate 1 was reported complete; Shamik's own sign-off still needs attaching. On 5 Oct <strong>Subhajit Mukherjee reviewed the build (Gate 2) and requested changes</strong>: 18 findings, 6 of them blockers. Eleven findings are fixed, test-first where code changed (G2-03, 04, 07, 08, 09, 12, 14, 15, 16, 18), and G2-10 was shown not to happen. G2-05 now has evidence that every cross-flow test catches a broken rule, and G2-11 and G2-17 are recorded in ADR-0006. The old v1.5 code is now removed (G2-02). <strong>Open:</strong> one question (G2-13) and a clean merge message (G2-01). On G2-06 the Author's position is that Gate 1 stands as approved; the Gate 2 reviewer decides whether Shamik's written confirmation is still needed. <strong>Release blocker:</strong> real freeRASP configuration.</p>
     </div>
   </section>
 
@@ -128,7 +128,7 @@
     <div class="card kpi"><div class="label">Acceptance criteria</div><div class="value">35</div><div class="sub">each cites a BR-xx rule</div></div>
     <div class="card kpi"><div class="label">Spec-derived unit tests</div><div class="value">70</div><div class="sub">UT01 to UT70 · plus XF01–XF09</div></div>
     <div class="card kpi"><div class="label">Spec decisions</div><div class="value">20</div><div class="sub">SD-01 to SD-20 · accepted</div></div>
-    <div class="card kpi"><div class="label">Tests</div><div class="value">318</div><div class="sub">all passing · leak checks on · 25 added for Gate 2</div></div>
+    <div class="card kpi"><div class="label">Tests</div><div class="value">178</div><div class="sub">all passing · v2.4 only · coverage 94–99%</div></div>
   </div>
 
   <h2>Where we are</h2>
@@ -136,8 +136,8 @@
     <div class="step done"><div class="n">DONE</div><h3>BRD v5.2 approved</h3><p>Gate 1 approved by Shamik Bhattacharya, 28 Sep.</p></div>
     <div class="step done"><div class="n">DONE</div><h3>Spec v2.4 approved</h3><p>Gate 1 approved by Shamik Bhattacharya, 30 Sep.</p></div>
     <div class="step done"><div class="n">DONE</div><h3>Plan, tasks, tests</h3><p>Plan v4.0, T01–T09, UT01–UT70 and XF01–XF09 mapped to tests.</p></div>
-    <div class="step done"><div class="n">DONE</div><h3>Test-first build</h3><p>T01–T08 built; T09 clean-up partly done.</p></div>
-    <div class="step current"><div class="n">CURRENT</div><h3>Gate 2 + Security</h3><p>Changes requested, 5 Oct: 18 findings, 6 blockers. 15 addressed; 3 blockers open (G2-01, 02, 06) and one question.</p></div>
+    <div class="step done"><div class="n">DONE</div><h3>Test-first build</h3><p>T01–T09 done; v1.5 code removed 5 Oct.</p></div>
+    <div class="step current"><div class="n">CURRENT</div><h3>Gate 2 + Security</h3><p>Changes requested, 5 Oct: 18 findings. 16 addressed; open: G2-01 (at merge), G2-13 (question); G2-06 with the reviewer.</p></div>
   </div>
 
   <h2>For the reviewer to check in spec v2.1</h2>
@@ -228,6 +228,8 @@
   <div class="table-wrap"><table>
     <thead><tr><th>Date</th><th>Change</th></tr></thead>
     <tbody>
+      <tr><td class="date">5 Oct</td><td><strong>Sign-in: show/hide password.</strong> An eye button on the password field shows or hides what was typed. Demo passwords reset for local testing; they must meet the ADR-0006 password rule before re-submission. 178/178 tests pass.</td></tr>
+      <tr><td class="date">5 Oct</td><td><strong>Old v1.5 code removed; T09 done (G2-02).</strong> 68 old files deleted, plus unused route names and validators. Only the v2.4 app and its tests remain: 177/177 pass, the full journey passes on macOS, coverage 94–99%.</td></tr>
       <tr><td class="date">5 Oct</td><td><strong>G2-06 answered.</strong> Gate 1 stands as approved and is not reopened. Shamik's own written sign-off is still not on file, so the Gate 2 reviewer is asked to accept the reported approval or request his confirmation.</td></tr>
       <tr><td class="date">5 Oct</td><td><strong>Gate 2 evidence and decisions recorded.</strong> Each of the nine cross-flow tests was shown to fail when the rule it checks is broken (G2-05). Unencrypted local storage for demo data and the demo password rules are written into ADR-0006, for the Tech Lead to accept (G2-11, G2-17). Coverage re-run: 94–99%. A reply to all 18 findings is in the Gate 2 pack.</td></tr>
       <tr><td class="date">5 Oct</td><td><strong>Four Minor Gate 2 findings fixed.</strong> A failed transfer's confirmation now lists every completed step and is easier to read (G2-12). A storage read error at start-up no longer signs the user out (G2-14). Unused network set-up and a logging flag removed (G2-16). Duplicate task note removed (G2-18). 318/318 pass. Left in code: the v1.5 clean-up (Author) and the dropdown question (G2-13).</td></tr>

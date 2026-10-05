@@ -10,7 +10,7 @@ the Gate 2 decision is the reviewer's to record below._
 | Spec v2.4 | `specs/employee-internal-transfer.spec.md` | Gate 1 Approved (Shamik Bhattacharya, 2026-09-30) |
 | Plan v4.0 | `plans/employee-internal-transfer.plan.md` | Gate 1 reported complete; see "Process notes" |
 | ADR-0006 | `decisions/ADR-0006-v1-demo-identity-and-transfer-ledger.md` | Proposed, reviewed with the plan |
-| Tasks T01–T09 | `tasks/employee-internal-transfer.tasks.md` | T01–T08 done; T09 partly done |
+| Tasks T01–T09 | `tasks/employee-internal-transfer.tasks.md` | T01–T09 done (T09 completed 2026-10-05) |
 | Test cases | `test_cases/employee-internal-transfer.test_cases.md`, `_integration.md` | UT01–UT70 and XF01–XF09 each mapped to a test |
 | App | `lib/domain/transfer/`, `lib/data/transfer/`, `lib/presentation/transfer/`, plus the changed files below | Built and tested |
 
@@ -117,7 +117,7 @@ Each fix: test written first and run RED against the unchanged code, then fixed 
 | **G2-05** Tests written after the code | Option (a), as the reviewer asked: for each of XF01–XF09, the rule it covers was broken in `lib/`, that XF test was run and went **RED**, the file was restored and the test went GREEN again. Script: `reviews/employee-internal-transfer.gate2-xf-mutations.py` (re-runnable; it always restores). Results in the table below. From now on, Red and Green are committed separately. | 9/9 RED when broken, 9/9 GREEN after restore. |
 | **G2-11** Data at rest | Recorded as ADR-0006 decision 4 (plain storage accepted for V1 demo data only; encrypt before real data). The spec line the reviewer asked for is a spec change: proposed wording in "Author's response" below. | — (decision record) |
 | **G2-17** Demo password | Recorded as ADR-0006 decision 5 (long, random, never committed, rotated before any build leaves the team). | — (decision record) |
-| **G2-02** v1.5 files | **Not done.** The `git rm` of the 68 files listed below was blocked by the session's permission rules again. Checked first: no kept file imports any of them. | — |
+| **G2-02** v1.5 files | **Done.** The Author removed the 68 files listed below with `git rm` (no kept file imported any of them). Then: the five stale route constants removed from `app_routes.dart`; `Validators.email`, `.phone` and `.password` and their 11 tests removed (nothing else used them); `architecture.md` and the widgets README updated; T09 ticked. | `flutter analyze` clean; `flutter test` 177/177; IT01 passing. The count fell from 318 because the 130 v1.5 tests and 11 old validator tests went with their code. |
 
 ### G2-05 — mutation evidence (2026-10-05)
 | XF | Rule broken in `lib/` | Result |
@@ -142,17 +142,17 @@ Not covered by this check: the usecase delegation test and the ledger round-trip
 | Check after the fixes | Result |
 |---|---|
 | `flutter analyze` | No issues |
-| `flutter test` | 318/318 (293 before + 25 new), with leak tracking on |
-| Line coverage after the fixes | `lib/domain/transfer` 93.6%, `lib/data/transfer` 98.9%, `lib/presentation/transfer` 96.7% (floor 80%). Includes the v1.5 tests still on disk until G2-02 |
+| `flutter test` | 177/177 after the v1.5 removal (318/318 before it), with leak tracking on |
+| Line coverage, v2.4 code only | `lib/domain/transfer` 93.6%, `lib/data/transfer` 98.9%, `lib/presentation/transfer` 96.7% (floor 80%); all of `lib/` 95.6% |
 | IT01 (`integration_test/transfer_journey_test.dart -d macos`) | Passing |
 
-Remaining: blockers G2-01, G2-02, G2-06; question G2-13. Tech Lead acceptances listed below.
+Remaining: G2-06 (Gate 2 reviewer to decide; see comment below). G2-01 is done at merge. Tech Lead acceptances listed below.
 
 ## Author's response to the Gate 2 review (for the reviewer)
 | ID | Response | State |
 |---|---|---|
-| G2-01 | The squash-merge to `main` will carry a fresh message with no trailer, and the setting that adds the trailer is off. The three branch commits are not rewritten, so the branch is not force-pushed. | Author to confirm at merge |
-| G2-02 | Deletion blocked twice in the session; the Author runs `git rm` locally, then the stale route constants and old validators are removed and T09 is ticked. | **Open** |
+| G2-01 | The squash-merge to `main` will carry a fresh message with no AI trailer (§14), and the setting that added it is off. The re-work commit `9e7e928` and the clean-up commit carry no trailer. The three older branch commits are not rewritten, so the shared branch is not force-pushed; they do not reach `main`. | Answered; done at merge |
+| G2-02 | Done: 68 v1.5 files removed by the Author; stale constants and old validators removed; T09 ticked; 177/177 tests. | Done |
 | G2-03 | Fixed, test-first. Storage-failure message: see open points. | Done |
 | G2-04 | Fixed. Two `get` package leaks ignored by class; controller disposal tested directly. | Done; ignores need acceptance |
 | G2-05 | Option (a) done: 9/9 XF tests go RED when their rule is broken. | Done |
@@ -163,7 +163,7 @@ Remaining: blockers G2-01, G2-02, G2-06; question G2-13. Tech Lead acceptances l
 | G2-10 | Not reproducible: the pushed route's future completes before the list controller is removed, and `load()` returns once closed. Two regression tests added. No code change. | Answered |
 | G2-11 | ADR-0006 decision 4. Proposed spec wording for the Security boundary production prerequisites: "A production release must encrypt all locally stored data at rest, with the key held in the platform keystore." This is a spec change and goes through Gate 1. | Done; Tech Lead to accept; spec change to raise |
 | G2-12 | Fixed, test-first. | Done |
-| G2-13 | Waiting for the Author's answer on whether pre-filled proposed values are intended. | **Open** |
+| G2-13 | **Intended.** The proposed dropdowns start with the current values so the employee changes only what moves. AC01 is met: every value can still be selected from the reference lists. AC04 still holds: the repository rejects a missing department, location or role (UT03, UT04), and an unchanged form is refused with "Change at least one of department, location or role." on screen (`employee_screens_test.dart`, "AC04") and in the workflow (UT08, AC06). No spec change: spec v2.4 is Gate 1 approved and AC01 does not require empty fields. | Answered |
 | G2-14 | Fixed, test-first. Rewriting the accounts on every start is kept on purpose (reason in the fix table). | Done |
 | G2-15 | Fixed, test-first. | Done |
 | G2-16 | Registrations and flag removed. `ApiClient` class and `dio` kept per ADR-0001. | Done; Tech Lead may decide to remove |

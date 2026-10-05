@@ -17,6 +17,11 @@ class SignInController extends GetxController {
   final isSubmitting = false.obs;
   final error = RxnString();
 
+  /// The password is hidden until the user taps the eye button.
+  final obscurePassword = true.obs;
+
+  void togglePasswordVisibility() => obscurePassword.toggle();
+
   @override
   void onClose() {
     emailController.dispose();
