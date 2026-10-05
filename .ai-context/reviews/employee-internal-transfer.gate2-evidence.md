@@ -99,10 +99,10 @@ No longer referenced by the app's routes or bindings.
 - Then remove the v1.5 route constants from `lib/app/routes/app_routes.dart` (`placeholder`, `transferRequestSubmit`, `transferRequestStatus`, `login`, `register`).
 
 ## Gate 2 decision
-_To be completed by Subhajit Mukherjee._
+_Recorded by Subhajit Mukherjee._
 
 | | |
 |---|---|
-| Decision | ☐ Approved ☐ Changes requested |
-| Date | |
-| Findings | |
+| Decision | ☐ Approved ☒ Changes requested |
+| Date | 2026-10-05 |
+| Findings | G2-01 to G2-18 in `employee-internal-transfer.gate2-review.md`. Blockers: G2-01 to G2-06 |
