@@ -60,8 +60,14 @@ class TransferRequestRepositoryImpl implements TransferRequestRepository {
     return Result.success(user);
   }
 
-  Future<TransferLedger> _ledger(String employeeId) async =>
-      await ledgers.get(employeeId) ?? TransferLedger.empty(employeeId);
+  /// The employee's ledger, or empty if none is stored yet. A failed read is
+  /// an error, never an empty ledger: writing after it would wipe the stored
+  /// requests, history and scheduled changes (G2-03).
+  Future<Result<TransferLedger>> _ledger(String employeeId) async {
+    final stored = await ledgers.get(employeeId);
+    if (stored.isError) return Result.error(stored.message!);
+    return Result.success(stored.data ?? TransferLedger.empty(employeeId));
+  }
 
   ActiveState _activeState(TransferLedger ledger) {
     final today = clock.today();
@@ -83,7 +89,9 @@ class TransferRequestRepositoryImpl implements TransferRequestRepository {
     final employee = access.data!;
 
     return lock.synchronized(() async {
-      final ledger = await _ledger(employee.userId);
+      final read = await _ledger(employee.userId);
+      if (read.isError) return Result.error(read.message!);
+      final ledger = read.data!;
 
       // Idempotency (BR-08) comes before every error.
       for (final r in ledger.requests) {
@@ -117,7 +125,9 @@ class TransferRequestRepositoryImpl implements TransferRequestRepository {
   Future<Result<ActiveState>> getMyActiveTransferRequest() async {
     final access = await _employee();
     if (access.isError) return Result.error(access.message!);
-    return Result.success(_activeState(await _ledger(access.data!.userId)));
+    final ledger = await _ledger(access.data!.userId);
+    if (ledger.isError) return Result.error(ledger.message!);
+    return Result.success(_activeState(ledger.data!));
   }
 
   @override
@@ -125,8 +135,9 @@ class TransferRequestRepositoryImpl implements TransferRequestRepository {
     final access = await _employee();
     if (access.isError) return Result.error(access.message!);
     final ledger = await _ledger(access.data!.userId);
+    if (ledger.isError) return Result.error(ledger.message!);
     final summaries = [
-      for (final r in ledger.requests)
+      for (final r in ledger.data!.requests)
         TransferRequestSummary(
           requestId: r.requestId,
           submittedAt: r.submittedAt,
@@ -142,7 +153,9 @@ class TransferRequestRepositoryImpl implements TransferRequestRepository {
   Future<Result<TransferRequest>> _ownRequest(String requestId) async {
     final access = await _employee();
     if (access.isError) return Result.error(access.message!);
-    final request = (await _ledger(access.data!.userId)).request(requestId);
+    final ledger = await _ledger(access.data!.userId);
+    if (ledger.isError) return Result.error(ledger.message!);
+    final request = ledger.data!.request(requestId);
     if (request == null) return Result.error(TransferMessages.noRequestFound);
     return Result.success(request);
   }
@@ -176,9 +189,11 @@ class TransferRequestRepositoryImpl implements TransferRequestRepository {
     final tester = access.data!;
 
     return lock.synchronized(() async {
+      final all = await ledgers.all();
+      if (all.isError) return Result.error(all.message!);
       TransferLedger? ledger;
       TransferRequest? request;
-      for (final l in await ledgers.all()) {
+      for (final l in all.data!) {
         request = l.request(input.requestId);
         if (request != null) {
           ledger = l;
@@ -225,9 +240,11 @@ class TransferRequestRepositoryImpl implements TransferRequestRepository {
     final access = await _tester();
     if (access.isError) return Result.error(access.message!);
 
+    final all = await ledgers.all();
+    if (all.isError) return Result.error(all.message!);
     final today = clock.today();
     final tasks = <OpenStakeholderTask>[];
-    for (final ledger in await ledgers.all()) {
+    for (final ledger in all.data!) {
       for (final r in ledger.requests.where((r) => r.isInProgress)) {
         for (final s in r.steps) {
           if (s.state == StepState.pending && s.task != null) {

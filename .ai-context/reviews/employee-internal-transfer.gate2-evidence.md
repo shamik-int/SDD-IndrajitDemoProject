@@ -98,6 +98,84 @@ No longer referenced by the app's routes or bindings.
 - `integration_test/employee_internal_transfer_test.dart`
 - Then remove the v1.5 route constants from `lib/app/routes/app_routes.dart` (`placeholder`, `transferRequestSubmit`, `transferRequestStatus`, `login`, `register`).
 
+## Gate 2 findings — Author's fixes (2026-10-05)
+Each fix: test written first and run RED against the unchanged code, then fixed and GREEN.
+
+| Finding | Fix | Test (RED → GREEN) |
+|---|---|---|
+| **G2-03** Ledger read error treated as "no data" | `LocalDbService.find` returns `success(null)` only when the record is absent; a failed read is an error. `TransferLedgerLocalDataSource.get`/`all` now return `Result`. The repository (OP01–OP07) and `DemoProfileService.scheduleOrganisationalChange` return the error and do not write. `getCurrentValues` returns "unknown" (null) after a failed read, not the baseline. | `test/data/transfer/ledger_read_failure_test.dart` (7 tests: datasource, OP01, OP02–OP05, OP06, OP07, schedule; each asserts no write to the ledger box and the earlier request kept), `test/core/local_db/local_db_service_find_test.dart` (2). RED shown with a throwaway test on the old code: submit after a failed read **succeeded** and replaced the stored ledger. The new test files failed to compile against the old API. |
+| **G2-07** Refused outcome's message wiped | `SimulationController.record` reloads the task list first, then sets the OP06 error, so the reload cannot clear it. | `tester_screen_test.dart` "G2-07, AC26": stale manager task, tap Approve → "This step is not pending." shown. RED: 0 widgets found. |
+| **G2-04** No `leak_tracker` checks | `test/flutter_test_config.dart` enables `LeakTesting` for every widget test. It found two leak types, both created and never disposed inside the `get` package's page route (`GetPageRouteTransitionMixin.buildPageTransitions` → `CurvedAnimation`, `.didChangePrevious` → `ValueNotifier<String?>`; creation stacks checked). Those two classes are ignored by name; `lib/` creates neither. No leak found in this app's code. `leak_tracker_flutter_testing` added to `dev_dependencies` with `any`: same locked version, previously transitive through `flutter_test`. | Mutation check: removing `reasonController.dispose()` was **not** caught, because `leak_tracker` reliably reports only objects still reachable at the end of a test. So `test/presentation/transfer/controller_dispose_test.dart` checks each controller's `onClose()` directly; removing either controller's dispose turns it RED. |
+| **G2-08** PROD block may not run; default fails open | (1) `ThreatResponse` holds threats until `markReady()`, which `AppEntryPage` calls after its routing decision. (2) `ThreatResponse.resolveEnv`: an explicit `ENV` wins; a release build without one is `prod`. (4) `blockDevice()` clears the stored session and `SessionState`, then shows only the blocked screen. (3) freeRASP placeholders recorded as a release blocker in `PROJECT_CHECKLIST.md` §8 and `status.md`. | `threat_response_test.dart` (3): held-until-ready, env resolution, and a PROD threat raised before the app is built → blocked screen, stored session cleared. RED confirmed with a throwaway test on the old code: the block **threw** ("contextless navigation"), the user landed on My requests, the session stayed. |
+| **G2-09** Sign-out/sign-in ignore storage failures | `SignInService.signOut` returns `Result`; `SignOutAction` keeps the user on the screen with a message if it fails. A failed session write on sign-in returns its own message. | `demo_auth_failure_test.dart` (3), `session_failure_test.dart` "G2-09, AC31". RED: the message was not shown and the user was signed out on screen. |
+| **G2-10** Exception after sign-out from a pushed screen | **No change: not reproducible.** A probe showed the pushed route's future completes while the list controller is still registered, and `MyRequestsController.load()` already returns once closed. | `session_failure_test.dart` "G2-10" for the detail and form screens: sign out → no exception. Pass on the unchanged code; kept as regression tests. |
+| **G2-15** History load failure silent | `RequestDetailController.historyError`, shown in the History section. | `request_detail_history_error_test.dart`. RED: no message. |
+| **G2-12** FAILED confirmation | FAILED lists every completed step, Manager approval and HR eligibility included, as COMPLETED does (AC20: "which steps had completed"). Step names are joined with "; ", because the IT step name contains commas. | `confirmation_builder_test.dart` UT32 (FAILED, COMPLETED) and "G2-12" (IT name in the list); `employee_screens_test.dart` UT49. RED: 4 tests. |
+| **G2-14** Seeder treats a read failure as first run | `DemoDataSeeder` uses `LocalDbService.find`: only an absent version is "first run"; a failed read skips the clean-up and it is tried on the next start. **Kept on purpose:** accounts are rewritten from the seed on every start — the seed is their only source, nothing edits them locally, and this is how a rotated demo password (G2-17) takes effect. | `demo_seeder_failure_test.dart` (2). RED: the session was wiped. |
+| **G2-16** Unused code and flags | `Dio` and `ApiClient` are no longer registered in `InitialBinding`. `ENABLE_LOGGING` removed from both `.env` files. **Kept:** the `ApiClient` class and the `dio` package, because ADR-0001 defines `core/network/ApiClient` for a future backend; removing them is a Tech Lead decision. | Removal only: `flutter analyze` and the full suite. |
+| **G2-18** Duplicate T09 paragraph | Removed. | — |
+| **G2-05** Tests written after the code | Option (a), as the reviewer asked: for each of XF01–XF09, the rule it covers was broken in `lib/`, that XF test was run and went **RED**, the file was restored and the test went GREEN again. Script: `reviews/employee-internal-transfer.gate2-xf-mutations.py` (re-runnable; it always restores). Results in the table below. From now on, Red and Green are committed separately. | 9/9 RED when broken, 9/9 GREEN after restore. |
+| **G2-11** Data at rest | Recorded as ADR-0006 decision 4 (plain storage accepted for V1 demo data only; encrypt before real data). The spec line the reviewer asked for is a spec change: proposed wording in "Author's response" below. | — (decision record) |
+| **G2-17** Demo password | Recorded as ADR-0006 decision 5 (long, random, never committed, rotated before any build leaves the team). | — (decision record) |
+| **G2-02** v1.5 files | **Not done.** The `git rm` of the 68 files listed below was blocked by the session's permission rules again. Checked first: no kept file imports any of them. | — |
+
+### G2-05 — mutation evidence (2026-10-05)
+| XF | Rule broken in `lib/` | Result |
+|---|---|---|
+| XF01 | A downstream failure no longer stops the other pending steps (BR-16, AC17) | RED → restored → GREEN |
+| XF02 | A COMPLETED request awaiting effect no longer blocks a new one (SD-17) | RED → restored → GREEN |
+| XF03 | OP06/OP07 no longer check the TESTER role (SD-18, AC32) | RED → restored → GREEN |
+| XF04 | Status changes recorded with actor EMPLOYEE, not SYSTEM (SD-19, AC23) | RED → restored → GREEN |
+| XF05 | A late-completed change applies retroactively (SD-05) | RED → restored → GREEN |
+| XF06 | The lock no longer serialises operations (PD-04) | RED → restored → GREEN |
+| XF07 | OP04 reads every employee's ledger, not only the caller's (SD-04, AC22) | RED → restored → GREEN |
+| XF08 | A FAILED request schedules the organisational change (SD-16) | RED → restored → GREEN |
+| XF09 | A scheduled change takes effect before its effective date (BR-13) | RED → restored → GREEN |
+
+Not covered by this check: the usecase delegation test and the ledger round-trip test, also written after the code (process note 3). Both are thin (one call each); the reviewer asked for XF01–XF09.
+
+**Open points for the reviewer:**
+- **Storage-failure messages (G2-03, G2-09).** The spec has no message for a storage failure. G2-03 shows the storage layer's own text ("Local read failed: …"), as a failed write already did. G2-09 adds "Could not sign you in. Please try again." and "Could not sign you out. Please try again.", marked in `transfer_messages.dart` as not from the spec. A spec change would settle all three (PD-10: messages come from the spec verbatim).
+- **Known gap in the G2-03 fix.** After a failed ledger read, `getCurrentValues` returns "unknown", which `getMyCurrentValues` reports as "This action is for employees only." Nothing is written, but the message is wrong. It goes away with the spec message above, or by making that lookup return `Result`.
+- **G2-08 default.** A release build without `ENV` now runs as PROD (blocks). UAT release builds must pass `--dart-define=ENV=uat`. This changes ADR-0001 §3's "defaults to UAT" for release builds; Tech Lead to accept.
+
+| Check after the fixes | Result |
+|---|---|
+| `flutter analyze` | No issues |
+| `flutter test` | 318/318 (293 before + 25 new), with leak tracking on |
+| Line coverage after the fixes | `lib/domain/transfer` 93.6%, `lib/data/transfer` 98.9%, `lib/presentation/transfer` 96.7% (floor 80%). Includes the v1.5 tests still on disk until G2-02 |
+| IT01 (`integration_test/transfer_journey_test.dart -d macos`) | Passing |
+
+Remaining: blockers G2-01, G2-02, G2-06; question G2-13. Tech Lead acceptances listed below.
+
+## Author's response to the Gate 2 review (for the reviewer)
+| ID | Response | State |
+|---|---|---|
+| G2-01 | The squash-merge to `main` will carry a fresh message with no trailer, and the setting that adds the trailer is off. The three branch commits are not rewritten, so the branch is not force-pushed. | Author to confirm at merge |
+| G2-02 | Deletion blocked twice in the session; the Author runs `git rm` locally, then the stale route constants and old validators are removed and T09 is ticked. | **Open** |
+| G2-03 | Fixed, test-first. Storage-failure message: see open points. | Done |
+| G2-04 | Fixed. Two `get` package leaks ignored by class; controller disposal tested directly. | Done; ignores need acceptance |
+| G2-05 | Option (a) done: 9/9 XF tests go RED when their rule is broken. | Done |
+| G2-06 | **Author's position: Gate 1 is approved and is not reopened.** See "Comment to Gate 2 on G2-06" below. | **For the Gate 2 reviewer to decide** |
+| G2-07 | Fixed, test-first. | Done |
+| G2-08 | Fixed, test-first: threats held until the app has routed; release builds fail closed; the block clears the session. freeRASP config is a release blocker (`PROJECT_CHECKLIST.md` §8). ADR-0001 amendment for the `ENV` default. | Done; Tech Lead to accept the ADR-0001 amendment |
+| G2-09 | Fixed, test-first. Two messages not in the spec, marked in `transfer_messages.dart`. | Done; wording to confirm |
+| G2-10 | Not reproducible: the pushed route's future completes before the list controller is removed, and `load()` returns once closed. Two regression tests added. No code change. | Answered |
+| G2-11 | ADR-0006 decision 4. Proposed spec wording for the Security boundary production prerequisites: "A production release must encrypt all locally stored data at rest, with the key held in the platform keystore." This is a spec change and goes through Gate 1. | Done; Tech Lead to accept; spec change to raise |
+| G2-12 | Fixed, test-first. | Done |
+| G2-13 | Waiting for the Author's answer on whether pre-filled proposed values are intended. | **Open** |
+| G2-14 | Fixed, test-first. Rewriting the accounts on every start is kept on purpose (reason in the fix table). | Done |
+| G2-15 | Fixed, test-first. | Done |
+| G2-16 | Registrations and flag removed. `ApiClient` class and `dio` kept per ADR-0001. | Done; Tech Lead may decide to remove |
+| G2-17 | ADR-0006 decision 5. | Done; Tech Lead to accept |
+| G2-18 | Fixed. | Done |
+
+## Comment to Gate 2 on G2-06 (Author, 2026-10-05)
+- **Gate 1 stands as approved.** On 2026-09-30 the session user stated "Gate 1 approval is complete" for plan v4.0, and the build went ahead on that basis. The Author treats plan v4.0, tasks T01–T09 and the test cases as Gate 1 approved and does not reopen Gate 1. Nothing in the plan, tasks or test cases has changed since, except the T09 note (G2-18) and as-built notes.
+- **What is not on file.** Shamik Bhattacharya's own written sign-off is not in the repository. The constitution's Review Authority says only he can close Gate 1, so this record does not claim his approval. If the Gate 2 reviewer needs it, the Author will ask Shamik for a one-line confirmation; no change to the approved artefacts is expected.
+- **ADR-0006.** Decisions 1–3 were reviewed with plan v4.0 and stand as approved with it. Decisions 4 and 5 were added on 2026-10-05 in answer to G2-11 and G2-17, after Gate 1, so they are not covered by it. They are marked pending Tech Lead acceptance. The ADR's status line is left as written; it does not record an acceptance that has not been given.
+- **Request to the Gate 2 reviewer:** please either accept the reported Gate 1 approval for this re-review, or say that Shamik's written confirmation is required, so the Author can get it.
+
 ## Gate 2 decision
 _Recorded by Subhajit Mukherjee._
 

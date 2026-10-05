@@ -22,7 +22,8 @@ class ConfirmationBuilder {
 
   static const _mayResubmit = 'You may submit a new request.';
 
-  static String _names(Iterable<StepId> steps) => steps.map((s) => s.pendingAction).join(', ');
+  /// Joined with "; " because a step name can contain commas (the IT step).
+  static String _names(Iterable<StepId> steps) => steps.map((s) => s.pendingAction).join('; ');
 
   static Confirmation? build(TransferRequest r, {required DateTime today, required ReferenceLists refs}) {
     switch (r.status) {
@@ -47,8 +48,8 @@ class ConfirmationBuilder {
       case RequestStatus.rejectedByHr:
         return Confirmation('Not approved by HR', _rejected(r, StepId.hrEligibility));
       case RequestStatus.failed:
-        Iterable<StepId> where(StepState state) =>
-            r.steps.where((s) => s.state == state && StepId.downstream.contains(s.stepId)).map((s) => s.stepId);
+        // Every step in that state, Manager and HR included, as COMPLETED lists them (AC20).
+        Iterable<StepId> where(StepState state) => r.steps.where((s) => s.state == state).map((s) => s.stepId);
         final stopped = where(StepState.stopped);
         final done = where(StepState.completed);
         return Confirmation('Transfer failed', [

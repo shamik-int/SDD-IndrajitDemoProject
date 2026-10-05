@@ -8,6 +8,7 @@ import 'package:get/get.dart';
 import 'package:employee_transfer_project/app/app.dart';
 import 'package:employee_transfer_project/app/bindings/initial_binding.dart';
 import 'package:employee_transfer_project/core/local_db/in_memory_local_db_service.dart';
+import 'package:employee_transfer_project/core/local_db/local_db_service.dart';
 
 import '../../support/transfer_env.dart';
 
@@ -16,6 +17,8 @@ Future<TransferEnv> bootApp(
   DateTime? now,
   String? signedInAs,
   Future<void> Function(TransferEnv env)? arrange,
+  LocalDbService? db,
+  void Function(TransferEnv env)? beforePump,
 }) async {
   Get.testMode = true;
   Get.reset();
@@ -23,7 +26,7 @@ Future<TransferEnv> bootApp(
   tester.view.devicePixelRatio = 1.5;
   addTearDown(tester.view.reset);
 
-  final env = await TransferEnv.create(InMemoryLocalDbService(), now: now);
+  final env = await TransferEnv.create(db ?? InMemoryLocalDbService(), now: now);
   if (arrange != null) await arrange(env);
   if (signedInAs != null) {
     await env.signInAs(signedInAs);
@@ -31,6 +34,7 @@ Future<TransferEnv> bootApp(
     await env.signOut();
   }
 
+  beforePump?.call(env);
   await tester.pumpWidget(App(initialBinding: InitialBinding(localDb: env.db, clock: env.clock)));
   await tester.pumpAndSettle();
   return env;

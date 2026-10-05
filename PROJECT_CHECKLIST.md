@@ -90,7 +90,11 @@ recreated from it; the existing ones are paused._
   - [x] Test cases covering UT01–UT70 and XF01–XF09 (`test_cases/employee-internal-transfer.test_cases.md`)
   - [x] v2.4 app built: T01–T08 done (test-first T01–T07), 293/293 tests, IT01 on macOS, analyze clean, coverage 93.6% / 98.8% / 96.1%
   - [ ] T09: delete the v1.5 files (blocked in session; list in `reviews/employee-internal-transfer.gate2-evidence.md`)
-  - [ ] **Gate 2 review by Subhajit Mukherjee** of plan, tasks, test cases and app (`reviews/employee-internal-transfer.gate2-evidence.md`)
+  - [ ] **Gate 2 review by Subhajit Mukherjee** of plan, tasks, test cases and app (`reviews/employee-internal-transfer.gate2-evidence.md`) — Changes Requested 2026-10-05 (G2-01 to G2-18)
+    - [x] Code fixes by the Author, test-first (2026-10-05): G2-03, G2-04, G2-07, G2-08 (parts 1, 2, 4), G2-09, G2-12, G2-14, G2-15, G2-16, G2-18; G2-10 answered with evidence (not reproducible). 318/318 tests, analyze clean
+    - [ ] G2-02: `git rm` of the v1.5 files (blocked in session; Author to run), then remove the stale route constants and old validators
+    - [x] G2-05 mutation evidence (9/9 XF RED when broken); G2-11 and G2-17 recorded in ADR-0006; Author's response to all 18 findings in the pack (2026-10-05)
+    - [ ] Open: G2-01 (fresh squash message at merge), G2-13 (answer on pre-filled dropdowns), G2-06 (Author's position sent to Gate 2: Gate 1 stands; reviewer to accept or ask Shamik); Tech Lead acceptance of ADR-0006 decisions 4–5 and the ADR-0001 amendment
   - [ ] Before any release build: real freeRASP config; constitution v1.3 caveat (plan F-04)
 
 ## 4. Plan & Tasks — Deliverables 4–7 (Milestone 3)
@@ -129,7 +133,7 @@ _Per task, in order — do not batch multiple tasks into one prompt/session._
 - [ ] `ApiClient` tests — **not needed for this feature** (no network call exists, ADR-0004); `ApiClient` stays in `core/` for any future feature that does have a backend
 - [x] `integration_test`: full submit → simulate-through-Completed journey (3 tests: happy path, manager rejection, HR rejection — real device/desktop, not `flutter test`)
 - [ ] Coverage floor met: 80% on org/payroll/approval-touching modules, 60% elsewhere
-- [ ] Memory-hygiene pass: `onClose()`/dispose implemented everywhere; `leak_tracker` run clean in debug/profile
+- [x] Memory-hygiene pass: `onClose()`/dispose implemented everywhere; `leak_tracker` run clean in debug/profile — 2026-10-05 (G2-04): `test/flutter_test_config.dart` enables it for every widget test; two leaks inside the `get` package are ignored by class; controller disposal also tested directly. Awaiting Gate 2 acceptance of the two ignores
 
 ## 6. Security Assessment — Deliverable 8
 - [ ] No PII in logs at any log level (grep-checked, not just eyeballed)
@@ -150,6 +154,8 @@ _Per task, in order — do not batch multiple tasks into one prompt/session._
 - [ ] Deliverable 10 — Gate 2 evidence captured (reviewer, findings, resolution)
 
 ## 8. Release
+- [ ] **Release blocker (G2-08):** real freeRASP config in `lib/core/security/security_service.dart` (Android signing-cert hash, iOS Team ID, `watcherMail`) and `isProd: true`; placeholders today
+- [ ] Release builds pass `--dart-define=ENV=prod` or `ENV=uat` explicitly (a release build without it now runs as PROD and blocks on a threat)
 - [ ] Spec status flipped to `Ready for Release` in `status.md`
 - [ ] Release notes drafted from the spec's intent, not commit messages
 - [ ] Spec status flipped to `Released (vX.Y.Z)`

@@ -68,6 +68,12 @@ build flavor. **These files hold non-sensitive configuration only** — environm
 name, API base URL, feature flags. Real credentials never go here; see the
 Security Posture note below.
 
+**Amendment (2026-10-05, Gate 2 G2-08; pending Tech Lead acceptance):** the
+environment comes from `--dart-define=ENV=uat|prod`. Without it, debug and
+profile runs are UAT, and a **release build is PROD**, so the device-threat
+response fails closed (blocks) instead of open (warns). A UAT release build
+must pass `ENV=uat` explicitly.
+
 ### 4. Local persistence — local-first, API-shaped
 A `LocalDbService` abstraction in `core/local_db/`, deliberately shaped the same
 way as `core/network/ApiClient` — both return the same `Result<T>` wrapper:

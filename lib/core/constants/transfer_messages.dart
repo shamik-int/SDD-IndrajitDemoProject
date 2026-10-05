@@ -48,5 +48,10 @@ class TransferMessages {
   static const requestSubmitted = 'Your transfer request was submitted.';
   static const invalidCredentials = 'Invalid email or password.';
 
+  // Not in spec v2.4: storage failures during sign-in and sign-out (Gate 2
+  // G2-09). Wording awaiting confirmation by the spec owner.
+  static const signInFailed = 'Could not sign you in. Please try again.';
+  static const signOutFailed = 'Could not sign you out. Please try again.';
+
   static const maxReasonLength = 500;
 }

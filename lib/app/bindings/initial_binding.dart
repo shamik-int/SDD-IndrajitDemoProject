@@ -1,9 +1,7 @@
-import 'package:dio/dio.dart';
 import 'package:get/get.dart';
 
 import '../../core/concurrency/async_lock.dart';
 import '../../core/local_db/local_db_service.dart';
-import '../../core/network/api_client.dart';
 import '../../core/time/clock.dart';
 import '../../data/transfer/datasources/transfer_ledger_local_datasource.dart';
 import '../../data/transfer/portal/demo_auth_service.dart';
@@ -20,7 +18,8 @@ import '../../presentation/transfer/shared/session_state.dart';
 /// controllers are never registered here: they are bound per route, so
 /// removing the routes on sign-out disposes them (AC31).
 ///
-/// [localDb] and [clock] can be replaced by tests.
+/// [localDb] and [clock] can be replaced by tests. No `ApiClient` is
+/// registered: there is no backend (ADR-0004), and nothing would use it.
 class InitialBinding extends Bindings {
   final LocalDbService? localDb;
   final Clock? clock;
@@ -29,8 +28,6 @@ class InitialBinding extends Bindings {
 
   @override
   void dependencies() {
-    Get.put<Dio>(Dio(), permanent: true);
-    Get.put<ApiClient>(ApiClient(Get.find<Dio>()), permanent: true);
     final db = Get.put<LocalDbService>(localDb ?? LocalDbService(), permanent: true);
     final time = Get.put<Clock>(clock ?? const SystemClock(), permanent: true);
     final lock = Get.put<AsyncLock>(AsyncLock(), permanent: true);

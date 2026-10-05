@@ -27,13 +27,15 @@ class DemoProfileService implements EmployeeProfile {
     final baseline = (await _accounts.byUserId(employeeId))?.baseline;
     if (baseline == null) return null;
     final ledger = await ledgers.get(employeeId);
-    return ScheduleBook.currentValues(baseline, ledger?.scheduledChanges ?? const [], asOf);
+    // Unknown, not the baseline: a failed read may hide a change in effect.
+    if (ledger.isError) return null;
+    return ScheduleBook.currentValues(baseline, ledger.data?.scheduledChanges ?? const [], asOf);
   }
 
   @override
   Future<ScheduledChange?> pendingScheduledChange(String employeeId, {required DateTime asOf}) async {
     final ledger = await ledgers.get(employeeId);
-    return ScheduleBook.pending(ledger?.scheduledChanges ?? const [], asOf);
+    return ScheduleBook.pending(ledger.data?.scheduledChanges ?? const [], asOf);
   }
 
   @override
@@ -44,7 +46,9 @@ class DemoProfileService implements EmployeeProfile {
     required DateTime effectiveFrom,
   }) {
     return lock.synchronized(() async {
-      final ledger = await ledgers.get(employeeId) ?? TransferLedger.empty(employeeId);
+      final read = await ledgers.get(employeeId);
+      if (read.isError) return Result.error(read.message!);
+      final ledger = read.data ?? TransferLedger.empty(employeeId);
       final result = ScheduleBook.schedule(
         ledger.scheduledChanges,
         employeeId: employeeId,

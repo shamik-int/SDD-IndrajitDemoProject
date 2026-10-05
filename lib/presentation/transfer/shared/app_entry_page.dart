@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../core/security/threat_response.dart';
+
 import 'app_entry_controller.dart';
 
 /// Decides, once, where the app opens (PD-07), then clears the stack.
@@ -21,6 +23,9 @@ class _AppEntryPageState extends State<AppEntryPage> {
   Future<void> _decide() async {
     final route = await Get.find<AppEntryController>().resolveInitialRoute();
     Get.offAllNamed(route);
+    // Only now can a threat response navigate without being overridden by
+    // this routing decision (G2-08). Absent in tests that do not set one up.
+    if (Get.isRegistered<ThreatResponse>()) Get.find<ThreatResponse>().markReady();
   }
 
   @override

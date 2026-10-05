@@ -15,8 +15,8 @@ void main() {
   const refs = FixtureReferenceLists();
   final day1 = DateTime(2026, 10, 1, 9);
 
-  TransferRequest submit() => TransferWorkflow.submit(
-        input: submitInput(proposed: changing(location: true)),
+  TransferRequest submit({bool department = false}) => TransferWorkflow.submit(
+        input: submitInput(proposed: changing(location: true, department: department)),
         employee: employeeA,
         current: baseCurrent,
         active: const ActiveState(),
@@ -33,8 +33,8 @@ void main() {
         now: at ?? day1,
       ).data!.request;
 
-  TransferRequest approved() =>
-      apply(apply(submit(), StepId.managerApproval, Outcome.approved), StepId.hrEligibility, Outcome.approved);
+  TransferRequest approved({bool department = false}) => apply(
+      apply(submit(department: department), StepId.managerApproval, Outcome.approved), StepId.hrEligibility, Outcome.approved);
 
   TransferRequest completed({DateTime? at}) {
     var r = approved();
@@ -50,7 +50,7 @@ void main() {
     expect(c.lines, [
       'New department: Engineering, location: Mumbai, role: Software Engineer.',
       'Effective from 15 Oct 2026.',
-      'Completed steps: Manager approval, HR eligibility check, Organisational record update, Payroll update, '
+      'Completed steps: Manager approval; HR eligibility check; Organisational record update; Payroll update; '
           'Facilities: workspace at the new location.',
       'You can submit a new request from 15 Oct 2026.',
     ]);
@@ -83,7 +83,7 @@ void main() {
     expect(hr.lines.first, 'Reason: Ineligible');
   });
 
-  test('UT32: FAILED lists failed, completed (not undone) and stopped steps', () {
+  test('UT32, G2-12: FAILED lists failed, every completed (not undone) and stopped steps', () {
     var r = approved();
     r = apply(r, StepId.orgRecordUpdate, Outcome.completed);
     r = apply(r, StepId.payrollUpdate, Outcome.failed);
@@ -92,11 +92,22 @@ void main() {
     expect(c.title, 'Transfer failed');
     expect(c.lines, [
       'Failed step: Payroll update.',
-      'Completed steps (not undone): Organisational record update.',
+      'Completed steps (not undone): Manager approval; HR eligibility check; Organisational record update.',
       'Stopped steps: Facilities: workspace at the new location.',
       'Your department, location and role have not changed.',
       'You may submit a new request.',
     ]);
+  });
+
+  test('G2-12: step names with commas stay readable — names are joined with "; "', () {
+    var r = approved(department: true); // department changed: IT is required
+    r = apply(r, StepId.orgRecordUpdate, Outcome.completed);
+    r = apply(r, StepId.itAccessChange, Outcome.completed);
+    r = apply(r, StepId.payrollUpdate, Outcome.failed);
+    final c = ConfirmationBuilder.build(r, today: DateTime(2026, 10, 2), refs: refs)!;
+
+    expect(c.lines[1], 'Completed steps (not undone): Manager approval; HR eligibility check; '
+        'Organisational record update; IT access change: provision new access, remove old access.');
   });
 
   test('UT32: no confirmation while in progress', () {

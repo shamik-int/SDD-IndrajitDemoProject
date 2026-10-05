@@ -27,13 +27,15 @@ class DemoAuthService implements SignInService {
       return Result.error(TransferMessages.invalidCredentials);
     }
     final saved = await localDb.write(sessionBox, currentUserKey, account.userId);
-    if (saved.isError) return Result.error(TransferMessages.invalidCredentials);
+    // Credentials were right; only the session could not be stored.
+    if (saved.isError) return Result.error(TransferMessages.signInFailed);
     return Result.success(_toUser(account));
   }
 
   @override
-  Future<void> signOut() async {
-    await localDb.delete(sessionBox, currentUserKey);
+  Future<Result<bool>> signOut() async {
+    final deleted = await localDb.delete(sessionBox, currentUserKey);
+    return deleted.isError ? Result.error(TransferMessages.signOutFailed) : Result.success(true);
   }
 
   @override

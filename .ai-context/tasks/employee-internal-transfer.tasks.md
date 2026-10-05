@@ -84,7 +84,4 @@ then GREEN with `flutter analyze` clean. Test IDs refer to
   bindings (Register route removed); `architecture.md` and READMEs updated.
   **Deleting the v1.5 files was blocked by the session's permission rules**;
   the file list is in `reviews/employee-internal-transfer.gate2-evidence.md`.
-  — **Partly done (2026-09-30):** v1.5 code unwired from routes and
-  bindings (Register route removed); `architecture.md` and READMEs updated.
-  **Deleting the v1.5 files was blocked by the session's permission rules**;
-  the file list is in `reviews/employee-internal-transfer.gate2-evidence.md`.
+  Blocked again on 2026-10-05 (Gate 2 G2-02); the Author runs the `git rm`.

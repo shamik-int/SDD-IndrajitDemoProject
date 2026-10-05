@@ -23,6 +23,11 @@ class InMemoryLocalDbService extends LocalDbService {
   }
 
   @override
+  Future<Result<T?>> find<T>(String boxName, String key) async {
+    return Result.success(_copy(_box(boxName)[key]) as T?);
+  }
+
+  @override
   Future<Result<bool>> write(String boxName, String key, dynamic value) async {
     _box(boxName)[key] = _copy(value);
     return Result.success(true);

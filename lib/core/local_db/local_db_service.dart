@@ -26,6 +26,19 @@ class LocalDbService {
     }
   }
 
+  /// Like [read], but an absent record is `Result.success(null)`, so only a
+  /// real failure is an error. Use it wherever the caller would write back
+  /// what it read: treating a failed read as "no data" would overwrite the
+  /// stored record.
+  Future<Result<T?>> find<T>(String boxName, String key) async {
+    try {
+      final box = await Hive.openBox(boxName);
+      return Result.success(box.get(key) as T?);
+    } catch (e) {
+      return Result.error('Local read failed: $e');
+    }
+  }
+
   Future<Result<bool>> write(String boxName, String key, dynamic value) async {
     try {
       final box = await Hive.openBox(boxName);

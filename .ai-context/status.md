@@ -7,7 +7,7 @@ _Last updated: 2026-10-05_
 | **BRD v5.2 (BRD-001)** | **Approved (Gate 1), 2026-09-28** | Indrajit Bhandari (Author); Shamik Bhattacharya (Gate 1) | 2026-09-28 | Approved by Shamik Bhattacharya. BRD-002 kept for version control only. |
 | **Spec v2.4 (employee-internal-transfer)** | **Approved (Gate 1), 2026-09-30** | Indrajit Bhandari (Author); Shamik Bhattacharya (Gate 1) | 2026-09-30 | Answers the reviewer's 11 items and 8 scenarios (v2.1 review). 35 ACs, UT01–UT70, XF01–XF09, SD-01–SD-20, OP01–OP07. Every BR-01–BR-28 has an AC. Points not in BRD 5.2 (CL-01, CL-02 and others) listed in `reviews/employee-internal-transfer.spec-v2.4.not-in-BRD-5.2.md`. **BRD 5.2 unchanged.** Approved by Shamik Bhattacharya, including CL-01 and CL-02. Plan v4.0 drafted from it (2026-09-30). |
 | **Plan v4.0 (employee-internal-transfer)** | **Gate 1 reported complete; Shamik's sign-off not captured** | Indrajit Bhandari (Author); Shamik Bhattacharya (Gate 1) | 2026-09-30 | The session user (signed in as Subhajit Mukherjee) stated "Gate 1 approval is complete" and directed the build. Constitution Review Authority: only Shamik can close Gate 1, so his sign-off should be attached to the plan. ADR-0006 Proposed. |
-| **Build v2.4 (tasks T01–T09, test cases, app)** | **Gate 2: Changes Requested, 2026-10-05** | Indrajit Bhandari (Author); Subhajit Mukherjee (Gate 2) | 2026-10-05 | 18 findings, 6 blockers (G2-01 to G2-06): commit trailers, T09 clean-up, ledger read-error data loss, leak_tracker, tests written after code, plan Gate 1 sign-off. See `reviews/employee-internal-transfer.gate2-review.md`. Author's pack: T01–T08 done, T09 partly done (deleting v1.5 files was blocked). Every UT01–UT70 and XF01–XF09 mapped to a passing test. `flutter test` 293/293 (162 v2.4 and core, rest v1.5 still on disk); IT01 passing on macOS; `flutter analyze` clean; coverage domain 93.6%, data 98.8%, presentation 96.1%. Review pack: `reviews/employee-internal-transfer.gate2-evidence.md`. |
+| **Build v2.4 (tasks T01–T09, test cases, app)** | **Gate 2: Changes Requested, 2026-10-05** | Indrajit Bhandari (Author); Subhajit Mukherjee (Gate 2) | 2026-10-05 | 18 findings, 6 blockers (G2-01 to G2-06): commit trailers, T09 clean-up, ledger read-error data loss, leak_tracker, tests written after code, plan Gate 1 sign-off. See `reviews/employee-internal-transfer.gate2-review.md`. **Addressed 2026-10-05: 15 of 18** — code fixes G2-03, 04, 07, 08, 09, 12, 14, 15, 16, 18; G2-10 not reproducible; G2-05 mutation evidence (9/9 XF RED when broken); G2-11 and G2-17 recorded in ADR-0006 (pending Tech Lead). `flutter test` 318/318 with leak tracking, analyze clean, coverage 93.6/98.9/96.7%. **Open: G2-01 (at merge), G2-02 (Author's `git rm`), G2-13 (answer); G2-06 answered with the Author's position (Gate 1 stands as approved), for the Gate 2 reviewer to decide.** G2-02 `git rm` blocked in session: Author to run. **Release blocker:** real freeRASP config (G2-08). Author's pack: T01–T08 done, T09 partly done (deleting v1.5 files was blocked). Every UT01–UT70 and XF01–XF09 mapped to a passing test. `flutter test` 293/293 (162 v2.4 and core, rest v1.5 still on disk); IT01 passing on macOS; `flutter analyze` clean; coverage domain 93.6%, data 98.8%, presentation 96.1%. Review pack: `reviews/employee-internal-transfer.gate2-evidence.md`. |
 
 ## Active Specs
 | Spec ID | Title | Status | Owner | Last Updated | Notes |
@@ -253,3 +253,41 @@ _Last updated: 2026-10-05_
 - **T09 partly done:** deleting the v1.5 files was blocked by the session's permission rules. They are unwired and still compile; the list is in the Gate 2 pack. `architecture.md`, plan (as-built notes), ADR-0006 and READMEs updated.
 - **Next:** Gate 2 review by Subhajit Mukherjee (`reviews/employee-internal-transfer.gate2-evidence.md`); Shamik's plan sign-off to be attached; remove the v1.5 files.
 
+### 2026-10-05 — Gate 2 review: Changes Requested; G2-03 and G2-07 fixed
+- **Subhajit Mukherjee reviewed the build (Gate 2): Changes Requested.** 18 findings (G2-01 to G2-18), 6 blockers. Recorded in `reviews/employee-internal-transfer.gate2-review.md`.
+- **G2-03 fixed.** A failed ledger read was treated as "no data", so the next write could replace the employee's stored requests, history and scheduled change. `LocalDbService.find` now tells "absent" from "failed"; the ledger datasource returns `Result`; OP01–OP07 and `scheduleOrganisationalChange` return the error and do not write. Bug shown first with a throwaway test on the old code (submit after a failed read succeeded); 9 new tests.
+- **G2-07 fixed.** The tester screen cleared a refused outcome's OP06 message when it reloaded the task list. Now it reloads first, then shows the message (AC26). New widget test, RED then GREEN.
+- **Evidence:** `flutter analyze` clean; `flutter test` 303/303; IT01 passing on macOS. Fix details in the Gate 2 pack.
+- **Open for the reviewer:** the spec has no message for a storage failure, so the storage layer's text is shown (same as a failed write already was).
+- **Next:** the other code findings (G2-08, G2-09, G2-10, G2-15; G2-02 needs `git rm` by the Author; G2-04 leak_tracker), then the sign-off and record items (G2-01, G2-05, G2-06, G2-11, G2-13, G2-17).
+
+### 2026-10-05 (cont'd) — Gate 2: G2-04, G2-08, G2-09, G2-15 fixed; G2-10 answered
+- **G2-09 fixed.** Sign-out now reports a failed session delete and keeps the user on the screen (AC31); a failed session write on sign-in no longer says "Invalid email or password." Two messages added that are not in the spec, marked for confirmation.
+- **G2-15 fixed.** A history load failure is shown in the History section.
+- **G2-08 fixed (parts 1, 2, 4).** Shown first: a PROD block raised before the app was built threw and left the user signed in. Threats are now held until the entry screen has routed; a release build without `ENV` runs as PROD (fails closed); the block clears the stored session. Part 3: **release blocker** — real freeRASP signing hash, Team ID and watcher mail, and `isProd: true`, must be set before any release build (`PROJECT_CHECKLIST.md` §8).
+- **G2-04 fixed.** `leak_tracker` on for every widget test. Only leaks found are inside the `get` package (two classes, ignored by name). A mutation check showed it misses an undisposed controller, so controller disposal is also tested directly.
+- **G2-10 not reproducible.** Probe and two regression tests show no exception after signing out from the detail or form screen. No code change.
+- **G2-02 not done.** The `git rm` of the 68 v1.5 files was blocked again by the session's permission rules; checked that no kept file imports them. Author to run it locally, then remove the stale route constants and old validators.
+- **Evidence:** `flutter analyze` clean; `flutter test` 315/315. Details and open points (storage-failure wording, the "employees only" message after a failed read, the release `ENV` default) in the Gate 2 pack.
+- **Next:** G2-02 by the Author; sign-offs and records G2-01, G2-05, G2-06, G2-11, G2-13, G2-17; Minor G2-12, G2-14, G2-16, G2-18.
+
+### 2026-10-05 (cont'd) — Gate 2: Minor findings G2-12, G2-14, G2-16, G2-18 fixed
+- **G2-12:** the FAILED confirmation lists every completed step, Manager and HR included, as COMPLETED does (AC20); step names joined with "; " since the IT step name contains commas.
+- **G2-14:** a failed read of the schema version no longer runs the one-off clean-up, so it cannot wipe the session. Rewriting the demo accounts on every start kept on purpose (the seed is their only source; it is how a rotated password takes effect).
+- **G2-16:** unused `Dio`/`ApiClient` registrations and the `ENABLE_LOGGING` flag removed. The `ApiClient` class and `dio` kept per ADR-0001; Tech Lead to decide.
+- **G2-18:** duplicate T09 paragraph removed.
+- **Evidence:** `flutter analyze` clean; `flutter test` 318/318.
+- **Code findings left:** G2-02 (Author's `git rm`, then route constants and validators) and G2-13 (waits for the answer on pre-filled dropdowns). Everything else open is a sign-off or a record: G2-01, G2-05, G2-06, G2-11, G2-17.
+
+### 2026-10-05 (cont'd) — Gate 2: G2-05 evidence, G2-11 and G2-17 recorded, response written
+- **G2-05:** option (a) done. For each of XF01–XF09 the rule it covers was broken in `lib/`, the test went RED, and it went GREEN again after the restore (9/9). Script kept at `reviews/employee-internal-transfer.gate2-xf-mutations.py`.
+- **G2-11, G2-17:** ADR-0006 decisions 4 (plain storage for V1 demo data only) and 5 (demo password long, random, rotated), marked pending Tech Lead acceptance. ADR-0006 stays Proposed. The spec line for G2-11 is proposed in the pack, not applied: the spec is Gate 1 approved.
+- **G2-08:** ADR-0001 §3 amendment for the release `ENV` default, pending Tech Lead acceptance.
+- **Coverage re-run:** domain 93.6%, data 98.9%, presentation 96.7%.
+- **Author's response** to all 18 findings added to the Gate 2 pack.
+- **Open before re-submission:** G2-02 (Author's `git rm`, then constants and validators, re-run checks), G2-06 (Shamik's approval), G2-13 (answer), G2-01 (fresh squash message at merge).
+
+### 2026-10-05 (cont'd) — G2-06: Author's position recorded
+- **Direction (session user):** Gate 1 is approved and must not be changed; if Gate 2 is not sure, comment to Gate 2.
+- Recorded as a comment to Gate 2 in the pack: Gate 1 stands as approved (reported 2026-09-30) and is not reopened. **Not recorded as Shamik Bhattacharya's sign-off**, which is still not on file (constitution Review Authority). ADR-0006 status line left unchanged; decisions 4–5 (added after Gate 1) stay pending Tech Lead acceptance.
+- Gate 2 reviewer asked to accept the reported approval or to require Shamik's written confirmation.

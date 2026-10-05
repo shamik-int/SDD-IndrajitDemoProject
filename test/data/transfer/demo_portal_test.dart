@@ -94,7 +94,7 @@ void main() {
       expect(repeat.data!.scheduledAt, first.data!.scheduledAt);
       expect(different.message, TransferMessages.differentChangeScheduled);
       expect(another.message, TransferMessages.anotherTransferScheduled);
-      expect((await env.ledgers.get(employeeA.userId))!.scheduledChanges, hasLength(1));
+      expect((await env.ledgers.get(employeeA.userId)).data!.scheduledChanges, hasLength(1));
     });
   });
 

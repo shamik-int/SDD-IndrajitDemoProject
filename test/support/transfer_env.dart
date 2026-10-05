@@ -89,7 +89,10 @@ class TransferEnv {
     if (result.isError) throw StateError('sign-in failed: ${result.message}');
   }
 
-  Future<void> signOut() => auth.signOut();
+  Future<void> signOut() async {
+    final result = await auth.signOut();
+    if (result.isError) throw StateError('sign-out failed: ${result.message}');
+  }
 
   /// Signs in as [employee], submits, and returns the new request.
   Future<TransferRequest> submitAs(

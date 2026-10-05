@@ -216,7 +216,8 @@ void main() {
           .map((t) => t.data)
           .join('\n');
       expect(text(), contains('Payroll update'));
-      expect(text(), contains('Completed steps (not undone): Organisational record update'));
+      expect(text(), contains('Completed steps (not undone): Manager approval; HR eligibility check; '
+          'Organisational record update; IT access change: provision new access, remove old access.'));
       expect(text(), contains('Stopped steps: Facilities: workspace at the new location'));
       expect(text(), contains('Your department, location and role have not changed.'));
       for (final word in ['Retry', 'Undo', 'Compensate']) {

@@ -31,6 +31,9 @@ class RequestDetailController extends GetxController {
   final isLoading = true.obs;
   final error = RxnString();
 
+  /// Set when the request loaded but its history did not (AC23, G2-15).
+  final historyError = RxnString();
+
   @override
   void onInit() {
     super.onInit();
@@ -42,7 +45,8 @@ class RequestDetailController extends GetxController {
     final r = await getRequest(requestId);
     final h = r.isSuccess ? await getHistory(requestId) : null;
     if (isClosed) return;
-    error.value = r.isError ? r.message : h!.message;
+    error.value = r.isError ? r.message : null;
+    historyError.value = h != null && h.isError ? h.message : null;
     request.value = r.data;
     history.assignAll(h?.data ?? const []);
     isLoading.value = false;

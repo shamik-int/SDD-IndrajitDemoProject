@@ -102,6 +102,8 @@ void main() {
       final uat = ThreatResponse(env: 'uat', warn: (r) => calls.add('warn:$r'), block: (r) => calls.add('block:$r'));
       final prod = ThreatResponse(env: 'prod', warn: (r) => calls.add('warn:$r'), block: (r) => calls.add('block:$r'));
 
+      uat.markReady();
+      prod.markReady();
       uat.onThreat('Rooted');
       prod.onThreat('Rooted');
 

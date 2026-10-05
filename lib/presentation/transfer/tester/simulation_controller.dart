@@ -48,12 +48,14 @@ class SimulationController extends GetxController {
       RecordOutcomeInput(requestId: task.requestId, stepId: task.stepId, outcome: outcome, reason: reason),
     );
     if (isClosed) return result.isSuccess;
-    error.value = result.isError ? result.message : null;
     if (result.isSuccess) {
       notice.value = '${task.stepId.pendingAction}: ${outcome.code} recorded for ${task.employeeName}.';
     }
     isBusy.value = false;
+    // Reload first: load() resets `error`, and a refused outcome's OP06
+    // message must stay on screen (AC26).
     await load();
+    if (!isClosed && result.isError) error.value = result.message;
     return result.isSuccess;
   }
 }

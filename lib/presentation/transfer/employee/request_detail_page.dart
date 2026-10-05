@@ -102,6 +102,12 @@ class RequestDetailPage extends GetView<RequestDetailController> {
                     _section(context, 'Steps'),
                     for (final s in r.steps) _step(context, s),
                     _section(context, 'History'),
+                    if (controller.historyError.value != null)
+                      Text(
+                        controller.historyError.value!,
+                        key: const Key('history-error'),
+                        style: TextStyle(color: Theme.of(context).colorScheme.error),
+                      ),
                     for (final e in controller.history)
                       Padding(
                         key: Key('history-entry-${e.sequence}'),

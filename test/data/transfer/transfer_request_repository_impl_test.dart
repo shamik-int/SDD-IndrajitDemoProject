@@ -49,7 +49,7 @@ void main() {
       final messages = await everyOperation();
 
       expect(messages.take(5), List.filled(5, TransferMessages.employeesOnly));
-      expect((await env.ledgers.all()), isEmpty);
+      expect((await env.ledgers.all()).data, isEmpty);
     });
 
     test('UT52, AC32: EMPLOYEE calling OP06 on their own pending request → tester-only; nothing changes', () async {
@@ -200,11 +200,11 @@ void main() {
       final r = await env.submitAs(employeeA.userId, proposed: changing(role: true));
       await env.approveManagerAndHr(r.requestId);
       await env.record(r.requestId, StepId.orgRecordUpdate, Outcome.completed);
-      expect((await env.ledgers.get(employeeA.userId))!.scheduledChanges, isEmpty); // UT58
+      expect((await env.ledgers.get(employeeA.userId)).data!.scheduledChanges, isEmpty); // UT58
       await env.record(r.requestId, StepId.payrollUpdate, Outcome.completed);
       await env.record(r.requestId, StepId.itAccessChange, Outcome.completed);
 
-      final ledger = (await env.ledgers.get(employeeA.userId))!;
+      final ledger = (await env.ledgers.get(employeeA.userId)).data!;
       expect(ledger.scheduledChanges, hasLength(1));
       expect(ledger.scheduledChanges.single.values, changing(role: true));
       expect(ledger.scheduledChanges.single.effectiveFrom, DateTime(2026, 10, 15));
@@ -219,7 +219,7 @@ void main() {
       await env.record(r.requestId, StepId.orgRecordUpdate, Outcome.completed);
 
       // Misuse the contract: another change for this employee not yet in effect.
-      final ledger = (await env.ledgers.get(employeeA.userId))!;
+      final ledger = (await env.ledgers.get(employeeA.userId)).data!;
       await env.ledgers.put(ledger.withScheduledChanges([
         ScheduledChange(
           requestId: 'other',
@@ -234,7 +234,7 @@ void main() {
       final error = await env.record(r.requestId, StepId.itAccessChange, Outcome.completed);
 
       expect(error, TransferMessages.anotherTransferScheduled);
-      final after = (await env.ledgers.get(employeeA.userId))!.request(r.requestId)!;
+      final after = (await env.ledgers.get(employeeA.userId)).data!.request(r.requestId)!;
       expect(after.step(StepId.itAccessChange)!.state, StepState.pending);
       expect(after.status, RequestStatus.inProgress);
       expect(after.history, historyBefore);
@@ -254,7 +254,7 @@ void main() {
 
       expect(results.where((x) => x.isSuccess), hasLength(1));
       expect(results.firstWhere((x) => x.isError).message, TransferMessages.requestClosed);
-      final ledger = (await env.ledgers.get(employeeA.userId))!;
+      final ledger = (await env.ledgers.get(employeeA.userId)).data!;
       expect(ledger.scheduledChanges, hasLength(1));
       final history = ledger.request(r.requestId)!.history;
       expect(history.where((e) => e.type == HistoryType.changeScheduled), hasLength(1));
@@ -274,7 +274,7 @@ void main() {
     test('AC23: history is append-only — every earlier entry is unchanged after each outcome', () async {
       final r = await env.submitAs(employeeA.userId, proposed: changing(location: true));
       final snapshots = <List<Object>>[];
-      Future<void> snap() async => snapshots.add((await env.ledgers.get(employeeA.userId))!.request(r.requestId)!.history);
+      Future<void> snap() async => snapshots.add((await env.ledgers.get(employeeA.userId)).data!.request(r.requestId)!.history);
 
       await snap();
       await env.record(r.requestId, StepId.managerApproval, Outcome.approved);

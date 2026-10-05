@@ -112,6 +112,20 @@ void main() {
     expect(find.byKey(Key('task-${taskId(id, StepId.hrEligibility)}')), findsOneWidget);
   });
 
+  testWidgets('G2-07, AC26: a refused outcome keeps the OP06 error on screen after the list reloads', (tester) async {
+    late String id;
+    final env = await bootApp(tester, signedInAs: testerUser.userId, arrange: (env) async {
+      id = (await env.submitAs(employeeA.userId)).requestId;
+    });
+    // The screen still shows the manager task; it is approved behind it.
+    await env.record(id, StepId.managerApproval, Outcome.approved);
+
+    await tapKey(tester, 'outcome-${taskId(id, StepId.managerApproval)}-APPROVED');
+
+    expect(find.text(TransferMessages.stepNotPending), findsOneWidget);
+    expect(find.byKey(Key('task-${taskId(id, StepId.hrEligibility)}')), findsOneWidget);
+  });
+
   testWidgets('outcome buttons are disabled while a call is in progress', (tester) async {
     late String id;
     await bootApp(tester, signedInAs: testerUser.userId, arrange: (env) async {

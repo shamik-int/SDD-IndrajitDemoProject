@@ -55,5 +55,7 @@ extension ReferenceListsNames on ReferenceLists {
 /// only to get a signed-in user.
 abstract class SignInService implements CurrentUserProvider {
   Future<Result<CurrentUser>> signIn({required String email, required String password});
-  Future<void> signOut();
+  /// An error means the session could not be cleared and the user is still
+  /// signed in (AC31).
+  Future<Result<bool>> signOut();
 }

@@ -37,6 +37,24 @@ needs three things the current local design cannot give:
 3. **`app_meta.schemaVersion`.** Below 2, the v1.5 boxes (`transfer_requests`,
    `app_state`) and the BRD-002 `employees` box are deleted once and the demo
    accounts are seeded. All of it is test data (BR-25).
+4. **Data at rest: plain Hive storage, V1 demo data only** _(added
+   2026-10-05 for Gate 2 G2-11; pending Tech Lead acceptance)._ The boxes
+   are not encrypted. Anyone with access to the device storage can read
+   them, and can change `session.currentUserId` to act as another demo
+   user, including the tester. This is accepted for V1 only because every
+   value is demo test data (BR-25) and the spec already places device and
+   storage access outside the V1 protection (Security boundary, BR-26).
+   Before any build holds real employee data, the boxes must be encrypted
+   (for example `HiveAesCipher` with a key held in the platform keystore).
+5. **Demo password** _(added 2026-10-05 for Gate 2 G2-17; pending Tech
+   Lead acceptance)._ The salts and hashes of the seeded accounts are
+   committed, and the hash is a single round of SHA-256, which is fast to
+   guess offline; local sign-in has no attempt limit. So the demo password
+   must be long and random (at least 20 characters, generated, not a
+   word), it is never written to the repository, and it is rotated —
+   new salts and hashes in `demo_accounts.dart` — before any build leaves
+   the team. The start-up seeder rewrites the accounts on every start, so a
+   rotated password takes effect on the next launch.
 
 ## Relation to earlier ADRs
 - **ADR-0004** — still in force (no backend, Hive is the system of record,

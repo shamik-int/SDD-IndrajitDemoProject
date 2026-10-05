@@ -85,7 +85,7 @@ void main() {
     expect(blocked.message,
         'Your previous transfer takes effect on 15 Oct 2026. You can submit a new request from that date.');
     expect((await env.repository.listMyTransferRequests()).data, hasLength(1));
-    expect((await env.ledgers.get(employeeA.userId))!.scheduledChanges, hasLength(1));
+    expect((await env.ledgers.get(employeeA.userId)).data!.scheduledChanges, hasLength(1));
 
     env.clock.set(day(15));
     expect((await env.repository.getMyCurrentValues()).data!.values, changing(role: true));
@@ -95,7 +95,7 @@ void main() {
     expect(b.isSuccess, isTrue);
     expect(b.data!.current.values, changing(role: true));
 
-    final pending = (await env.ledgers.get(employeeA.userId))!
+    final pending = (await env.ledgers.get(employeeA.userId)).data!
         .scheduledChanges
         .where((c) => DateTime(2026, 10, 15).isBefore(c.effectiveFrom));
     expect(pending, isEmpty);
@@ -168,7 +168,7 @@ void main() {
       env.clock.set(day(14));
       await complete(id, [StepId.orgRecordUpdate, StepId.payrollUpdate, StepId.itAccessChange]);
 
-      final change = (await env.ledgers.get(employeeA.userId))!.scheduledChanges.single;
+      final change = (await env.ledgers.get(employeeA.userId)).data!.scheduledChanges.single;
       expect(change.effectiveFrom, DateTime(2026, 10, 10));
       expect((await env.profile.getCurrentValues(employeeA.userId, asOf: DateTime(2026, 10, 13)))!.values, baseValues);
       expect((await env.profile.getCurrentValues(employeeA.userId, asOf: DateTime(2026, 10, 14)))!.values,
@@ -186,7 +186,7 @@ void main() {
     test('(b) HR rejects on 12 Oct → REJECTED_BY_HR, nothing scheduled', () async {
       expect(await env.record(id, StepId.hrEligibility, Outcome.rejected, reason: 'Date passed'), isNull);
       expect((await own(id)).status, RequestStatus.rejectedByHr);
-      expect((await env.ledgers.get(employeeA.userId))!.scheduledChanges, isEmpty);
+      expect((await env.ledgers.get(employeeA.userId)).data!.scheduledChanges, isEmpty);
     });
   });
 
@@ -204,12 +204,12 @@ void main() {
     expect(both.where((x) => x.isSuccess), hasLength(1));
     expect([TransferMessages.stepNotPending, TransferMessages.requestClosed], contains(both.firstWhere((x) => x.isError).message));
 
-    final first = (await env.ledgers.get(employeeA.userId))!.scheduledChanges.single;
+    final first = (await env.ledgers.get(employeeA.userId)).data!.scheduledChanges.single;
     final repeat = await env.profile.scheduleOrganisationalChange(employeeA.userId,
         requestId: r.requestId, values: changing(role: true), effectiveFrom: DateTime(2026, 10, 15));
     expect(repeat.data, first);
 
-    final stored = (await env.ledgers.get(employeeA.userId))!;
+    final stored = (await env.ledgers.get(employeeA.userId)).data!;
     expect(stored.scheduledChanges, hasLength(1));
     final history = stored.request(r.requestId)!.history;
     expect(history.where((e) => e.type == HistoryType.changeScheduled), hasLength(1));
@@ -259,7 +259,7 @@ void main() {
     }
     expect(after.step(StepId.itAccessChange)!.state, StepState.failed);
     expect(after.history.where((e) => e.toState == StepState.stopped), isEmpty);
-    expect((await env.ledgers.get(employeeA.userId))!.scheduledChanges, isEmpty);
+    expect((await env.ledgers.get(employeeA.userId)).data!.scheduledChanges, isEmpty);
     expect((await env.profile.getCurrentValues(employeeA.userId, asOf: DateTime(2026, 11, 1)))!.values, baseValues);
     await env.submitAs(employeeA.userId, submissionId: 'again');
   });
@@ -278,7 +278,7 @@ void main() {
     await env.approveManagerAndHr(b.requestId);
     await complete(b.requestId, [StepId.orgRecordUpdate, StepId.payrollUpdate, StepId.facilitiesWorkspace]);
 
-    final changes = (await env.ledgers.get(employeeA.userId))!.scheduledChanges;
+    final changes = (await env.ledgers.get(employeeA.userId)).data!.scheduledChanges;
     expect(changes.single.requestId, b.requestId);
     expect(changes.single.effectiveFrom, DateTime(2026, 10, 30));
     expect((await env.profile.getCurrentValues(employeeA.userId, asOf: DateTime(2026, 10, 15)))!.values, baseValues);

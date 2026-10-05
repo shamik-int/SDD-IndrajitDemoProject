@@ -58,6 +58,9 @@ dev_dependencies:
   # rules and activating additional ones.
   flutter_lints: ^6.0.0
   mocktail: ^1.0.5
+  # Leak checks in widget tests (constitution Testing Discipline, ADR-0002).
+  # Version is pinned by the Flutter SDK through flutter_test.
+  leak_tracker_flutter_testing: any
   integration_test:
     sdk: flutter
 
