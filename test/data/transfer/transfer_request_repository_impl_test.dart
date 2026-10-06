@@ -85,7 +85,7 @@ void main() {
   group('OP01 submit', () {
     test('UT02, AC02: the snapshot equals the profile values as of today', () async {
       final r = await env.submitAs(employeeA.userId);
-      expect(r.current, (await env.profile.getCurrentValues(employeeA.userId, asOf: env.clock.today())));
+      expect(r.current, (await env.profile.getCurrentValues(employeeA.userId, asOf: env.clock.today())).data);
       expect((await env.repository.getMyCurrentValues()).data, baseCurrent);
     });
 

@@ -167,9 +167,11 @@ The four accounts' salts and hashes are committed. The hash is a single round of
 
 | | |
 |---|---|
-| Decision | First review: ☒ Changes requested. Re-review 2026-10-06: ☒ Approved, **conditional on G2-06** |
-| Date | 2026-10-05 (first review); 2026-10-06 (re-review) |
-| Findings | G2-01 to G2-18 above; 17 closed, G2-06 open |
+| Decision | First review: ☒ Changes requested. Re-review 2026-10-06: Approved, conditional on G2-06. **Final 2026-10-06: ☒ Approved with comments** |
+| Date | 2026-10-05 (first review); 2026-10-06 (re-review and final) |
+| Recorded by | Final decision recorded at the direction of the session user (account subhajit.mukherjee@intglobal.com, the named Gate 2 reviewer): "gate 2 is approved, make it approve with comment" |
+| Findings | G2-01 to G2-18 above; 17 closed. G2-06 and the items below are carried as comments to follow up, not as conditions |
+| Comments | See "Approval comments" below |
 | Verification limit | Flutter is not available on the reviewer's machine, so `flutter analyze` and `flutter test` could not be run by the reviewer. Results quoted are the Author's |
 
 ---
@@ -217,3 +219,13 @@ The four accounts' salts and hashes are committed. The hash is a single round of
 ## Recommendation
 
 The code findings are resolved and the fixes are test-first with tests that I read. I would move the decision from Changes Requested to **Approved, conditional on G2-06**: Gate 2 should not be recorded as closed until Shamik's written confirmation is attached and the Tech Lead acceptances above are on file. The decision is recorded as conditional in the decision block above, in `gate2-evidence.md` and in `status.md`. Static analysis and the test run were not possible on the reviewer's machine because Flutter is not available there; these results rest on the Author's run.
+
+## Approval comments (2026-10-06)
+Gate 2 is **Approved with comments**. The comments below are follow-ups; they
+do not hold the approval.
+
+1. **G2-06:** attach Shamik Bhattacharya's written confirmation of plan v4.0, tasks T01–T09, test cases and ADR-0006 (decisions 4 and 5 included) to the plan, then change ADR-0006 from `Proposed`.
+2. **Tech Lead acceptances:** ADR-0001 amendment (release `ENV` default), ADR-0006 decisions 4 and 5, the two ignored GetX leak types. Decide on the demo passwords before accepting decision 5 (they are short; decision 5 says long and random).
+3. **G2-01:** squash-merge to `main` with a fresh message and no AI trailer.
+4. **Later, through Gate 1:** spec wording for storage-failure messages and "encrypt at rest" as a production prerequisite.
+5. **Verification limit:** `flutter analyze`, the tests, the XF mutation script and IT01 were run by the Author, not the reviewer (no Flutter on the reviewer's machine).

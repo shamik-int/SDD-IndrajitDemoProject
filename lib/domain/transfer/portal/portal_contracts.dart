@@ -13,8 +13,9 @@ abstract class CurrentUserProvider {
 
 /// D-02 — the employee's profile and scheduled organisational change.
 abstract class EmployeeProfile {
-  /// `null` when [employeeId] has no profile (e.g. a tester).
-  Future<EmployeeCurrentValues?> getCurrentValues(String employeeId, {required DateTime asOf});
+  /// `success(null)` when [employeeId] has no profile (e.g. a tester); an
+  /// error when the profile could not be read.
+  Future<Result<EmployeeCurrentValues?>> getCurrentValues(String employeeId, {required DateTime asOf});
 
   /// Called only when a request becomes COMPLETED (SD-16). Idempotent by
   /// [requestId] (SD-20).

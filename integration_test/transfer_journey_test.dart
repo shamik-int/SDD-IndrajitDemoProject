@@ -1,7 +1,7 @@
 // employee-internal-transfer.T08 — IT01: the full journey through the real UI,
-// real Hive and real routing on macOS desktop:
+// real Hive and real routing on an iOS simulator or Android emulator:
 // employee submits → signs out → tester records every outcome → employee
-// sees the COMPLETED confirmation. Run: flutter test integration_test -d macos
+// sees the COMPLETED confirmation. Run: flutter test integration_test -d <device>
 
 import 'dart:io';
 

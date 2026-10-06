@@ -61,8 +61,10 @@ void main() {
 
   group('D-02 profile (PD-02)', () {
     test('baseline current values; a tester has no profile', () async {
-      expect(await env.profile.getCurrentValues(employeeA.userId, asOf: DateTime(2026, 10, 1)), baseCurrent);
-      expect(await env.profile.getCurrentValues(testerUser.userId, asOf: DateTime(2026, 10, 1)), isNull);
+      expect((await env.profile.getCurrentValues(employeeA.userId, asOf: DateTime(2026, 10, 1))).data, baseCurrent);
+      final tester = await env.profile.getCurrentValues(testerUser.userId, asOf: DateTime(2026, 10, 1));
+      expect(tester.isSuccess, isTrue);
+      expect(tester.data, isNull);
     });
 
     test('UT21: completed change — old values before the effective date, new values on it', () async {
@@ -72,8 +74,8 @@ void main() {
         expect(await env.record(r.requestId, step, Outcome.completed), isNull);
       }
 
-      expect((await env.profile.getCurrentValues(employeeA.userId, asOf: DateTime(2026, 10, 14)))!.values, baseValues);
-      expect((await env.profile.getCurrentValues(employeeA.userId, asOf: DateTime(2026, 10, 15)))!.values,
+      expect((await env.profile.getCurrentValues(employeeA.userId, asOf: DateTime(2026, 10, 14))).data!.values, baseValues);
+      expect((await env.profile.getCurrentValues(employeeA.userId, asOf: DateTime(2026, 10, 15))).data!.values,
           changing(role: true));
       expect(await env.profile.pendingScheduledChange(employeeA.userId, asOf: DateTime(2026, 10, 14)), isNotNull);
       expect(await env.profile.pendingScheduledChange(employeeA.userId, asOf: DateTime(2026, 10, 15)), isNull);

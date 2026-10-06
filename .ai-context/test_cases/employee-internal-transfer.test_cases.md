@@ -16,7 +16,7 @@ The scenario and expected columns are copied verbatim from the spec.
 | Repository | `test/data/transfer/` | `flutter test` | Real Hive in a temp directory, plain `test()` |
 | Widget | `test/presentation/transfer/` | `flutter test` | The real app (routes, bindings, role guards) over the in-memory store, because real Hive I/O does not settle under `testWidgets` |
 | Cross-flow | `test/integration/cross_flow_test.dart` | `flutter test` | XF01–XF09 over the real repository, demo portal and real Hive, with an adjustable clock |
-| UI journey | `integration_test/transfer_journey_test.dart` (IT01) | `flutter test integration_test -d macos` | Full journey through the real UI and real Hive |
+| UI journey | `integration_test/transfer_journey_test.dart` (IT01) | `flutter test integration_test -d <iOS simulator or Android emulator>` | Full journey through the real UI and real Hive |
 
 ## Single-requirement scenarios (UT)
 | ID | AC | Scenario | Expected | Automated test |
@@ -135,7 +135,7 @@ did not drive it.
 ## Last run (2026-09-30)
 - `flutter test`: **all passing** (includes the v1.5 tests still on disk until
   their files are removed; see T09).
-- `flutter test integration_test/transfer_journey_test.dart -d macos`: IT01 passing.
+- `flutter test integration_test/transfer_journey_test.dart -d macos`: IT01 passing (2026-10-05). The macOS app was removed on 2026-10-06; IT01 now runs on an iOS simulator or Android emulator.
 - `flutter analyze`: no issues.
 - Line coverage: `lib/domain/transfer` 93.6%, `lib/data/transfer` 98.8%,
   `lib/presentation/transfer` 96.1% (constitution floor 80%).

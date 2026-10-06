@@ -55,7 +55,7 @@ void main() {
 
     for (final asOf in [DateTime(2026, 10, 14), DateTime(2026, 10, 15), DateTime(2026, 11, 1)]) {
       expect(await env.profile.pendingScheduledChange(employeeA.userId, asOf: asOf), isNull);
-      expect((await env.profile.getCurrentValues(employeeA.userId, asOf: asOf))!.values, baseValues);
+      expect((await env.profile.getCurrentValues(employeeA.userId, asOf: asOf)).data!.values, baseValues);
     }
     expect(r.history.any((e) => e.type == HistoryType.changeScheduled), isFalse);
     final stopped = r.history.singleWhere((e) => e.type == HistoryType.stepSet && e.toState == StepState.stopped);
@@ -170,8 +170,8 @@ void main() {
 
       final change = (await env.ledgers.get(employeeA.userId)).data!.scheduledChanges.single;
       expect(change.effectiveFrom, DateTime(2026, 10, 10));
-      expect((await env.profile.getCurrentValues(employeeA.userId, asOf: DateTime(2026, 10, 13)))!.values, baseValues);
-      expect((await env.profile.getCurrentValues(employeeA.userId, asOf: DateTime(2026, 10, 14)))!.values,
+      expect((await env.profile.getCurrentValues(employeeA.userId, asOf: DateTime(2026, 10, 13))).data!.values, baseValues);
+      expect((await env.profile.getCurrentValues(employeeA.userId, asOf: DateTime(2026, 10, 14))).data!.values,
           changing(role: true));
 
       final lines = await confirmation(await own(id));
@@ -260,7 +260,7 @@ void main() {
     expect(after.step(StepId.itAccessChange)!.state, StepState.failed);
     expect(after.history.where((e) => e.toState == StepState.stopped), isEmpty);
     expect((await env.ledgers.get(employeeA.userId)).data!.scheduledChanges, isEmpty);
-    expect((await env.profile.getCurrentValues(employeeA.userId, asOf: DateTime(2026, 11, 1)))!.values, baseValues);
+    expect((await env.profile.getCurrentValues(employeeA.userId, asOf: DateTime(2026, 11, 1))).data!.values, baseValues);
     await env.submitAs(employeeA.userId, submissionId: 'again');
   });
 
@@ -281,8 +281,8 @@ void main() {
     final changes = (await env.ledgers.get(employeeA.userId)).data!.scheduledChanges;
     expect(changes.single.requestId, b.requestId);
     expect(changes.single.effectiveFrom, DateTime(2026, 10, 30));
-    expect((await env.profile.getCurrentValues(employeeA.userId, asOf: DateTime(2026, 10, 15)))!.values, baseValues);
-    expect((await env.profile.getCurrentValues(employeeA.userId, asOf: DateTime(2026, 10, 30)))!.values,
+    expect((await env.profile.getCurrentValues(employeeA.userId, asOf: DateTime(2026, 10, 15))).data!.values, baseValues);
+    expect((await env.profile.getCurrentValues(employeeA.userId, asOf: DateTime(2026, 10, 30))).data!.values,
         changing(location: true));
   });
 

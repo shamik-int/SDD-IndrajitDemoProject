@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'app/app.dart';
 import 'core/local_db/local_db_service.dart';
 import 'core/security/security_service.dart';
+import 'core/security/security_startup.dart';
 import 'core/security/threat_response.dart';
 import 'core/utils/common_utils.dart';
 import 'data/transfer/portal/demo_data_seeder.dart';
@@ -36,7 +37,17 @@ Future<void> main() async {
     ),
     permanent: true,
   );
-  await SecurityService.start(onThreatDetected: response.onThreat);
+  // Never awaited into a crash: a failed start is a threat, not an exception
+  // that stops runApp (SA-01). Android and iOS only.
+  await SecurityStartup.run(
+    platform: defaultTargetPlatform,
+    isWeb: kIsWeb,
+    response: response,
+    start: (onThreat) => SecurityService.start(
+      onThreatDetected: onThreat,
+      blockScreenCapture: SecurityService.blocksScreenCapture(env: env),
+    ),
+  );
 
   runApp(const App());
 }

@@ -1,63 +1,80 @@
 # Gate 2 Review Pack — employee-internal-transfer (spec v2.4)
 
 _Prepared 2026-09-30 for the Gate 2 reviewer, **Subhajit Mukherjee**
-(subhajit.mukherjee@intglobal.com). This is the evidence, not an approval:
-the Gate 2 decision is the reviewer's to record below._
+(subhajit.mukherjee@intglobal.com); brought up to date 2026-10-06 after the
+re-review. This is the evidence, not an approval: the Gate 2 decision is the
+reviewer's, recorded at the end._
+
+## Current state (2026-10-06)
+- **Gate 1:** Approved. Spec v2.4 by Shamik Bhattacharya (2026-09-30); plan
+  v4.0, tasks and test cases as reported on 2026-09-30, not reopened.
+- **Gate 2:** **Approved with comments** (2026-10-06). 17 of 18 findings
+  closed; G2-06 and the Tech Lead acceptances are follow-up comments (see
+  "Known limitations and open items").
+- **Code:** the v2.4 app only; the v1.5 code was removed on 2026-10-05 (T09).
+- **Tests:** `flutter test` **179/179**. This is the **v2.4 suite only**: the
+  count fell from 318 to 177 on 2026-10-05 because the 130 v1.5 tests and 11
+  old validator tests were removed with their code, then rose to 179 with the
+  re-review fixes. No v2.4 test was removed, and v2.4 coverage did not fall
+  (see "Evidence").
 
 ## What to review
 | Artefact | File | State |
 |---|---|---|
 | Spec v2.4 | `specs/employee-internal-transfer.spec.md` | Gate 1 Approved (Shamik Bhattacharya, 2026-09-30) |
-| Plan v4.0 | `plans/employee-internal-transfer.plan.md` | Gate 1 reported complete; see "Process notes" |
-| ADR-0006 | `decisions/ADR-0006-v1-demo-identity-and-transfer-ledger.md` | Proposed, reviewed with the plan |
+| Plan v4.0 | `plans/employee-internal-transfer.plan.md` | Gate 1 reported complete; Shamik's written confirmation pending (G2-06) |
+| ADR-0006 | `decisions/ADR-0006-v1-demo-identity-and-transfer-ledger.md` | Proposed; decisions 4 and 5 added 2026-10-05, pending Shamik and the Tech Lead |
 | Tasks T01–T09 | `tasks/employee-internal-transfer.tasks.md` | T01–T09 done (T09 completed 2026-10-05) |
 | Test cases | `test_cases/employee-internal-transfer.test_cases.md`, `_integration.md` | UT01–UT70 and XF01–XF09 each mapped to a test |
-| App | `lib/domain/transfer/`, `lib/data/transfer/`, `lib/presentation/transfer/`, plus the changed files below | Built and tested |
+| App | `lib/domain/transfer/`, `lib/data/transfer/`, `lib/presentation/transfer/`, plus the core files listed below | Built and tested |
 
 ## Process notes (read first)
-1. **Plan Gate 1.** The session user, signed in as Subhajit Mukherjee, stated
-   "Gate 1 approval is complete". Shamik Bhattacharya's own sign-off of plan
-   v4.0 (PD-01–PD-11, F-01–F-05, ADR-0006) was **not captured**. The
-   constitution's Review Authority says only Shamik can close Gate 1, so his
-   sign-off should be attached to the plan before Gate 2 is closed.
-2. **Tasks and test cases** did not get their own Gate 1 pass. At the
-   session user's direction they are reviewed here, together with the code.
-3. **Test-first.** T01–T07: tests written first and run RED (compile
-   failures), then GREEN. XF01–XF09 (T08), the usecase delegation test and
-   the ledger round-trip test were written after the code and passed first
-   time: they verify behaviour but did not drive it.
-4. **v1.5 code not removed (T09 partly done).** Deleting the v1.5 files was
-   blocked by the session's permission rules. They are no longer wired into
-   the app (routes and bindings use only the v2.4 code), they still compile,
-   and their old tests still pass. The list to remove is at the end of this
-   file.
-5. **Demo password (PD-01a).** Only hashes and salts are in the repo. The
-   password for the four seeded demo accounts was given to the session user
-   directly, not written to any file.
+1. **Plan Gate 1.** Reported complete by the session user on 2026-09-30.
+   Shamik Bhattacharya's own written sign-off is not yet on file; the Gate 2
+   reviewer requires it (G2-06).
+2. **Tasks and test cases** were reviewed at Gate 2 together with the code,
+   at the session user's direction.
+3. **Test-first.** T01–T07 and every Gate 2 fix: tests written first and run
+   RED, then GREEN. XF01–XF09 (T08) were written after the code; G2-05
+   mutation evidence shows each one goes RED when the rule it covers is
+   broken (9/9). The usecase delegation and ledger round-trip tests were also
+   written after the code; the reviewer accepted these (one call each).
+4. **v1.5 code removed** on 2026-10-05 by the Author (68 files), with the
+   stale route constants and old validators (G2-02).
+5. **Demo passwords (PD-01a).** Only salts and hashes are in the repository;
+   the passwords are given to the team directly. The current passwords were
+   reset on 2026-10-05 for local team testing and are short; they do not yet
+   meet ADR-0006 decision 5 as drafted (long and random). The Tech Lead
+   decides before accepting decision 5.
 
-## Evidence
+## Evidence (2026-10-06)
 | Check | Result |
 |---|---|
 | `flutter analyze` | No issues |
-| `flutter test` | All passing (v2.4 tests plus the old v1.5 tests still on disk) |
-| `flutter test integration_test/transfer_journey_test.dart -d macos` (IT01) | Passing |
+| `flutter test` | 179/179, v2.4 suite only, with leak tracking on every widget test |
+| `flutter test integration_test/transfer_journey_test.dart -d macos` (IT01) | Passing (last run 2026-10-05, after the v1.5 removal) |
 | Line coverage, `lib/domain/transfer` | 93.6% (floor 80%) |
-| Line coverage, `lib/data/transfer` | 98.8% |
-| Line coverage, `lib/presentation/transfer` | 96.1% |
+| Line coverage, `lib/data/transfer` | 99.2% |
+| Line coverage, `lib/presentation/transfer` | 96.8% |
+| Line coverage, all of `lib/` | 95.7% |
 | Every UT01–UT70, XF01–XF09 has a test | Yes, see the test cases file |
-| New dependencies | None (`pubspec.yaml` unchanged) |
+| XF mutation check (G2-05) | 9/9 RED when the rule is broken, GREEN after restore (`gate2-xf-mutations.py`) |
+| New dependencies | One dev dependency: `leak_tracker_flutter_testing` (G2-04), already in the lockfile through `flutter_test`, same version. No runtime dependency added |
 
-To re-run: `flutter test --coverage`, then `flutter test integration_test -d macos`.
+Coverage before the v1.5 removal was 93.6% / 98.9% / 96.7%: removing the
+v1.5 tests did not lower v2.4 coverage. To re-run: `flutter test --coverage`,
+then `flutter test integration_test -d <iOS simulator or Android emulator>` (the macOS app was removed on 2026-10-06). The reviewer could not run
+Flutter; these figures are the Author's.
 
 ## Gate 2 checklist (from `.agent/workflows/code-review.md`) — Author's self-check
 | Item | Self-check | Where to look |
 |---|---|---|
 | ACs satisfied | AC01–AC35 each covered by tests; AC21 has no code by design | Test cases file; plan "AC coverage by step" |
-| No AI attribution in code comments | None found (`grep -ri "claude\|copilot\|generated by" lib test`) | — |
-| No PII in logs | The new code contains no `print`, `debugPrint` or logger call | `lib/*/transfer/` |
-| Dependencies vetted | No new dependency | `pubspec.yaml` |
-| Error and failure paths covered | Every OP01 and OP06 error, access refusals, schedule conflicts (UT63), double submit (UT37, UT10), double outcome (XF06) | Repository and workflow tests |
-| Consistent with `architecture.md` | Updated for v2.4 | `architecture.md` |
+| No AI attribution in code comments or commits | None in code (`grep -ri "claude\|copilot\|generated by" lib test`). Re-work commits have no trailer; three older branch commits do and stay off `main` via a clean squash-merge (G2-01) | — |
+| No PII in logs | No `print`, `debugPrint` or logger call in `lib/` | `lib/` |
+| Dependencies vetted | One dev dependency added (see Evidence) | `pubspec.yaml` |
+| Error and failure paths covered | Every OP01 and OP06 error, access refusals, schedule conflicts (UT63), double submit (UT37, UT10), double outcome (XF06), and storage failures on read, write and delete (G2-03, G2-09, G2-14, re-review) | Repository, workflow and failure tests |
+| Consistent with `architecture.md` | Updated for v2.4 and the v1.5 removal | `architecture.md` |
 | Nothing from "Explicitly Deferred" built | No sign-up, demo date control, retry/compensation, notifications or real integration | Plan "Explicitly Deferred" |
 
 ## Security checklist (Blueprint §30) — Author's self-check
@@ -65,38 +82,32 @@ To re-run: `flutter test --coverage`, then `flutter test integration_test -d mac
 |---|---|
 | Access control | Repository checks signed in → role → ownership on every OP (`TransferRequestRepositoryImpl._employee/_tester`). Route guards are UI convenience only. **Application-level only, not production authorization** (spec Security boundary) |
 | Another employee's data | Only the caller's ledger is read for OP03–OP05; a foreign ID gives "No request found." (UT28, XF07) |
-| Session hygiene | Sign-out clears the session and removes every route; no feature controller is permanent; the repository caches nothing (UT67, UT68) |
+| Session hygiene | Sign-out clears the session and removes every route, and reports a failed clear instead of hiding it (G2-09); no feature controller is permanent; the repository caches nothing (UT67, UT68) |
 | Stakeholder outcomes | OP06/OP07 refuse `EMPLOYEE` (UT52, UT53, XF03); history records the owning stakeholder plus `simulatedBy` |
-| Audit | History is append-only: no method edits or removes an entry (QA-01) |
+| Audit | History is append-only; a failed read can no longer lead to a write that replaces it (G2-03) |
 | Atomic saves | One Hive `put` per operation, with lock serialisation (PD-04, UT63, XF06) |
-| Passwords | SHA-256 + salt, hash only; generic sign-in error (ADR-0005/0006). Not a strong password hash; acceptable only as a demo gate |
+| Passwords | SHA-256 + salt, hash only; generic sign-in error (ADR-0005/0006). Not a strong password hash; demo gate only. Password rules: ADR-0006 decision 5 (pending) |
+| Data at rest | Plain Hive storage, accepted for V1 demo data only: ADR-0006 decision 4 (pending) |
 | Secrets | None in code or `.env` files |
-| Device compromise | Detection unchanged (ADR-0002); response: warn in UAT, block in PROD (PD-08). freeRASP config values are still placeholders |
+| Device compromise | Detection unchanged (ADR-0002); response warn in UAT, block in PROD (PD-08), now working at start-up, failing closed in release builds without `ENV`, and clearing the session (G2-08). freeRASP config values are still placeholders: release blocker |
 | Demo posture | "Demo — test data only" on every feature screen (AC28); simulation screen is TESTER-only and must be removed before production (SD-13) |
 
 ## Known limitations and open items
-- **Plan Gate 1 sign-off** by Shamik Bhattacharya to be attached (note 1).
+- **G2-06:** Shamik Bhattacharya's written Gate 1 confirmation of plan v4.0, tasks, test cases and ADR-0006 (decisions 4 and 5 included).
+- **Tech Lead acceptances:** ADR-0001 amendment (release `ENV` default), ADR-0006 decisions 4 and 5, two ignored GetX leak types.
+- **Demo passwords** do not yet meet ADR-0006 decision 5 as drafted (process note 5).
+- **Spec change through Gate 1:** wording for storage-failure messages, and "encrypt at rest" as a production prerequisite.
+- **freeRASP configuration** (signing hash, Team ID, watcher mail, `isProd`) still placeholders: release blocker (`PROJECT_CHECKLIST.md` §8).
 - **Constitution v1.3 caveat** (plan F-04) recommended, not applied.
-- **freeRASP configuration** (signing hash, Team ID, watcher mail) still placeholders; must be set before any release build.
 - **Live demo of date rules** needs the device date changed (plan F-01).
-- **`OP07` reads every ledger**: fine at demo scale only (ADR-0006).
-- **v1.5 files still on disk** (note 4).
+- **`OP07` reads every ledger:** fine at demo scale only (ADR-0006).
 
 ## Files changed or added
-- Changed: `lib/main.dart`, `lib/app/app.dart`, `lib/app/bindings/initial_binding.dart`, `lib/app/routes/app_pages.dart`, `lib/app/routes/app_routes.dart`, `lib/core/local_db/local_db_service.dart` (`readAll`, `clearBox`), `lib/core/utils/validators.dart` (3 validators).
-- Added: `lib/core/time/`, `lib/core/concurrency/`, `lib/core/constants/transfer_messages.dart`, `lib/core/local_db/in_memory_local_db_service.dart`, `lib/core/security/threat_response.dart`, `lib/presentation/widgets/demo_banner.dart`, `lib/domain/transfer/`, `lib/data/transfer/`, `lib/presentation/transfer/`.
-- Tests added: `test/support/`, `test/core/{time,concurrency,local_db}/`, `test/domain/transfer/`, `test/data/transfer/`, `test/presentation/transfer/`, `test/presentation/widgets/`, `test/integration/`, `integration_test/transfer_journey_test.dart`.
-- Side effect of the macOS build: `macos/Podfile.lock` (new), `macos/Runner.xcodeproj/project.pbxproj`, `macos/Runner.xcworkspace/contents.xcworkspacedata`.
-
-## v1.5 files to remove (T09)
-No longer referenced by the app's routes or bindings.
-- `lib/app/shell/app_entry_page.dart`
-- `lib/domain/entities/` (all 9 files), `lib/domain/repositories/` (2), `lib/domain/usecases/` (8)
-- `lib/data/datasources/local/` (2), `lib/data/models/` (2), `lib/data/repositories/` (2)
-- `lib/presentation/bindings/` (5), `lib/presentation/controllers/` (6), `lib/presentation/pages/` (4), `lib/presentation/widgets/logout_action.dart`
-- Tests: `test/data/models/`, `test/data/repositories/`, `test/domain/entities/`, `test/domain/usecases/`, `test/presentation/controllers/`, `test/presentation/pages/`
-- `integration_test/employee_internal_transfer_test.dart`
-- Then remove the v1.5 route constants from `lib/app/routes/app_routes.dart` (`placeholder`, `transferRequestSubmit`, `transferRequestStatus`, `login`, `register`).
+- Changed (core): `lib/main.dart`, `lib/app/app.dart`, `lib/app/bindings/initial_binding.dart`, `lib/app/routes/app_pages.dart`, `lib/app/routes/app_routes.dart` (v2.4 constants only), `lib/core/local_db/local_db_service.dart` (`find`, `readAll`, `clearBox`), `lib/core/utils/validators.dart` (v2.4 validators only), `lib/core/security/threat_response.dart`, `assets/env/.env.uat`, `assets/env/.env.prod`, `pubspec.yaml`.
+- Added: `lib/core/time/`, `lib/core/concurrency/`, `lib/core/constants/transfer_messages.dart`, `lib/core/local_db/in_memory_local_db_service.dart`, `lib/presentation/widgets/demo_banner.dart`, `lib/domain/transfer/`, `lib/data/transfer/`, `lib/presentation/transfer/`.
+- Tests: `test/flutter_test_config.dart`, `test/support/`, `test/core/{time,concurrency,local_db,utils}/`, `test/domain/transfer/`, `test/data/transfer/`, `test/presentation/transfer/`, `test/presentation/widgets/`, `test/integration/`, `integration_test/transfer_journey_test.dart`.
+- Removed (T09, G2-02): the 68 v1.5 and BRD-002 files under `lib/app/shell/`, `lib/domain/{entities,repositories,usecases}/`, `lib/data/{datasources/local,models,repositories}/`, `lib/presentation/{bindings,controllers,pages}/`, `lib/presentation/widgets/logout_action.dart`, their tests, and `integration_test/employee_internal_transfer_test.dart`.
+- `macos/` removed on 2026-10-06 (Android and iOS only); it had been used to run IT01.
 
 ## Gate 2 findings — Author's fixes (2026-10-05)
 Each fix: test written first and run RED against the unchanged code, then fixed and GREEN.
@@ -136,7 +147,7 @@ Not covered by this check: the usecase delegation test and the ledger round-trip
 
 **Open points for the reviewer:**
 - **Storage-failure messages (G2-03, G2-09).** The spec has no message for a storage failure. G2-03 shows the storage layer's own text ("Local read failed: …"), as a failed write already did. G2-09 adds "Could not sign you in. Please try again." and "Could not sign you out. Please try again.", marked in `transfer_messages.dart` as not from the spec. A spec change would settle all three (PD-10: messages come from the spec verbatim).
-- **Known gap in the G2-03 fix.** After a failed ledger read, `getCurrentValues` returns "unknown", which `getMyCurrentValues` reports as "This action is for employees only." Nothing is written, but the message is wrong. It goes away with the spec message above, or by making that lookup return `Result`.
+- **Fixed 2026-10-06 (re-review observation):** after a failed ledger read, the employee was told "This action is for employees only." `EmployeeProfile.getCurrentValues` now returns `Result` (`success(null)` = no profile, error = read failed), so the storage error is shown. Test-first: `ledger_read_failure_test.dart`, "current values read fails" (RED: "employees only").
 - **G2-08 default.** A release build without `ENV` now runs as PROD (blocks). UAT release builds must pass `--dart-define=ENV=uat`. This changes ADR-0001 §3's "defaults to UAT" for release builds; Tech Lead to accept.
 
 | Check after the fixes | Result |
@@ -176,13 +187,21 @@ Remaining: G2-06 (Gate 2 reviewer to decide; see comment below). G2-01 is done a
 - **ADR-0006.** Decisions 1–3 were reviewed with plan v4.0 and stand as approved with it. Decisions 4 and 5 were added on 2026-10-05 in answer to G2-11 and G2-17, after Gate 1, so they are not covered by it. They are marked pending Tech Lead acceptance. The ADR's status line is left as written; it does not record an acceptance that has not been given.
 - **Request to the Gate 2 reviewer:** please either accept the reported Gate 1 approval for this re-review, or say that Shamik's written confirmation is required, so the Author can get it.
 
+## Author's response to the re-review observations (2026-10-06)
+| Observation | Done |
+|---|---|
+| Wrong message after a failed ledger read | Fixed test-first: `getCurrentValues` returns `Result`; the real error is shown. `flutter test` 179/179, analyze clean |
+| Stale text in the evidence pack | Top half rewritten to the current state: "Current state", "What to review", process notes, "Evidence", checklists, "Known limitations", "Files changed"; the "v1.5 files to remove" list replaced by what was removed |
+| Test count | "Current state" and "Evidence" say 179 is the v2.4 suite only, why it fell from 318, and that v2.4 coverage did not fall |
+
 ## Gate 2 decision
 _Recorded by Subhajit Mukherjee._
 
 | | |
 |---|---|
-| Decision | ☒ Approved, **conditional on G2-06** ☐ Changes requested |
+| Decision | ☒ **Approved with comments** (2026-10-06) ☐ Changes requested. Earlier the same day: Approved, conditional on G2-06 |
 | Date | 2026-10-06 (first review: Changes Requested, 2026-10-05) |
+| Recorded by | Final decision recorded at the direction of the session user (account subhajit.mukherjee@intglobal.com, the named Gate 2 reviewer) |
 | Findings | G2-01 to G2-18 in `employee-internal-transfer.gate2-review.md` (see "Re-review — 2026-10-06"). 17 of 18 closed. Open: G2-06 (Shamik Bhattacharya's written Gate 1 confirmation) and the Tech Lead acceptances listed in the re-review |
-| Conditions | Gate 2 is not closed until Shamik's confirmation is attached to plan v4.0 and the Tech Lead acceptances are on file. The merge message must carry no AI trailer (G2-01) |
+| Comments (follow-ups, not conditions) | G2-06: attach Shamik's written confirmation of plan v4.0, tasks, test cases and ADR-0006. Tech Lead acceptances: ADR-0001 amendment, ADR-0006 decisions 4 and 5 (decide on the short demo passwords first), two ignored leak types. G2-01: merge to `main` with no AI trailer. Later: spec wording via Gate 1 |
 | Verification limit | **Flutter is not installed on the reviewer's machine, so `flutter analyze`, `flutter test`, the XF mutation script and IT01 could not be run by the reviewer.** The analyze result, the 177/177 test count and the coverage figures above are the Author's and are not independently verified. The fixes and their tests were reviewed by reading the code |

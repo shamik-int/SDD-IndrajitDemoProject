@@ -90,11 +90,15 @@ recreated from it; the existing ones are paused._
   - [x] Test cases covering UT01–UT70 and XF01–XF09 (`test_cases/employee-internal-transfer.test_cases.md`)
   - [x] v2.4 app built: T01–T08 done (test-first T01–T07), 293/293 tests, IT01 on macOS, analyze clean, coverage 93.6% / 98.8% / 96.1%
   - [x] T09: v1.5 files deleted by the Author (2026-10-05, G2-02); stale route constants and old validators removed
-  - [ ] **Gate 2 review by Subhajit Mukherjee** of plan, tasks, test cases and app (`reviews/employee-internal-transfer.gate2-evidence.md`) — Changes Requested 2026-10-05 (G2-01 to G2-18)
+  - [x] **Gate 2 review by Subhajit Mukherjee** of plan, tasks, test cases and app (`reviews/employee-internal-transfer.gate2-evidence.md`) — Changes Requested 2026-10-05; **Approved with comments 2026-10-06** (17 of 18 closed; follow-ups below)
     - [x] Code fixes by the Author, test-first (2026-10-05): G2-03, G2-04, G2-07, G2-08 (parts 1, 2, 4), G2-09, G2-12, G2-14, G2-15, G2-16, G2-18; G2-10 answered with evidence (not reproducible). 318/318 tests, analyze clean
     - [x] G2-02: v1.5 files removed (Author's `git rm`), stale route constants and old validators removed; 177/177 tests (2026-10-05)
     - [x] G2-05 mutation evidence (9/9 XF RED when broken); G2-11 and G2-17 recorded in ADR-0006; Author's response to all 18 findings in the pack (2026-10-05)
-    - [ ] Open: G2-01 (fresh squash message at merge), G2-13 (answer on pre-filled dropdowns), G2-06 (Author's position sent to Gate 2: Gate 1 stands; reviewer to accept or ask Shamik); Tech Lead acceptance of ADR-0006 decisions 4–5 and the ADR-0001 amendment
+    - [x] G2-13 answered (pre-fill intended) and accepted by the reviewer, 2026-10-06
+    - [x] Re-review observations fixed (2026-10-06): real error after a failed read, evidence pack brought up to date, test count explained; 179/179
+    - [ ] Comment — **G2-06:** Shamik Bhattacharya's written confirmation of plan v4.0, tasks, test cases and ADR-0006 (incl. decisions 4–5), attached to the plan
+    - [ ] Comment — Tech Lead acceptances on file: ADR-0001 amendment (release `ENV` default), ADR-0006 decisions 4 and 5, two ignored GetX leak types
+    - [ ] Comment — G2-01: merge to `main` with a fresh message and no AI trailer
   - [ ] Before any release build: real freeRASP config; constitution v1.3 caveat (plan F-04)
 
 ## 4. Plan & Tasks — Deliverables 4–7 (Milestone 3)
@@ -133,16 +137,21 @@ _Per task, in order — do not batch multiple tasks into one prompt/session._
 - [ ] `ApiClient` tests — **not needed for this feature** (no network call exists, ADR-0004); `ApiClient` stays in `core/` for any future feature that does have a backend
 - [x] `integration_test`: full submit → simulate-through-Completed journey (3 tests: happy path, manager rejection, HR rejection — real device/desktop, not `flutter test`)
 - [ ] Coverage floor met: 80% on org/payroll/approval-touching modules, 60% elsewhere
-- [x] Memory-hygiene pass: `onClose()`/dispose implemented everywhere; `leak_tracker` run clean in debug/profile — 2026-10-05 (G2-04): `test/flutter_test_config.dart` enables it for every widget test; two leaks inside the `get` package are ignored by class; controller disposal also tested directly. Awaiting Gate 2 acceptance of the two ignores
+- [x] Memory-hygiene pass: `onClose()`/dispose implemented everywhere; `leak_tracker` run clean in debug/profile — 2026-10-05 (G2-04): `test/flutter_test_config.dart` enables it for every widget test; two leaks inside the `get` package are ignored by class; controller disposal also tested directly. Accepted at Gate 2 re-review (2026-10-06); Tech Lead acceptance of the two ignores pending
 
 ## 6. Security Assessment — Deliverable 8
-- [ ] No PII in logs at any log level (grep-checked, not just eyeballed)
-- [ ] No secrets hardcoded or logged; `assets/env/*.env.*` confirmed secret-free
-- [ ] Root/jailbreak/Frida detection verified on a rooted/jailbroken test device or emulator
+_Assessment 2026-10-06: `reviews/employee-internal-transfer.security-assessment.md` — **not passed**, 2 High findings (SA-01, SA-02)._
+- [x] No PII in logs at any log level (grep-checked, not just eyeballed) — 2026-10-06, none in `lib/`
+- [x] No secrets hardcoded or logged; `assets/env/*.env.*` confirmed secret-free — 2026-10-06, code, config and git history checked
+- [ ] Root/jailbreak/Frida detection verified on a rooted/jailbroken test device or emulator — **blocked by SA-01** (app does not start on Android); then needs a rooted/jailbroken device
+- [x] **SA-01 (High):** app stopped at start-up on Android, macOS and web — fixed 2026-10-06 (`SecurityStartup`: Android/iOS only; a failed start is a threat, never a crash); macOS app removed
+- [x] **SA-02 (High):** freeRASP iOS config used the Android package name — fixed 2026-10-06 (separate IDs, pinned by tests)
+- [x] SA-04 Android backup off; SA-09 iOS signing files ignored; SA-11 freeRASP 8.2.4 (2026-10-06)
+- [x] SA-05 app tampering acted on; SA-10 screen capture blocked in PROD; freeRASP production mode in release builds (2026-10-06)
 - [ ] **N/A — no server to authorize against (ADR-0004).** Ownership is inherent to the local, single-employee-per-device data model; this is a scope limitation, not a control to implement.
 - [ ] **N/A — no network endpoint to rate-limit (ADR-0004).**
-- [ ] Dependencies vetted (`freerasp`, `hive`, `get`, `flutter_screenutil` — maintenance/license check)
-- [ ] SAST/dependency scan run and clean (or exceptions signed off)
+- [x] Dependencies vetted (`freerasp`, `hive`, `get`, `flutter_screenutil` — maintenance/license check) — 2026-10-06: 13 direct, all MIT/Apache-2.0/BSD; freeRASP 8.2.4 available (SA-11)
+- [~] SAST/dependency scan run and clean (or exceptions signed off) — dependency scan clean (77 packages, no advisories); no SAST tool available, analyzer + manual review used: exception for the Tech Lead (SA-12)
 
 ## 7. Gate 2 — Code Review & Evidence — Deliverables 9–10
 - [ ] Reviewer = **Subhajit Mukherjee** — the named Gate 2 reviewer (constitution.md Review Authority); no one else's sign-off closes this gate
@@ -154,6 +163,8 @@ _Per task, in order — do not batch multiple tasks into one prompt/session._
 - [ ] Deliverable 10 — Gate 2 evidence captured (reviewer, findings, resolution)
 
 ## 8. Release
+- [ ] **Release blocker (SA-03):** release keystore (not the debug key), held outside the repo; `.gitignore` rules for keys (SA-09)
+- [ ] Release build with `--obfuscate --split-debug-info` (SA-08)
 - [ ] **Release blocker (G2-08):** real freeRASP config in `lib/core/security/security_service.dart` (Android signing-cert hash, iOS Team ID, `watcherMail`) and `isProd: true`; placeholders today
 - [ ] Release builds pass `--dart-define=ENV=prod` or `ENV=uat` explicitly (a release build without it now runs as PROD and blocks on a threat)
 - [ ] Spec status flipped to `Ready for Release` in `status.md`

@@ -43,7 +43,7 @@ dependencies:
   equatable: ^2.1.0
   path_provider: ^2.1.6
   intl: ^0.20.3
-  freerasp: ^8.2.2
+  freerasp: ^8.2.4
   uuid: ^4.6.0
   crypto: ^3.0.6
 

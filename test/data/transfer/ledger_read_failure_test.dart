@@ -88,6 +88,11 @@ void main() {
     expect((await repo.getRequestHistory(existing.requestId)).message, failure);
   });
 
+  test('Gate 2 re-review: current values read fails → the storage error, not "employees only"', () async {
+    await env.signInAs(employeeA.userId);
+    expect((await env.repository.getMyCurrentValues()).message, failure);
+  });
+
   test('scheduleOrganisationalChange: read fails → error, nothing written', () async {
     final result = await env.profile.scheduleOrganisationalChange(
       employeeA.userId,

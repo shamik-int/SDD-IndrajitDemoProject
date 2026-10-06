@@ -99,7 +99,9 @@ class TransferRequestRepositoryImpl implements TransferRequestRepository {
       }
 
       final now = clock.now();
-      final current = await profile.getCurrentValues(employee.userId, asOf: clock.today());
+      final values = await profile.getCurrentValues(employee.userId, asOf: clock.today());
+      if (values.isError) return Result.error(values.message!);
+      final current = values.data;
       if (current == null) return Result.error(TransferMessages.employeesOnly);
 
       final created = TransferWorkflow.submit(
@@ -176,8 +178,9 @@ class TransferRequestRepositoryImpl implements TransferRequestRepository {
     final access = await _employee();
     if (access.isError) return Result.error(access.message!);
     final values = await profile.getCurrentValues(access.data!.userId, asOf: clock.today());
-    if (values == null) return Result.error(TransferMessages.employeesOnly);
-    return Result.success(values);
+    if (values.isError) return Result.error(values.message!);
+    if (values.data == null) return Result.error(TransferMessages.employeesOnly);
+    return Result.success(values.data!);
   }
 
   // -------------------------------------------------------------- OP06

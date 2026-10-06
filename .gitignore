@@ -46,3 +46,10 @@ app.*.map.json
 
 # Widget Preview related
 .widget_preview/
+
+# Signing material — never commit (Security Assessment SA-09). Android
+# keystores are covered in android/.gitignore.
+*.p12
+*.mobileprovision
+*.cer
+*.certSigningRequest

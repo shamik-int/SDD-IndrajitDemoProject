@@ -23,13 +23,13 @@ class DemoProfileService implements EmployeeProfile {
       : _accounts = DemoAccountsStore(localDb);
 
   @override
-  Future<EmployeeCurrentValues?> getCurrentValues(String employeeId, {required DateTime asOf}) async {
+  Future<Result<EmployeeCurrentValues?>> getCurrentValues(String employeeId, {required DateTime asOf}) async {
     final baseline = (await _accounts.byUserId(employeeId))?.baseline;
-    if (baseline == null) return null;
+    if (baseline == null) return Result.success(null);
     final ledger = await ledgers.get(employeeId);
-    // Unknown, not the baseline: a failed read may hide a change in effect.
-    if (ledger.isError) return null;
-    return ScheduleBook.currentValues(baseline, ledger.data?.scheduledChanges ?? const [], asOf);
+    // An error, not the baseline: a failed read may hide a change in effect.
+    if (ledger.isError) return Result.error(ledger.message!);
+    return Result.success(ScheduleBook.currentValues(baseline, ledger.data?.scheduledChanges ?? const [], asOf));
   }
 
   @override
