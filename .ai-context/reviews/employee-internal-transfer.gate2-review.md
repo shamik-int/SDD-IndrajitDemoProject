@@ -167,6 +167,53 @@ The four accounts' salts and hashes are committed. The hash is a single round of
 
 | | |
 |---|---|
-| Decision | ☐ Approved ☒ Changes requested |
-| Date | |
-| Findings | G2-01 to G2-18 above |
+| Decision | First review: ☒ Changes requested. Re-review 2026-10-06: ☒ Approved, **conditional on G2-06** |
+| Date | 2026-10-05 (first review); 2026-10-06 (re-review) |
+| Findings | G2-01 to G2-18 above; 17 closed, G2-06 open |
+| Verification limit | Flutter is not available on the reviewer's machine, so `flutter analyze` and `flutter test` could not be run by the reviewer. Results quoted are the Author's |
+
+---
+
+# Re-review — 2026-10-06
+
+**Code reviewed:** branch `employee-transfer-request` at `76d2c7b` (the Author's re-work `9e7e928` and re-submit `76d2c7b`), against the Author's responses in `gate2-evidence.md`.
+**Method:** each finding re-read in the current code, and the test added for it read. As before, the Flutter SDK is not installed on this machine, so I did not re-run `flutter analyze`, `flutter test`, the mutation script or IT01. The figures in the evidence pack (177/177, analyze clean, coverage) are the Author's.
+
+## Result per finding
+
+| ID | Result | What I checked |
+|---|---|---|
+| G2-01 | **Closed, on one condition** | The three trailers are still in the branch history, but `main` is at `103cf18` and none of them is on it, so a squash-merge with a clean message keeps them out. The merge message must carry no trailer. Re-work commits have none. |
+| G2-02 | **Closed** | All v1.5 directories are gone from `lib/`, `test/` and `integration_test/`; `app_routes.dart` has only the seven v2.4 constants; T09 is ticked and its duplicate paragraph removed. |
+| G2-03 | **Closed** | `LocalDbService.find` returns success(null) only for an absent record. `TransferLedgerLocalDataSource.get/all` return `Result`; `_ledger()` returns the error, so no write follows a failed read. Tests added for each operation. |
+| G2-04 | **Closed, with one note** | `test/flutter_test_config.dart` enables `LeakTesting`. Two `get`-package types are ignored by name; the stated reason is sound and `lib/` creates neither. The Author also found that leak tracking would not catch a missing `dispose()`, and added `controller_dispose_test.dart` to check `onClose()` directly. Tech Lead to accept the two ignores. |
+| G2-05 | **Closed** | Option (a) done: the re-runnable `gate2-xf-mutations.py` breaks one rule per XF test; the Author reports 9/9 RED then GREEN. I have not re-run it. The usecase-delegation and ledger round-trip tests are not covered, which is acceptable: each is one call. |
+| G2-06 | **Open** | See below. |
+| G2-07 | **Closed** | `record()` reloads first, then sets the OP06 message; widget test added. |
+| G2-08 | **Closed, with acceptances** | `ThreatResponse` holds threats until `markReady()`, called from `AppEntryPage`; `resolveEnv` makes a release build without `ENV` run as `prod`; `blockDevice()` clears the session and blocks even if that fails; the freeRASP placeholders are a release blocker in `PROJECT_CHECKLIST.md` §8. The `ENV` default change needs the Tech Lead to accept an ADR-0001 amendment. |
+| G2-09 | **Closed** | `signOut` returns `Result`; `SignOutAction` keeps the user in place with a message on failure; sign-in has its own message for a failed session write. |
+| G2-10 | **Closed on the Author's evidence** | The Author reports the pushed route's future completes while the list controller is still registered, and `load()` returns once closed. Regression tests for the detail and form screens are in `session_failure_test.dart`. I could not reproduce it by reading either, and can't run it here, so I accept this on the tests. |
+| G2-11 | **Closed, pending acceptance** | ADR-0006 decision 4 records plain storage as accepted for V1 demo data only. The spec wording is a spec change and goes through Gate 1. |
+| G2-12 | **Closed** | FAILED lists all completed steps, Manager and HR included; names joined with "; ". |
+| G2-13 | **Closed (answered)** | Pre-fill is intended; the unreachable-in-UI "missing selection" case is still enforced and tested at the repository. Accepted. |
+| G2-14 | **Closed** | Only an absent version counts as first run. Rewriting the demo accounts on every start is kept for a stated reason (a rotated password takes effect); accepted. |
+| G2-15 | **Closed** | `historyError` shown in the History section; test added. |
+| G2-16 | **Closed** | `Dio`/`ApiClient` no longer registered; `ENABLE_LOGGING` removed. The `ApiClient` class and `dio` package stay per ADR-0001; accepted, Tech Lead may remove. |
+| G2-17 | **Closed, pending acceptance** | ADR-0006 decision 5. |
+| G2-18 | **Closed** | Duplicate removed. |
+
+## Still open
+
+1. **G2-06 (blocker): Gate 1 sign-off for plan v4.0, tasks, test cases and ADR-0006.** The Author's position is that Gate 1 stands because "the session user stated Gate 1 approval is complete". The constitution says the opposite: only Shamik Bhattacharya can close Gate 1, and no other sign-off counts, including from the Gate 2 reviewer. I do not accept that statement as the approval. The Author has offered to ask Shamik for a one-line confirmation, and that is all that is needed: ask for it, attach it to the plan, and this closes. ADR-0006 decisions 4 and 5 were added after Gate 1, so Shamik's confirmation should cover them too, and the ADR status should change from `Proposed` once he and the Tech Lead accept.
+2. **Tech Lead acceptances** (named in the Author's response): the ADR-0001 amendment for the release `ENV` default (G2-08), ADR-0006 decisions 4 and 5 (G2-11, G2-17), and the two ignored leak types (G2-04).
+3. **Spec wording** for the storage-failure messages and the "encrypt at rest" production prerequisite: a spec change through Gate 1 (PD-10 says messages come from the spec verbatim).
+
+## New observations from the re-work (minor)
+
+- **Wrong message after a failed ledger read.** The Author discloses this: `getMyCurrentValues`, and OP01 internally, turn "unknown values" into "This action is for employees only." Nothing is written, so no data is at risk, but an employee sees a wrong reason. Make `getCurrentValues` return `Result` so the real error shows. Not a blocker; fix in the next change.
+- **Stale text in the evidence pack.** The top of `gate2-evidence.md` (the "What to review" state, process notes 1 and 4, the "Evidence" table, "Known limitations", "Files changed", and the "v1.5 files to remove" list) still describes the pre-fix state, while the fix sections below it say the opposite. Update the top half so a reader who stops there is not misled.
+- **Test count.** The suite fell from 318 to 177 because the v1.5 tests went with their code. That is expected, but the evidence pack should say that the 177 is the v2.4 suite only, so nobody reads it as lost coverage.
+
+## Recommendation
+
+The code findings are resolved and the fixes are test-first with tests that I read. I would move the decision from Changes Requested to **Approved, conditional on G2-06**: Gate 2 should not be recorded as closed until Shamik's written confirmation is attached and the Tech Lead acceptances above are on file. The decision is recorded as conditional in the decision block above, in `gate2-evidence.md` and in `status.md`. Static analysis and the test run were not possible on the reviewer's machine because Flutter is not available there; these results rest on the Author's run.

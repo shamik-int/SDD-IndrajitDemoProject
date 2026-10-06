@@ -181,6 +181,8 @@ _Recorded by Subhajit Mukherjee._
 
 | | |
 |---|---|
-| Decision | ☐ Approved ☒ Changes requested |
-| Date | 2026-10-05 |
-| Findings | G2-01 to G2-18 in `employee-internal-transfer.gate2-review.md`. Blockers: G2-01 to G2-06 |
+| Decision | ☒ Approved, **conditional on G2-06** ☐ Changes requested |
+| Date | 2026-10-06 (first review: Changes Requested, 2026-10-05) |
+| Findings | G2-01 to G2-18 in `employee-internal-transfer.gate2-review.md` (see "Re-review — 2026-10-06"). 17 of 18 closed. Open: G2-06 (Shamik Bhattacharya's written Gate 1 confirmation) and the Tech Lead acceptances listed in the re-review |
+| Conditions | Gate 2 is not closed until Shamik's confirmation is attached to plan v4.0 and the Tech Lead acceptances are on file. The merge message must carry no AI trailer (G2-01) |
+| Verification limit | **Flutter is not installed on the reviewer's machine, so `flutter analyze`, `flutter test`, the XF mutation script and IT01 could not be run by the reviewer.** The analyze result, the 177/177 test count and the coverage figures above are the Author's and are not independently verified. The fixes and their tests were reviewed by reading the code |
